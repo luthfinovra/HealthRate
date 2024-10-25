@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const TableMyocardial = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <div className="relative overflow-x-auto">
@@ -52,7 +54,10 @@ const TableMyocardial = () => {
               <td className="px-6 py-4">02/12/2024</td>
               <td className="px-6 py-4">5 Record</td>
               <td className="px-6 py-4">
-                <button className="bg-[#FACC2C] px-5 py-1 rounded-lg min-w-[59px]">
+                <button
+                  className="bg-[#FACC2C] px-5 py-1 rounded-lg min-w-[59px]"
+                  onClick={() => navigate("/edit-myocardial")}
+                >
                   <svg
                     width="19"
                     height="18"
@@ -112,7 +117,10 @@ const TableMyocardial = () => {
               <td className="px-6 py-4">02/12/2024</td>
               <td className="px-6 py-4">5 Record</td>
               <td className="px-6 py-4">
-                <button className="bg-[#FACC2C] px-5 py-1 rounded-lg min-w-[59px]">
+                <button
+                  className="bg-[#FACC2C] px-5 py-1 rounded-lg min-w-[59px]"
+                  onClick={() => navigate("/edit-myocardial")}
+                >
                   <svg
                     width="19"
                     height="18"

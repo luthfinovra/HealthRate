@@ -12,7 +12,7 @@ const CardHome = ({ id, isActive, handleClick, icon }) => {
     >
       {isActive ? (
         <div className=" h-full space-y-5 ">
-          <div className="bg-white shadow-main appearance-none p-2 rounded-2xl  w-16 h-16 flex items-center justify-center ">
+          <div className="bg-[#605E78] shadow-main appearance-none p-2 rounded-2xl  w-16 h-16 flex items-center justify-center ">
             {icon}
           </div>
           <div className="w-full h-full  rounded-xl space-y-3 ">
@@ -30,7 +30,7 @@ const CardHome = ({ id, isActive, handleClick, icon }) => {
           </div>
         </div>
       ) : (
-        <div></div>
+        <div>{icon}</div>
       )}
     </div>
   );

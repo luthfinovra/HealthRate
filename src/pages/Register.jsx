@@ -207,6 +207,7 @@
 import React from "react";
 import NavbarResearcher from "../components/navbar/navbarResearcher";
 import { MdLogin } from "react-icons/md";
+import InputField from "../components/inputField/InputField";
 
 const Register = () => {
   return (
@@ -330,141 +331,165 @@ const Register = () => {
               {/* Login Form */}
               {/* The form code remains unchanged */}
               <form className="space-y-4 md:space-y-6" action="#">
-                <div>
-                  <label
-                    for="email"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Your email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#D3D3EE] focus:border-[#D3D3EE] block w-full p-2.5"
-                    placeholder="name@company.com"
-                    required=""
+                <InputField
+                  icon={
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M6 6C7.6575 6 9 4.6575 9 3C9 1.3425 7.6575 0 6 0C4.3425 0 3 1.3425 3 3C3 4.6575 4.3425 6 6 6ZM6 7.5C3.9975 7.5 0 8.505 0 10.5V11.25C0 11.6625 0.3375 12 0.75 12H11.25C11.6625 12 12 11.6625 12 11.25V10.5C12 8.505 8.0025 7.5 6 7.5Z"
+                        fill="#53516C"
+                      />
+                    </svg>
+                  }
+                  id={"email"}
+                  placeholder={"Email"}
+                  type={"email"}
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  <InputField
+                    icon={
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6 6C7.6575 6 9 4.6575 9 3C9 1.3425 7.6575 0 6 0C4.3425 0 3 1.3425 3 3C3 4.6575 4.3425 6 6 6ZM6 7.5C3.9975 7.5 0 8.505 0 10.5V11.25C0 11.6625 0.3375 12 0.75 12H11.25C11.6625 12 12 11.6625 12 11.25V10.5C12 8.505 8.0025 7.5 6 7.5Z"
+                          fill="#53516C"
+                        />
+                      </svg>
+                    }
+                    id={"firstName"}
+                    placeholder={"First Name"}
+                    type={"text"}
+                  />
+                  <InputField
+                    icon={
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6 6C7.6575 6 9 4.6575 9 3C9 1.3425 7.6575 0 6 0C4.3425 0 3 1.3425 3 3C3 4.6575 4.3425 6 6 6ZM6 7.5C3.9975 7.5 0 8.505 0 10.5V11.25C0 11.6625 0.3375 12 0.75 12H11.25C11.6625 12 12 11.6625 12 11.25V10.5C12 8.505 8.0025 7.5 6 7.5Z"
+                          fill="#53516C"
+                        />
+                      </svg>
+                    }
+                    id={"lastName"}
+                    placeholder={"Last Name"}
+                    type={"text"}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label
-                      for="firstName"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      id="firstName"
-                      placeholder="First name"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#D3D3EE] focus:border-[#D3D3EE] block w-full p-2.5"
-                      required=""
-                    />
-                  </div>
-                  <div>
-                    <label
-                      for="lastName"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      id="lastName"
-                      placeholder="Last name"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#D3D3EE] focus:border-[#D3D3EE] block w-full p-2.5"
-                      required=""
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label
-                      for="institusi"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      Institusi
-                    </label>
-                    <input
-                      type="text"
-                      name="institusi"
-                      id="institusi"
-                      placeholder="Institusi"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#D3D3EE] focus:border-[#D3D3EE] block w-full p-2.5"
-                      required=""
-                    />
-                  </div>
-                  <div>
-                    <label
-                      for="phoneNumber"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      Phone Number
-                    </label>
-                    <input
-                      type="text"
-                      name="phoneNumber"
-                      id="phoneNumber"
-                      placeholder="08123456789"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#D3D3EE] focus:border-[#D3D3EE] block w-full p-2.5"
-                      required=""
-                    />
-                  </div>
+                  <InputField
+                    icon={
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6 6C7.6575 6 9 4.6575 9 3C9 1.3425 7.6575 0 6 0C4.3425 0 3 1.3425 3 3C3 4.6575 4.3425 6 6 6ZM6 7.5C3.9975 7.5 0 8.505 0 10.5V11.25C0 11.6625 0.3375 12 0.75 12H11.25C11.6625 12 12 11.6625 12 11.25V10.5C12 8.505 8.0025 7.5 6 7.5Z"
+                          fill="#53516C"
+                        />
+                      </svg>
+                    }
+                    id={"institusi"}
+                    placeholder={"Institusi"}
+                    type={"text"}
+                  />
+                  <InputField
+                    icon={
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6 6C7.6575 6 9 4.6575 9 3C9 1.3425 7.6575 0 6 0C4.3425 0 3 1.3425 3 3C3 4.6575 4.3425 6 6 6ZM6 7.5C3.9975 7.5 0 8.505 0 10.5V11.25C0 11.6625 0.3375 12 0.75 12H11.25C11.6625 12 12 11.6625 12 11.25V10.5C12 8.505 8.0025 7.5 6 7.5Z"
+                          fill="#53516C"
+                        />
+                      </svg>
+                    }
+                    id={"phoneNumber"}
+                    placeholder={"Phone Number"}
+                    type={"text"}
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label
-                      for="password"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      placeholder="••••••••"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#D3D3EE] focus:border-[#D3D3EE] block w-full p-2.5"
-                      required=""
-                    />
-                  </div>
-                  <div>
-                    <label
-                      for="konfirmasiPassword"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      Konfirmasi Password
-                    </label>
-                    <input
-                      type="password"
-                      name="konfirmasiPassword"
-                      id="konfirmasiPassword"
-                      placeholder="••••••••"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#D3D3EE] focus:border-[#D3D3EE] block w-full p-2.5"
-                      required=""
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label
-                    for="tujuanPermohonan"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Tujuan Permohonan
-                  </label>
-                  <input
-                    type="text"
-                    name="tujuanPermohonan"
-                    id="tujuanPermohonan"
-                    placeholder="Tujuan Permohonan"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#D3D3EE] focus:border-[#D3D3EE] block w-full p-2.5"
-                    required=""
+                  <InputField
+                    icon={
+                      <svg
+                        width="12"
+                        height="17"
+                        viewBox="0 0 12 17"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M1.5 16.5C1.0875 16.5 0.7345 16.3533 0.441 16.0597C0.1475 15.7662 0.0005 15.413 0 15V7.5C0 7.0875 0.147 6.7345 0.441 6.441C0.735 6.1475 1.088 6.0005 1.5 6H2.25V4.5C2.25 3.4625 2.61575 2.57825 3.34725 1.84725C4.07875 1.11625 4.963 0.750501 6 0.750001C7.037 0.749501 7.9215 1.11525 8.6535 1.84725C9.3855 2.57925 9.751 3.4635 9.75 4.5V6H10.5C10.9125 6 11.2657 6.147 11.5597 6.441C11.8538 6.735 12.0005 7.088 12 7.5V15C12 15.4125 11.8533 15.7657 11.5597 16.0597C11.2662 16.3538 10.913 16.5005 10.5 16.5H1.5ZM6 12.75C6.4125 12.75 6.76575 12.6033 7.05975 12.3098C7.35375 12.0163 7.5005 11.663 7.5 11.25C7.4995 10.837 7.35275 10.484 7.05975 10.191C6.76675 9.898 6.4135 9.751 6 9.75C5.5865 9.749 5.2335 9.896 4.941 10.191C4.6485 10.486 4.5015 10.839 4.5 11.25C4.4985 11.661 4.6455 12.0143 4.941 12.3098C5.2365 12.6053 5.5895 12.752 6 12.75ZM3.75 6H8.25V4.5C8.25 3.875 8.03125 3.34375 7.59375 2.90625C7.15625 2.46875 6.625 2.25 6 2.25C5.375 2.25 4.84375 2.46875 4.40625 2.90625C3.96875 3.34375 3.75 3.875 3.75 4.5V6Z"
+                          fill="#53516C"
+                        />
+                      </svg>
+                    }
+                    id={"password"}
+                    placeholder={"Password"}
+                    type={"password"}
+                  />
+                  <InputField
+                    icon={
+                      <svg
+                        width="12"
+                        height="17"
+                        viewBox="0 0 12 17"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M1.5 16.5C1.0875 16.5 0.7345 16.3533 0.441 16.0597C0.1475 15.7662 0.0005 15.413 0 15V7.5C0 7.0875 0.147 6.7345 0.441 6.441C0.735 6.1475 1.088 6.0005 1.5 6H2.25V4.5C2.25 3.4625 2.61575 2.57825 3.34725 1.84725C4.07875 1.11625 4.963 0.750501 6 0.750001C7.037 0.749501 7.9215 1.11525 8.6535 1.84725C9.3855 2.57925 9.751 3.4635 9.75 4.5V6H10.5C10.9125 6 11.2657 6.147 11.5597 6.441C11.8538 6.735 12.0005 7.088 12 7.5V15C12 15.4125 11.8533 15.7657 11.5597 16.0597C11.2662 16.3538 10.913 16.5005 10.5 16.5H1.5ZM6 12.75C6.4125 12.75 6.76575 12.6033 7.05975 12.3098C7.35375 12.0163 7.5005 11.663 7.5 11.25C7.4995 10.837 7.35275 10.484 7.05975 10.191C6.76675 9.898 6.4135 9.751 6 9.75C5.5865 9.749 5.2335 9.896 4.941 10.191C4.6485 10.486 4.5015 10.839 4.5 11.25C4.4985 11.661 4.6455 12.0143 4.941 12.3098C5.2365 12.6053 5.5895 12.752 6 12.75ZM3.75 6H8.25V4.5C8.25 3.875 8.03125 3.34375 7.59375 2.90625C7.15625 2.46875 6.625 2.25 6 2.25C5.375 2.25 4.84375 2.46875 4.40625 2.90625C3.96875 3.34375 3.75 3.875 3.75 4.5V6Z"
+                          fill="#53516C"
+                        />
+                      </svg>
+                    }
+                    id={"konfirmasiPassword"}
+                    placeholder={"Confirm Password"}
+                    type={"password"}
                   />
                 </div>
+                <InputField
+                  icon={
+                    <svg
+                      width="12"
+                      height="17"
+                      viewBox="0 0 12 17"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1.5 16.5C1.0875 16.5 0.7345 16.3533 0.441 16.0597C0.1475 15.7662 0.0005 15.413 0 15V7.5C0 7.0875 0.147 6.7345 0.441 6.441C0.735 6.1475 1.088 6.0005 1.5 6H2.25V4.5C2.25 3.4625 2.61575 2.57825 3.34725 1.84725C4.07875 1.11625 4.963 0.750501 6 0.750001C7.037 0.749501 7.9215 1.11525 8.6535 1.84725C9.3855 2.57925 9.751 3.4635 9.75 4.5V6H10.5C10.9125 6 11.2657 6.147 11.5597 6.441C11.8538 6.735 12.0005 7.088 12 7.5V15C12 15.4125 11.8533 15.7657 11.5597 16.0597C11.2662 16.3538 10.913 16.5005 10.5 16.5H1.5ZM6 12.75C6.4125 12.75 6.76575 12.6033 7.05975 12.3098C7.35375 12.0163 7.5005 11.663 7.5 11.25C7.4995 10.837 7.35275 10.484 7.05975 10.191C6.76675 9.898 6.4135 9.751 6 9.75C5.5865 9.749 5.2335 9.896 4.941 10.191C4.6485 10.486 4.5015 10.839 4.5 11.25C4.4985 11.661 4.6455 12.0143 4.941 12.3098C5.2365 12.6053 5.5895 12.752 6 12.75ZM3.75 6H8.25V4.5C8.25 3.875 8.03125 3.34375 7.59375 2.90625C7.15625 2.46875 6.625 2.25 6 2.25C5.375 2.25 4.84375 2.46875 4.40625 2.90625C3.96875 3.34375 3.75 3.875 3.75 4.5V6Z"
+                        fill="#53516C"
+                      />
+                    </svg>
+                  }
+                  id={"tujuan"}
+                  placeholder={"Tujuan Permohonan"}
+                  type={"text"}
+                />
 
                 <button
                   type="submit"
