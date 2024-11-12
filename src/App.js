@@ -5,19 +5,25 @@ import Audio from "./pages/Audio";
 import ArrythmiaPage from "./pages/operator/ArrythmiaPage";
 import MyocardialPage from "./pages/operator/MyocardialPage";
 import Dashboard from "./pages/admin/Dashboard";
-import OperatorPage from "./pages/admin/OperatorPage";
 import ApprovePage from "./pages/admin/ApprovePage";
 import PenyakitPage from "./pages/admin/PenyakitPage";
 import Register from "./pages/Register";
 import HomePage from "./pages/user/HomePage";
 import DataArrythmiaPage from "./pages/user/DataArrythmiaPage";
 import DataMyocardialPage from "./pages/user/DataMyocardialPage";
-import UploadPenyakitPage from "./pages/admin/UploadPenyakitPage";
-import UploadOperatorPage from "./pages/admin/UploadOperatorPage";
+import UploadPenyakitPage from "./pages/admin/TambahPenyakitPage";
+import UploadOperatorPage from "./pages/admin/TambahPenggunaPage";
 import UploadArrythmiaPage from "./pages/operator/UploadArrythmiaPage";
 import UploadMyocardial from "./pages/operator/UploadMyocardial";
 import EditArrythmiaPage from "./pages/operator/EditArrythmiaPage";
 import EditMyocardial from "./pages/operator/EditMyocardial";
+import PenggunaPage from "./pages/admin/PenggunaPage";
+import DetailPenyakitPage from "./pages/admin/DetailPenyakitPage";
+import TambahPenyakitPage from "./pages/admin/TambahPenyakitPage";
+import TambahPenggunaPage from "./pages/admin/TambahPenggunaPage";
+import OperatorPanyakitPage from "./pages/operator/OpratorPanyakitPage";
+import OperatorTambahPenyakitPage from "./pages/operator/OperatorTambahPenyakitPage";
+import ResearcherPenyakitPage from "./pages/user/ResearcherPenyakitPage";
 
 export default function App() {
   return (
@@ -28,7 +34,11 @@ export default function App() {
         <Route path="/chart" element={<Chart />}></Route>
         <Route path="/audio" element={<Audio />}></Route>
         {/* Operator */}
-        <Route path="/arrythmia" element={<ArrythmiaPage />}></Route>
+        <Route path="/operator/:id" element={<OperatorPanyakitPage />}></Route>
+        <Route
+          path="/tambah-penyakit/:id"
+          element={<OperatorTambahPenyakitPage />}
+        ></Route>
         <Route path="/myocardial" element={<MyocardialPage />}></Route>
         <Route
           path="/upload-arrythmia"
@@ -39,17 +49,24 @@ export default function App() {
         <Route path="/edit-myocardial" element={<EditMyocardial />}></Route>
         {/* Admin */}
         <Route path="/dashboard" element={<Dashboard />}></Route>
-        <Route path="/operator" element={<OperatorPage />}></Route>
+        <Route path="/pengguna" element={<PenggunaPage />}></Route>
         <Route path="/approve" element={<ApprovePage />}></Route>
         <Route path="/penyakit" element={<PenyakitPage />}></Route>
-        <Route path="/upload-penyakit" element={<UploadPenyakitPage />}></Route>
-        <Route path="/upload-operator" element={<UploadOperatorPage />}></Route>
+        <Route path="/penyakit/:id" element={<DetailPenyakitPage />} />
+        <Route path="/tambah-penyakit" element={<TambahPenyakitPage />}></Route>
+        <Route path="/tambah-pengguna" element={<TambahPenggunaPage />}></Route>
         <Route path="/edit-penyakit" element={<UploadPenyakitPage />}></Route>
         <Route path="/edit-operator" element={<UploadOperatorPage />}></Route>
         {/* User */}
         <Route path="/home" element={<HomePage />}></Route>
-        <Route path="/data-arrythmia" element={<DataArrythmiaPage />}></Route>
-        <Route path="/data-myocardial" element={<DataMyocardialPage />}></Route>
+        <Route
+          path="/researcher/penyakit"
+          element={<ResearcherPenyakitPage />}
+        ></Route>
+        <Route
+          path="/researcher/penyakit/:id"
+          element={<DataMyocardialPage />}
+        ></Route>
       </Routes>
     </Router>
   );
