@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import TableOperator from "../../components/table/TableOperator";
 import DefaultTable from "../../components/table/DefaultTable";
-import Dropdown from "../../components/button/BtnDropdown";
 import BtnDropdown from "../../components/button/BtnDropdown";
 import InputSearch from "../../components/inputField/InputSearch";
 import { useNavigate } from "react-router-dom";
+import request from "../../utils/request";
+import Pagination from "../../components/paginations/Pagination";
 
 const PenggunaPage = () => {
+  const [userDatas, setUserDatas] = useState([]);
+  const [role, setRole] = useState("");
+  const [name, setName] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [paginations, setPaginations] = useState({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const rowMenu = [
     { menu: "nama" },
@@ -16,26 +23,38 @@ const PenggunaPage = () => {
     { menu: "status" },
     { menu: "detail" },
   ];
-  const datas = [
-    {
-      nama: "John Doe",
-      email: "john.doe@example.com",
-      roles: "Admin",
-      status: "Active",
-    },
-    {
-      nama: "Jane Doe",
-      email: "jane.doe@example.com",
-      roles: "User",
-      status: "Inactive",
-    },
-    {
-      nama: "Alice",
-      email: "alice@example.com",
-      roles: "Admin",
-      status: "Active",
-    },
+  const roleDatas = [
+    { menu: "All", value: "" },
+    { menu: "Admin", value: "admin" },
+    { menu: "Operator", value: "operator" },
+    { menu: "Peneliti", value: "peneliti" },
   ];
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    const payload = {
+      role: role,
+      page: page,
+      per_page: limit,
+      name: name,
+      approval_status: "",
+    };
+    request
+      .get(`/admin/users`, payload)
+      .then(function (response) {
+        setUserDatas(response.data.data.users);
+        setPaginations(response.data.data.pagination); // Add a fallback value for pagination
+        setLoading(false);
+      })
+      .catch(function (error) {
+        console.error(error);
+        setLoading(false);
+      });
+  }, [role, name, page, limit]); // Add role to dependencies
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   return (
     <div>
@@ -51,34 +70,41 @@ const PenggunaPage = () => {
               </p>
             </div>
             <div className="flex gap-2">
-              <InputSearch />
-              <BtnDropdown title={"Roles"} rowMenu={rowMenu} />
+              <InputSearch
+                id={"search-name"}
+                name={"search-name"}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={"Search users by name..."}
+              />
+              <BtnDropdown
+                title={"Roles"}
+                rowMenu={roleDatas}
+                setState={setRole}
+                value={role}
+              />
             </div>
           </div>
           <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
             <h1 className="font-medium text-[18px]">Data User</h1>
             <DefaultTable rowMenu={rowMenu}>
-              {datas.map((data, index) => (
+              {userDatas.map((data, index) => (
                 <tr
+                  key={index}
                   className="text-gray-700 bg-white border-b cursor-pointer hover:bg-gray-50"
-                  onClick={() => {
-                    navigate(`/#`);
-                  }}
                 >
-                  <td className="px-6 py-4 text-xs font-medium">{data.nama}</td>
+                  <td className="px-6 py-4 text-xs font-medium">{data.name}</td>
                   <td className="px-6 py-4 text-xs font-medium">
                     {data.email}
                   </td>
+                  <td className="px-6 py-4 text-xs font-medium">{data.role}</td>
                   <td className="px-6 py-4 text-xs font-medium">
-                    {data.roles}
-                  </td>
-                  <td className="px-6 py-4 text-xs font-medium">
-                    {data.status}
+                    {data.approval_status}
                   </td>
                   <td className="px-6 py-4 align-top">
                     <button
                       className=" bg-[#554F9B] px-5 py-1 rounded-lg min-w-[59px] text-white text-sm"
-                      onClick={() => navigate(`/#`)}
+                      onClick={() => navigate(`/admin/users/detail/${data.id}`)}
                     >
                       Lihat
                     </button>
@@ -87,6 +113,13 @@ const PenggunaPage = () => {
               ))}
             </DefaultTable>
           </div>
+
+          <Pagination
+            recordsTotal={paginations?.total}
+            limit={limit}
+            page={page}
+            setPage={setPage}
+          />
         </div>
       </LayoutAdmin>
     </div>

@@ -1,18 +1,141 @@
 import React from "react";
 
-const InputField = ({ icon, type, id, placeholder, value }) => {
+import { CiFileOn } from "react-icons/ci";
+import { GiCancel } from "react-icons/gi";
+import { formatFileSize } from "../../utils/formatFileSize";
+
+const InputField = ({
+  id,
+  name,
+  type,
+  value,
+  multipleDatas = [],
+  valueMultiple = [],
+  onChange,
+  placeholder,
+  previewImage,
+  multiple = false,
+  required = false,
+  icon = null,
+  label = null,
+  disabled = false,
+  readOnly = false,
+  validations,
+  handleDeleteImage, // Fungsi untuk hapus di API
+  handleDeleteLocalImage, // Fungsi untuk hapus di local
+}) => {
   return (
-    <div class="flex">
-      <span class="inline-flex items-center px-3 text-sm text-gray-900  border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-        {icon}
-      </span>
-      <input
-        type={type}
-        id={id}
-        class="rounded-none rounded-e-lg  border border-l-0 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        placeholder={placeholder}
-        value={value}
-      />
+    <div className="w-full">
+      {label && (
+        <div className="flex justify-between">
+          <label
+            htmlFor={id}
+            className="block mb-2 text-sm font-medium text-gray-900"
+          >
+            {label}
+          </label>
+          {previewImage && (
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={`${process.env.REACT_APP_HOST}` + previewImage}
+              className="block mb-2 mr-4 text-sm font-medium text-gray-900"
+            >
+              Preview Image
+            </a>
+          )}
+        </div>
+      )}
+
+      <div className="relative w-full">
+        <input
+          id={id}
+          name={name}
+          accept={type === "image" ? "image/*" : "*"}
+          type={type === "image" ? "file" : type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          multiple={multiple}
+          required={required}
+          disabled={disabled}
+          readOnly={readOnly}
+          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+        />
+
+        {icon && (
+          <div className="absolute top-0 end-0 h-full p-2.5 text-sm font-medium text-black flex justify-center items-center">
+            {icon}
+          </div>
+        )}
+      </div>
+      {/* Render valueMultiple and multipleDatas if multiple is true */}
+      {multiple && (
+        <div className="mt-2">
+          <ul className="space-y-2">
+            {/* Render data dari database (valueMultiple) */}
+            {valueMultiple.map((file, index) => (
+              <li key={index} className="text-gray-700">
+                <div className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 flex justify-between">
+                  <div className="flex items-center space-x-4">
+                    <CiFileOn className="text-5xl" />
+                    <div className="flex flex-col">
+                      <p className="block text-sm font-medium text-gray-900">
+                        {file.mediaFilename}
+                      </p>
+                      <p className="block text-sm font-medium text-gray-900">
+                        {file.mediaFilesize} kb
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <GiCancel
+                      className="text-red-500 cursor-pointer"
+                      onClick={() => handleDeleteImage(file.id)} // Kirimkan file.id
+                    />
+                  </div>
+                </div>
+              </li>
+            ))}
+
+            {/* Render data dari local (multipleDatas) */}
+            {multipleDatas.map((file, index) => (
+              <li key={index} className="text-gray-700">
+                <div className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 flex justify-between">
+                  <div className="flex items-center space-x-4">
+                    <CiFileOn className="text-5xl" />
+                    <div className="flex flex-col">
+                      <p className="block text-sm font-medium text-gray-900">
+                        {file.name}
+                      </p>
+                      <p className="block text-sm font-medium text-gray-900">
+                        {formatFileSize(file.size)}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <GiCancel
+                      className="text-red-500 cursor-pointer"
+                      onClick={() => handleDeleteLocalImage(index)}
+                    />
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {validations &&
+        validations.map(
+          (validation, index) =>
+            (validation.name === name ||
+              (validation.name === "media_uri" && type === "image")) && (
+              <p key={index} className="mt-2 text-sm text-red-500">
+                {validation.message}
+              </p>
+            )
+        )}
     </div>
   );
 };

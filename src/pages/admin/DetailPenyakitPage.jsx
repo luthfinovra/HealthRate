@@ -1,58 +1,45 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import TabelPenyakit from "../../components/table/TabelPenyakit";
-import InputSearch from "../../components/inputField/InputSearch";
-import BtnDropdown from "../../components/button/BtnDropdown";
 import DynamicTable from "../../components/table/DynamicTable";
+import request from "../../utils/request";
+import Pagination from "../../components/paginations/Pagination";
 
 const DetailPenyakitPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const rowMenu = [
-    { menu: "RECORD" },
-    { menu: "ANNOTATIONS" },
-    { menu: "JENIS PENYAKIT" },
-    { menu: "SIGNALS" },
-    { menu: "DURASI" },
-    { menu: "TANGGAL TES" },
-    { menu: "DATA FORMAT" },
-  ];
-  const datas = [
-    {
-      RECOR: "Record 1",
-      ANNOTATIONS:
-        "Reference Beat, Rtythm, and Signal Quality Annotations (ATR)",
-      "JENIS PENYAKIT": "AF",
-      SIGNALS: "MLII, V1",
-      DURASI: 30.0,
-      "TANGGAL TES": "02/12/2024",
-      "DATA FORMAT": "Standar",
-      id: "RCD-001",
-    },
-    {
-      RECORD: "Record 1",
-      ANNOTATIONS:
-        "Reference Beat, Rtythm, and Signal Quality Annotations (ATR)",
-      "JENIS PENYAKIT": "AF",
-      SIGNALS: "MLII, V1",
-      DURASI: 30.0,
-      "TANGGAL TES": "02/12/2024",
-      "DATA FORMAT": "Standar",
-      id: "RCD-002",
-    },
-    {
-      RECORD: "Record 1",
-      ANNOTATIONS:
-        "Reference Beat, Rtythm, and Signal Quality Annotations (ATR)",
-      "JENIS PENYAKIT": "AF",
-      SIGNALS: "MLII, V1",
-      DURASI: 30.0,
-      "TANGGAL TES": "02/12/2024",
-      "DATA FORMAT": "Standar",
-      id: "RCD-003",
-    },
-  ];
+  const [detailDiseasesDatas, setDetailDiseasesDatas] = useState([]);
+  const [role, setRole] = useState("");
+  const [name, setName] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [paginations, setPaginations] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const fetchDetailDiseases = useCallback(async () => {
+    setLoading(true);
+    const payload = {
+      page: page,
+      per_page: limit,
+    };
+    request
+      .get(`/diseases/${id}/records`, payload)
+      .then(function (response) {
+        setDetailDiseasesDatas(response.data.data);
+        setPaginations(response.data.data.pagination); // Add a fallback value for pagination
+        setLoading(false);
+      })
+      .catch(function (error) {
+        console.error(error);
+        setLoading(false);
+      });
+  }, [id, page, limit]); // Add role to dependencies
+
+  useEffect(() => {
+    fetchDetailDiseases();
+  }, [fetchDetailDiseases]);
+
   return (
     <div>
       <LayoutAdmin>
@@ -60,24 +47,27 @@ const DetailPenyakitPage = () => {
           <div className="flex flex-col md:flex-row items-start justify-between md:items-end">
             <div className="space-y-4">
               <h1 className=" font-semibold text-[42px] leading-none capitalize ">
-                {id}
+                {detailDiseasesDatas?.name}
               </h1>
               <p className=" max-w-3xl font-normal text-[14px] text-[#2D3748] leading-[150%]">
-                Aritmia adalah gangguan pada irama detak jantung. Dalam kondisi
-                normal, jantung berdetak dengan ritme yang teratur. Namun, pada
-                aritmia, ritme ini terganggu.
+                {detailDiseasesDatas?.deskripsi}
               </p>
-            </div>
-            <div className="flex gap-2">
-              <InputSearch />
-              <BtnDropdown title={"Roles"} rowMenu={rowMenu} />
-              <BtnDropdown title={"Jenis Penyakit"} rowMenu={rowMenu} />
             </div>
           </div>
           <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
             <h1 className="font-medium text-[18px]">Data Record</h1>
-            <DynamicTable rowMenu={rowMenu} datas={datas} btnView />
+            <DynamicTable
+              rowMenu={detailDiseasesDatas?.schema}
+              datas={detailDiseasesDatas?.records}
+              btnView
+            />
           </div>
+          <Pagination
+            recordsTotal={paginations?.total}
+            limit={limit}
+            page={page}
+            setPage={setPage}
+          />
         </div>
       </LayoutAdmin>
     </div>

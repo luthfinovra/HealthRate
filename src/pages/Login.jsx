@@ -1,9 +1,75 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NavbarResearcher from "../components/navbar/navbarResearcher";
 import { MdLogin } from "react-icons/md";
 import InputField from "../components/inputField/InputField";
+import { useNavigate } from "react-router-dom";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import request from "../utils/request";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 export const Login = () => {
+  const navigate = useNavigate();
+
+  const [typeInput, setTypeInput] = useState(true);
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleChangeEmail = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handleChangePassword = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleClickType = () => {
+    setTypeInput(!typeInput);
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    const isJson = true; // Ganti sesuai kebutuhan (true untuk JSON, false untuk FormData)
+
+    const headers = {
+      "Content-Type": isJson ? "application/json" : "multipart/form-data",
+    };
+
+    // Data yang dikirimkan
+    const data = isJson
+      ? { email, password } // JSON
+      : new FormData(); // FormData
+
+    if (!isJson) {
+      data.append("email", email);
+      data.append("password", password);
+    }
+
+    // Mengirimkan request POST dengan header dinamis
+    request
+      .post("/auth/login", data, headers)
+      .then(function (response) {
+        console.log(response);
+        if (response?.status === 200 || response?.status === 201) {
+          Cookies.set("token", response?.data?.data?.token);
+          localStorage.setItem("role", response?.data?.data?.role);
+          toast.dismiss();
+          toast.success(response?.data?.message);
+          if (response?.data?.data?.role === "operator") {
+            navigate(`/operator/penyakit/${response?.data?.data?.disease_id}`);
+          } else {
+            navigate("/admin/dashboard");
+          }
+        } else {
+          window.alert("Gagal login");
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <section className="bg-[#444444] h-screen">
       {/* Navbar */}
@@ -124,46 +190,37 @@ export const Login = () => {
               </div>
               {/* Login Form */}
               {/* The form code remains unchanged */}
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
                 <InputField
-                  icon={
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M6 6C7.6575 6 9 4.6575 9 3C9 1.3425 7.6575 0 6 0C4.3425 0 3 1.3425 3 3C3 4.6575 4.3425 6 6 6ZM6 7.5C3.9975 7.5 0 8.505 0 10.5V11.25C0 11.6625 0.3375 12 0.75 12H11.25C11.6625 12 12 11.6625 12 11.25V10.5C12 8.505 8.0025 7.5 6 7.5Z"
-                        fill="#53516C"
-                      />
-                    </svg>
-                  }
                   id={"email"}
-                  placeholder={"Email"}
+                  name={"email"}
+                  onChange={handleChangeEmail}
+                  placeholder={"user@gmail.com"}
                   type={"email"}
+                  value={email}
+                  required
+                  label={"Your email"}
                 />
                 <InputField
-                  icon={
-                    <svg
-                      width="12"
-                      height="17"
-                      viewBox="0 0 12 17"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M1.5 16.5C1.0875 16.5 0.7345 16.3533 0.441 16.0597C0.1475 15.7662 0.0005 15.413 0 15V7.5C0 7.0875 0.147 6.7345 0.441 6.441C0.735 6.1475 1.088 6.0005 1.5 6H2.25V4.5C2.25 3.4625 2.61575 2.57825 3.34725 1.84725C4.07875 1.11625 4.963 0.750501 6 0.750001C7.037 0.749501 7.9215 1.11525 8.6535 1.84725C9.3855 2.57925 9.751 3.4635 9.75 4.5V6H10.5C10.9125 6 11.2657 6.147 11.5597 6.441C11.8538 6.735 12.0005 7.088 12 7.5V15C12 15.4125 11.8533 15.7657 11.5597 16.0597C11.2662 16.3538 10.913 16.5005 10.5 16.5H1.5ZM6 12.75C6.4125 12.75 6.76575 12.6033 7.05975 12.3098C7.35375 12.0163 7.5005 11.663 7.5 11.25C7.4995 10.837 7.35275 10.484 7.05975 10.191C6.76675 9.898 6.4135 9.751 6 9.75C5.5865 9.749 5.2335 9.896 4.941 10.191C4.6485 10.486 4.5015 10.839 4.5 11.25C4.4985 11.661 4.6455 12.0143 4.941 12.3098C5.2365 12.6053 5.5895 12.752 6 12.75ZM3.75 6H8.25V4.5C8.25 3.875 8.03125 3.34375 7.59375 2.90625C7.15625 2.46875 6.625 2.25 6 2.25C5.375 2.25 4.84375 2.46875 4.40625 2.90625C3.96875 3.34375 3.75 3.875 3.75 4.5V6Z"
-                        fill="#53516C"
-                      />
-                    </svg>
-                  }
                   id={"password"}
-                  placeholder={"Password"}
-                  type={"password"}
+                  name={"password"}
+                  onChange={handleChangePassword}
+                  placeholder={"••••••••"}
+                  type={typeInput ? "password" : "text"}
+                  value={password}
+                  required
+                  icon={
+                    typeInput ? (
+                      <IoMdEyeOff
+                        className="text-xl"
+                        onClick={handleClickType}
+                      />
+                    ) : (
+                      <IoMdEye className="text-xl" onClick={handleClickType} />
+                    )
+                  }
+                  label={"Password"}
                 />
-
                 <button
                   type="submit"
                   className="w-full text-black bg-[#D3D3EE] hover:bg-[#c5c5ec] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"

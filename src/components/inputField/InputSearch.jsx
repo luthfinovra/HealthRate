@@ -1,15 +1,22 @@
 import React from "react";
 
-const InputSearch = () => {
+const InputSearch = ({
+  id,
+  name,
+  value,
+  onChange,
+  placeholder,
+  disabled = false,
+}) => {
   return (
-    <form class="flex items-center max-w-sm ">
-      <label for="simple-search" class="sr-only">
+    <div className="flex items-center max-w-sm ">
+      <label for="simple-search" className="sr-only">
         Search
       </label>
-      <div class="relative w-full">
-        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+      <div className="relative w-full">
+        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
           <svg
-            class="w-4 h-4 "
+            className="w-4 h-4 "
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -25,14 +32,18 @@ const InputSearch = () => {
           </svg>
         </div>
         <input
+          id={id}
+          name={name}
           type="text"
-          id="simple-search"
-          class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  "
-          placeholder="Search branch name..."
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          disabled={disabled}
+          className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  "
           required
         />
       </div>
-    </form>
+    </div>
   );
 };
 

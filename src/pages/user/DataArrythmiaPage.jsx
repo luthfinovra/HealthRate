@@ -1,6 +1,6 @@
 import React from "react";
 import NavbarResearcher from "../../components/navbar/navbarResearcher";
-import TableArrythmia from "../../components/table/TableArrythmia";
+
 import TabelDataArrythmia from "../../components/table/TabelDataArrythmia";
 
 const DataArrythmiaPage = () => {
@@ -21,7 +21,7 @@ const DataArrythmiaPage = () => {
             <TabelDataArrythmia />
           </div>
         </div>
-        <div className=" mx-auto px-4">
+        {/* <div className=" mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
               Discussion (20)
@@ -445,7 +445,7 @@ const DataArrythmiaPage = () => {
               </button>
             </div>
           </article>
-        </div>
+        </div> */}
       </section>
 
       <div className="w-full h-full flex flex-col justify-center items-center mt-20 p-6 lg:p-0 lg:pb-12 ">

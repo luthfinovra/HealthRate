@@ -12,3 +12,13 @@ body {
 code {
   font-family: "Poppins", sans-serif;
 }
+
+.error-message {
+  position: absolute; /* Posisi absolut relatif terhadap elemen parent */
+  color: #ff4d4f; /* Warna merah untuk pesan error */
+  font-size: 0.875rem; /* Ukuran font kecil */
+  margin-top: 4px; /* Jarak sedikit dari input */
+}
+.input-container {
+  position: relative; /* Agar posisi absolut bekerja dengan benar */
+}

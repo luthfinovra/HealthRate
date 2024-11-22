@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import formatColumnName from "../../utils/formatColumnName";
 
 export default function DynamicTable({
   rowMenu,
@@ -8,21 +9,27 @@ export default function DynamicTable({
   btnEdit = false,
   btnDelete = false,
   btnAction = false,
+  onDetail,
+  onEdit,
+  onDelete,
 }) {
   const navigate = useNavigate(); // Gunakan useNavigate untuk navigasi
   const location = useLocation(); // Mendapatkan informasi lokasi
   const pathname = location.pathname; // Mendapatkan pathname
-  console.log(pathname);
+  console.log(rowMenu);
+  console.log(datas);
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-900 uppercase dark:text-gray-400">
           <tr className="border-b">
-            {rowMenu.map((item, index) => (
-              <th key={index} scope="col" className="px-6 py-3">
-                {item.menu}
-              </th>
-            ))}
+            {rowMenu
+              ?.filter((column) => column.is_visible)
+              .map((item, index) => (
+                <th key={index} scope="col" className="px-6 py-3">
+                  {formatColumnName(item.name)}
+                </th>
+              ))}
             {/* Add an extra column for the button if btnView is true */}
             {btnAction && <th className="px-6 py-3">Action</th>}
             {btnView && <th className="px-6 py-3">Detail</th>}
@@ -31,14 +38,16 @@ export default function DynamicTable({
           </tr>
         </thead>
         <tbody>
-          {datas.map((data, rowIndex) => (
+          {datas?.map((data, rowIndex) => (
             <tr key={rowIndex}>
-              {rowMenu.map((col, colIndex) => (
-                <td key={colIndex} className="px-6 py-3 align-top">
-                  {data[col.menu]} {/* Render data dynamically based on menu */}
-                </td>
-              ))}
-              {/* Conditionally render the button column */}
+              {rowMenu
+                ?.filter((column) => column.is_visible)
+                .map((col, colIndex) => (
+                  <td key={colIndex} className="px-6 py-3 align-top">
+                    {formatColumnName(data?.data[col.name])}
+                  </td>
+                ))}
+
               {btnAction && (
                 <td className="px-6 py-4 flex gap-3">
                   <button className="bg-[#51A279] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center">

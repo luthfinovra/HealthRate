@@ -1,7 +1,12 @@
-import React from "react";
-import { useLocation, Link } from "react-router-dom";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import Cookies from "js-cookie";
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { IoMdLogOut } from "react-icons/io";
 
 const LayoutOperator = ({ children }) => {
+  const [isActive, setIsActive] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
   return (
     <div>
@@ -10,6 +15,7 @@ const LayoutOperator = ({ children }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
               <button
+                onClick={() => setIsActive(!isActive)}
                 data-drawer-target="logo-sidebar"
                 data-drawer-toggle="logo-sidebar"
                 aria-controls="logo-sidebar"
@@ -45,82 +51,19 @@ const LayoutOperator = ({ children }) => {
                 </span>
               </a>
             </div>
-            <div className="flex items-center">
-              <div className="flex items-center">
-                <div>
-                  <button
-                    type="button"
-                    className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                    aria-expanded="false"
-                    data-dropdown-toggle="dropdown-user"
-                  >
-                    <span className="sr-only">Open user menu</span>
-                    <img
-                      className="w-8 h-8 rounded-full"
-                      src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                      alt="user-photo"
-                    />
-                  </button>
-                </div>
-                <div
-                  className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-                  id="dropdown-user"
-                >
-                  <div className="px-4 py-3" role="none">
-                    <p
-                      className="text-sm text-gray-900 dark:text-white"
-                      role="none"
-                    >
-                      Neil Sims
-                    </p>
-                    <p
-                      className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
-                      role="none"
-                    >
-                      neil.sims@flowbite.com
-                    </p>
-                  </div>
-                  <ul className="py-1" role="none">
-                    <li className="flex justify-center ">
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                        role="menuitem"
-                      >
-                        Dashboard
-                      </a>
-                    </li>
-                    <li className="flex justify-center ">
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                        role="menuitem"
-                      >
-                        Settings
-                      </a>
-                    </li>
-                    <li className="flex justify-center ">
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                        role="menuitem"
-                      >
-                        Earnings
-                      </a>
-                    </li>
-                    <li className="flex justify-center ">
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                        role="menuitem"
-                      >
-                        Sign out
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={() => {
+                toast.loading("Loading...");
+                toast.dismiss();
+                toast.success("Berhasil Logout");
+                Cookies.remove("token");
+                navigate("/");
+              }}
+              className="shadow-main p-2 text-gray-500 rounded-full bg-red-400 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            >
+              <IoMdLogOut className="text-white" />
+              <span className="sr-only">Logout</span>
+            </button>
           </div>
         </div>
       </nav>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const BtnDropdown = ({ rowMenu, title }) => {
+const BtnDropdown = ({ rowMenu, title, setState, value }) => {
   // State to manage the dropdown visibility
   const [isOpen, setIsOpen] = useState(false);
 
@@ -41,13 +41,18 @@ const BtnDropdown = ({ rowMenu, title }) => {
         id="dropdown"
         className={`${
           isOpen ? "block" : "hidden"
-        } absolute right-0 z-10 bg-white divide-y shadow-main divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}
+        } absolute right-0 z-10 bg-white divide-y shadow-main divide-gray-100 rounded-lg shadow max-w-sm  `}
         style={{ top: "100%", left: 0 }}
       >
-        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+        <ul className=" text-sm text-gray-700 dark:text-gray-200">
           {rowMenu.map((item, index) => (
             <li key={index}>
-              <button className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+              <button
+                className={`block  py-2  w-full   ${
+                  value === item.value ? "bg-[#554F9B] text-white" : ""
+                } `}
+                onClick={() => setState(item.value)}
+              >
                 {item.menu}
               </button>
             </li>

@@ -252,7 +252,7 @@ const HomePage = () => {
             </p>
           </div>
         </div>
-        <div className="flex justify-end items-center gap-5">
+        <div className="flex justify-end items-center gap-5 flex-wrap">
           {divs.map((id) => (
             <CardHome
               key={id}

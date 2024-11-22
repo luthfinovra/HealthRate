@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const NavbarResearcher = () => {
+  const [hasToken, setHasToken] = useState(false);
+
+  // Check if token exists in cookies
+  useEffect(() => {
+    const token = Cookies.get("token");
+    setHasToken(!!token); // Set true if token exists
+  }, []);
+
   return (
     <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
-      <div className=" flex flex-wrap items-center justify-between p-4">
+      <div className="flex flex-wrap items-center justify-between p-4">
         <div className="flex gap-12">
           <a
             href="https://flowbite.com/"
@@ -45,18 +54,22 @@ const NavbarResearcher = () => {
         </div>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <div className="gap-3 items-center justify-between hidden w-full md:flex">
-            <a
-              href="/register"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Register
-            </a>
-            <a
-              href="/"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Login
-            </a>
+            {!hasToken && (
+              <>
+                <a
+                  href="/register"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Register
+                </a>
+                <a
+                  href="/"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Login
+                </a>
+              </>
+            )}
           </div>
           <button
             data-collapse-toggle="navbar-sticky"

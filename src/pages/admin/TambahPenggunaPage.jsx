@@ -1,12 +1,172 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import LayoutAdmin from "../../components/layout/LayoutAdmin";
 import InputField from "../../components/inputField/InputField";
 
-import { BsPerson } from "react-icons/bs";
-import { MdOutlineEmail } from "react-icons/md";
-import { RiLockPasswordLine } from "react-icons/ri";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import InputSelect from "../../components/inputField/InputSelect";
+import request from "../../utils/request";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { z } from "zod";
+
+const formSchema = z
+  .object({
+    name: z
+      .string()
+      .min(3, { message: "Nama harus memiliki minimal 3 karakter." })
+      .max(100, { message: "Nama tidak boleh lebih dari 100 karakter." })
+      .regex(/^[a-zA-Z\s]*$/, {
+        message: "Nama hanya boleh berisi huruf dan spasi.",
+      }),
+
+    email: z
+      .string()
+      .email({ message: "Masukkan alamat email yang valid." })
+      .max(100, { message: "Email tidak boleh lebih dari 100 karakter." }),
+
+    password: z
+      .string()
+      .min(8, { message: "Kata sandi harus memiliki minimal 8 karakter." })
+      .max(100, { message: "Kata sandi tidak boleh lebih dari 100 karakter." })
+      .regex(/[A-Z]/, {
+        message: "Kata sandi harus mengandung minimal 1 huruf kapital.",
+      })
+      .regex(/[a-z]/, {
+        message: "Kata sandi harus mengandung minimal 1 huruf kecil.",
+      })
+      .regex(/[0-9]/, {
+        message: "Kata sandi harus mengandung minimal 1 angka.",
+      })
+      .regex(/[@$!%*?&#]/, {
+        message: "Kata sandi harus mengandung minimal 1 karakter khusus.",
+      }),
+
+    password_confirmation: z
+      .string()
+      .min(8, {
+        message: "Konfirmasi kata sandi harus memiliki minimal 8 karakter.",
+      })
+      .max(100, {
+        message: "Konfirmasi kata sandi tidak boleh lebih dari 100 karakter.",
+      }),
+
+    role: z
+      .string()
+      .min(3, { message: "Peran harus memiliki minimal 3 karakter." })
+      .max(100, { message: "Peran tidak boleh lebih dari 100 karakter." }),
+
+    disease_id: z.string().optional(), // Opsional secara default
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: "Konfirmasi kata sandi harus sama dengan kata sandi",
+    path: ["password_confirmation"],
+  })
+  .refine(
+    (data) =>
+      data.role !== "operator" ||
+      (data.disease_id && data.disease_id.trim() !== ""),
+    {
+      message: "Disease ID wajib jika peran adalah operator.",
+      path: ["disease_id"],
+    }
+  );
 
 const TambahPenggunaPage = () => {
+  const navigate = useNavigate();
+  const [typeInput, setTypeInput] = useState(true);
+  const [email, setEmail] = useState();
+  const [name, setName] = useState();
+  const [password, setPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState();
+  const [role, setRole] = useState();
+  const [idPenyakit, setIdPenyakit] = useState();
+  const [penyakitDatas, setPenyakitDatas] = useState([]);
+  const [validations, setValidations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchDiseases = useCallback(async () => {
+    setLoading(true);
+    request
+      .get(`/diseases`)
+      .then(function (response) {
+        setPenyakitDatas(response.data.data.diseases);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        console.error(error);
+        setLoading(false);
+      });
+  }, []); // Add role to dependencies
+
+  useEffect(() => {
+    fetchDiseases();
+  }, [fetchDiseases]);
+
+  const handleValidationErrors = (errors) => {
+    setValidations(
+      errors.map((err) => ({ name: err.path[0], message: err.message }))
+    );
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setValidations([]);
+    setLoading(true);
+    toast.loading("Saving data...");
+
+    const validation = formSchema.safeParse({
+      name: name,
+      email: email,
+      password: password,
+      password_confirmation: confirmPassword,
+      role: role,
+      disease_id: idPenyakit,
+    });
+
+    if (!validation.success) {
+      // Tangani error validasi dari Zod
+      handleValidationErrors(validation.error.errors);
+      toast.dismiss();
+      toast.error("Invalid Input");
+      setLoading(false);
+      return;
+    }
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const data = {
+      name: name,
+      email: email,
+      password: password,
+      password_confirmation: confirmPassword,
+      role: role,
+      ...(role === "operator" && { disease_id: idPenyakit }),
+    };
+    request
+      .post(`/admin/users`, data, headers)
+      .then(function (response) {
+        if (response.status === 200 || response.status === 201) {
+          toast.dismiss();
+          toast.success(response.data.message);
+          navigate("/admin/users");
+        } else {
+          window.alert("Gagal login");
+        }
+      })
+      .catch(function (error) {
+        setValidations(
+          Object.entries(error?.response?.data?.data || {}).map(
+            ([name, message]) => ({
+              name,
+              message,
+            })
+          )
+        );
+        toast.dismiss();
+        toast.error("Invalid Input");
+      });
+  };
   return (
     <LayoutAdmin>
       <div className="space-y-4">
@@ -20,27 +180,140 @@ const TambahPenggunaPage = () => {
         </p>
         <div className=" space-y-9 grid md:grid-cols-2">
           <div className=" w-full space-y-6 md:max-w-[500px]  bg-white shadow-main p-6 rounded-xl dark:border-gray-700 flex flex-col justify-between">
-            <div className="space-y-6">
+            <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
               <InputField
-                placeholder={"nama"}
+                id={"name"}
+                name={"name"}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={"Input your name"}
                 type={"text"}
-                icon={<BsPerson />}
+                value={name}
+                required
+                label={"Name"}
+                validations={validations}
               />
               <InputField
-                placeholder={"email"}
+                id={"email"}
+                name={"email"}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={"user@gmail.com"}
                 type={"email"}
-                icon={<MdOutlineEmail />}
+                value={email}
+                required
+                label={"Your email"}
+                validations={validations}
               />
               <InputField
-                placeholder={"password"}
-                type={"password"}
-                icon={<RiLockPasswordLine />}
+                id={"password"}
+                name={"password"}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
+                placeholder={"••••••••"}
+                type={typeInput ? "password" : "text"}
+                value={password}
+                required
+                validations={validations}
+                icon={
+                  typeInput ? (
+                    <IoMdEyeOff
+                      className="text-xl"
+                      onClick={() => {
+                        setTypeInput(!typeInput);
+                      }}
+                    />
+                  ) : (
+                    <IoMdEye
+                      className="text-xl"
+                      onClick={() => {
+                        setTypeInput(!typeInput);
+                      }}
+                    />
+                  )
+                }
+                label={"Password"}
               />
-              <InputField placeholder={"roles"} icon={<BsPerson />} />
-            </div>
-            <button className="bg-[#554F9B] rounded-lg w-full py-2 text-white">
-              Tambah
-            </button>
+              <InputField
+                id={"password_confirmation"}
+                name={"password_confirmation"}
+                onChange={(event) => {
+                  setConfirmPassword(event.target.value);
+                }}
+                placeholder={"••••••••"}
+                type={typeInput ? "password" : "text"}
+                value={confirmPassword}
+                required
+                validations={validations}
+                icon={
+                  typeInput ? (
+                    <IoMdEyeOff
+                      className="text-xl"
+                      onClick={() => {
+                        setTypeInput(!typeInput);
+                      }}
+                    />
+                  ) : (
+                    <IoMdEye
+                      className="text-xl"
+                      onClick={() => {
+                        setTypeInput(!typeInput);
+                      }}
+                    />
+                  )
+                }
+                label={"Confirm password"}
+              />
+              <InputSelect
+                id={"role"}
+                name={"role"}
+                type={"text"}
+                placeholder={"e.g Active"}
+                label={"Role"}
+                value={role}
+                validations={validations}
+                required
+                onChange={(e) => {
+                  setRole(e.target.value);
+                }}
+              >
+                <option value="" disabled selected hidden>
+                  Pilih Role
+                </option>
+                <option value={"admin"}>Admin</option>
+                <option value={"operator"}>Operator</option>
+                <option value={"peneliti"}>Peneliti</option>
+              </InputSelect>
+              {/* Menampilkan input tambahan jika role adalah operator */}
+              {role === "operator" && (
+                <InputSelect
+                  id={"disease_id"}
+                  name={"disease_id"}
+                  type={"text"}
+                  placeholder={"Pilih penyakit"}
+                  label={"Penyakit"}
+                  value={idPenyakit} // Anda mungkin perlu membuat state untuk ini
+                  validations={validations}
+                  required
+                  onChange={(e) => {
+                    setIdPenyakit(e.target.value); // Update state 'penyakit'
+                  }}
+                >
+                  <option value="" disabled selected hidden>
+                    Pilih Penyakit
+                  </option>
+                  {penyakitDatas &&
+                    penyakitDatas.map((data, index) => (
+                      <option value={data.id} key={index}>
+                        {data.name}
+                      </option>
+                    ))}
+                </InputSelect>
+              )}
+
+              <button className="bg-[#554F9B] rounded-lg w-full py-2 text-white">
+                Tambah
+              </button>
+            </form>
           </div>
           <div className="hidden md:block">
             <img src="/vektor/vektorTambah.png" alt="vektor-tambah" />

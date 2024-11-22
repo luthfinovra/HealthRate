@@ -1,56 +1,120 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import LayoutAdmin from "../../components/layout/LayoutAdmin";
 import { useNavigate } from "react-router-dom";
 import DefaultTable from "../../components/table/DefaultTable";
+import request from "../../utils/request";
+import Pagination from "../../components/paginations/Pagination";
+import InputSearch from "../../components/inputField/InputSearch";
+import toast from "react-hot-toast";
 
 const ApprovePage = () => {
+  const [userDatas, setUserDatas] = useState([]);
+  const [name, setName] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [paginations, setPaginations] = useState({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const rowMenu = [
     { menu: "nama" },
     { menu: "email" },
-    { menu: "institusi" },
-    { menu: "gender" },
-    { menu: "phone" },
-    { menu: "tujuan permohonan" },
-    { menu: "permintaan approve" },
+    { menu: "Intitusi" },
+    { menu: "Jenis Kelamin" },
+    { menu: "No tlpn" },
+    { menu: "Tujuan" },
+    { menu: "Aksi" },
   ];
-  const datas = [
-    {
-      id: 6,
-      name: "Peneliti",
-      email: "peneliti1121921@example.com",
-      institution: "Telkom University",
-      gender: "L",
-      phone_number: "082132092648",
-      tujuan_permohonan:
-        "Melakukan riset dalam penyakit jantung, Mendalami lebih dalam mengenai berbagai data penyakit jantung, dsb",
-      role: "researcher",
-      approval_status: "approved",
-      created_at: "2024-10-31T14:20:39.000000Z",
-      updated_at: "2024-10-31T14:20:56.000000Z",
-      managed_diseases: null,
-    },
-  ];
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    const payload = {
+      role: "peneliti",
+      page: page,
+      per_page: limit,
+      name: name,
+      approval_status: "pending",
+    };
+    request
+      .get(`/admin/users`, payload)
+      .then(function (response) {
+        setUserDatas(response.data.data.users);
+        setPaginations(response.data.data.pagination); // Add a fallback value for pagination
+        setLoading(false);
+      })
+      .catch(function (error) {
+        console.error(error);
+        setLoading(false);
+      });
+  }, [name, page, limit]); // Add role to dependencies
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const onUpdate = (e, id, status) => {
+    e.preventDefault();
+    setLoading(true);
+    toast.loading(`Updating status to ${status}...`);
+
+    const data = {
+      approval_status: status,
+    };
+
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    request
+      .put(`admin/users/${id}`, data, headers)
+      .then(function (response) {
+        if (response.status === 200 || response.status === 201) {
+          toast.dismiss();
+          toast.success(response.data.message || `Status updated to ${status}`);
+          fetchUsers();
+          navigate("/admin/persetujuan-peneliti");
+        } else {
+          toast.dismiss();
+          toast.error("Update failed");
+          fetchUsers();
+        }
+      })
+      .catch(function (error) {
+        toast.dismiss();
+        toast.error("Update failed");
+        console.error(error);
+      });
+  };
+
   return (
     <div>
       <LayoutAdmin>
         <div className="space-y-4">
-          <h1 className=" font-semibold text-[42px] leading-none">Approve</h1>
-          <p className=" max-w-3xl font-normal text-[14px] text-[#2D3748] leading-[150%]">
-            Aritmia adalah gangguan pada irama detak jantung. Dalam kondisi
-            normal, jantung berdetak dengan ritme yang teratur. Namun, pada
-            aritmia, ritme ini terganggu.
-          </p>
+          <div className="flex flex-col md:flex-row items-start justify-between md:items-end">
+            <div className="space-y-4">
+              <h1 className=" font-semibold text-[42px] leading-none">
+                Persetujuan
+              </h1>
+              <p className=" max-w-3xl font-normal text-[14px] text-[#2D3748] leading-[150%]">
+                Lorem lorem lorem
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <InputSearch
+                id={"search-name"}
+                name={"search-name"}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={"Search users by name..."}
+              />
+            </div>
+          </div>
           <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
             <h1 className="font-medium text-[18px]">Data Operator</h1>
             <DefaultTable rowMenu={rowMenu}>
-              {datas.map((data, index) => (
+              {userDatas.map((data, index) => (
                 <tr
                   key={index}
                   className="text-gray-700 bg-white border-b cursor-pointer hover:bg-gray-50"
-                  onClick={() => {
-                    navigate(`/#`);
-                  }}
                 >
                   <td className="px-6 py-4 text-xs font-medium">{data.name}</td>
                   <td className="px-6 py-4 text-xs font-medium">
@@ -69,7 +133,10 @@ const ApprovePage = () => {
                     {data.tujuan_permohonan}
                   </td>
                   <td className="px-6 py-4 flex gap-3">
-                    <button className="bg-[#51A279] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center">
+                    <button
+                      className="bg-[#51A279] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
+                      onClick={(e) => onUpdate(e, data?.id, "approved")}
+                    >
                       <svg
                         width="17"
                         height="13"
@@ -83,7 +150,10 @@ const ApprovePage = () => {
                         />
                       </svg>
                     </button>
-                    <button className="bg-[#FF5959] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center">
+                    <button
+                      className="bg-[#FF5959] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
+                      onClick={(e) => onUpdate(e, data?.id, "rejected")}
+                    >
                       <svg
                         width="13"
                         height="12"
@@ -102,6 +172,12 @@ const ApprovePage = () => {
               ))}
             </DefaultTable>
           </div>
+          <Pagination
+            recordsTotal={paginations?.total}
+            limit={limit}
+            page={page}
+            setPage={setPage}
+          />
         </div>
       </LayoutAdmin>
     </div>
