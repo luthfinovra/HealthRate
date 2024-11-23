@@ -150,7 +150,7 @@ const TambahPenyakitPage = () => {
       // Tangani error validasi dari Zod
       handleValidationErrors(dataValidation.error.errors);
       toast.dismiss();
-      toast.error("Invalid Input 1");
+      toast.error("Invalid Input");
       setLoading(false);
       return;
     }
@@ -186,7 +186,7 @@ const TambahPenyakitPage = () => {
     if (errorRow) {
       setRowValidation(validationResults);
       toast.dismiss();
-      toast.error("Invalid Input 2");
+      toast.error("Invalid Input");
       setLoading(false);
       return;
     }
