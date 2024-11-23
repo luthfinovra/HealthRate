@@ -9,6 +9,8 @@ const InputField = ({
   name,
   type,
   value,
+  step,
+  accept,
   multipleDatas = [],
   valueMultiple = [],
   onChange,
@@ -51,8 +53,9 @@ const InputField = ({
         <input
           id={id}
           name={name}
-          accept={type === "image" ? "image/*" : "*"}
+          accept={accept}
           type={type === "image" ? "file" : type}
+          step={step}
           value={value}
           onChange={onChange}
           placeholder={placeholder}

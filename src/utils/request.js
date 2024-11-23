@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 let lastErrorResponse = null;
 const request = axios.create({
   baseURL: `${process.env.REACT_APP_API_URL}/api`,
-  timeout: 10000,
+  timeout: 60000,
   headers: {
     // 'Content-Type': ' application/json',
     "Content-Type": " multipart/form-data",

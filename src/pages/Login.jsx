@@ -57,7 +57,9 @@ export const Login = () => {
           toast.dismiss();
           toast.success(response?.data?.message);
           if (response?.data?.data?.role === "operator") {
-            navigate(`/operator/penyakit/${response?.data?.data?.disease_id}`);
+            navigate(
+              `/operator/record-penyakit/${response?.data?.data?.disease_id}`
+            );
           } else {
             navigate("/admin/dashboard");
           }

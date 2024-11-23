@@ -368,7 +368,7 @@ const EditPenggunaPage = () => {
                     ))}
                 </InputSelect>
               )}
-              b
+
               {detailUser?.role === "peneliti" && (
                 <>
                   <InputField

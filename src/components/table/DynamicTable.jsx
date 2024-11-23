@@ -84,7 +84,7 @@ export default function DynamicTable({
                 <td className="px-6 py-4 align-top">
                   <button
                     className=" bg-[#554F9B] px-5 py-1 rounded-lg min-w-[59px] text-white text-sm"
-                    onClick={() => navigate(`${pathname}/${data["id"] ?? ""}`)}
+                    onClick={() => onDetail?.(data)}
                   >
                     Lihat
                   </button>
@@ -92,7 +92,10 @@ export default function DynamicTable({
               )}
               {btnEdit && (
                 <td className="px-6 py-4 align-top">
-                  <button className=" bg-[#FACC2C] px-5 py-1 rounded-lg min-w-[59px]">
+                  <button
+                    className=" bg-[#FACC2C] px-5 py-1 rounded-lg min-w-[59px]"
+                    onClick={() => onEdit?.(data)}
+                  >
                     <svg
                       width="19"
                       height="18"
@@ -122,7 +125,10 @@ export default function DynamicTable({
               )}
               {btnDelete && (
                 <td className="px-6 py-4 align-top">
-                  <button className=" bg-[#FF5959] px-5 py-1 rounded-lg min-w-[59px]">
+                  <button
+                    className=" bg-[#FF5959] px-5 py-1 rounded-lg min-w-[59px]"
+                    onClick={() => onDelete?.(data)}
+                  >
                     <svg
                       width="16"
                       height="18"
@@ -149,3 +155,10 @@ export default function DynamicTable({
     </div>
   );
 }
+
+// Set default props
+DynamicTable.defaultProps = {
+  onDetail: () => {},
+  onEdit: () => {},
+  onDelete: () => {},
+};

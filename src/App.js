@@ -11,12 +11,13 @@ import PenggunaPage from "./pages/admin/PenggunaPage";
 import DetailPenyakitPage from "./pages/admin/DetailPenyakitPage";
 import TambahPenyakitPage from "./pages/admin/TambahPenyakitPage";
 import TambahPenggunaPage from "./pages/admin/TambahPenggunaPage";
-import OperatorPanyakitPage from "./pages/operator/OpratorPanyakitPage";
 import ResearcherPenyakitPage from "./pages/user/ResearcherPenyakitPage";
 import ProtectedRoute from "./middleware/ProtectedRoute";
 import EditPenggunaPage from "./pages/admin/EditPenggunaPage";
-import OperatorTambahPenyakitPage from "./pages/operator/OperatorTambahPenyakitPage";
 import EditPenyakitPage from "./pages/admin/EditPenyakitPage";
+import RecordPenyakitPage from "./pages/operator/RecordPenyakitPage.jsx";
+import TambahRecordPenyakitPage from "./pages/operator/TambahRecordPenyakitPage.jsx";
+import EditRecordPenyakitPage from "./pages/operator/EditRecordPenyakitPage.jsx";
 
 export default function App() {
   return (
@@ -114,10 +115,28 @@ export default function App() {
 
         {/* Operator Routes */}
         <Route
-          path="/operator/penyakit/:id"
+          path="/operator/record-penyakit/:id"
           element={
             <ProtectedRoute allowedRoles={["operator"]}>
-              <OperatorPanyakitPage />
+              <RecordPenyakitPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/operator/tambah-record/:id"
+          element={
+            <ProtectedRoute allowedRoles={["operator"]}>
+              <TambahRecordPenyakitPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/operator/edit-record/:id/:id_record"
+          element={
+            <ProtectedRoute allowedRoles={["operator"]}>
+              <EditRecordPenyakitPage />
             </ProtectedRoute>
           }
         />

@@ -5,7 +5,7 @@ import Pagination from "../../components/paginations/Pagination";
 import request from "../../utils/request";
 import { useNavigate, useParams } from "react-router-dom";
 
-const OperatorPanyakitPage = () => {
+const RecordPenyakitPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -60,6 +60,9 @@ const OperatorPanyakitPage = () => {
               datas={detailDiseasesDatas?.records}
               btnEdit
               btnDelete
+              onEdit={(data) =>
+                navigate(`/operator/edit-record/${id}/${data?.id}`)
+              }
             />
           </div>
           <Pagination
@@ -74,4 +77,4 @@ const OperatorPanyakitPage = () => {
   );
 };
 
-export default OperatorPanyakitPage;
+export default RecordPenyakitPage;

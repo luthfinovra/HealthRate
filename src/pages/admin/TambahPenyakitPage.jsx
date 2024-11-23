@@ -43,11 +43,12 @@ const rowSchema = z
         "email",
         "phone",
         "boolean",
-        "int",
+        "integer",
         "float",
-        "enum",
+        "datetime",
         "time",
         "file",
+        "date",
       ],
       {
         errorMap: () => ({ message: "Tipe tidak valid" }),
@@ -55,7 +56,14 @@ const rowSchema = z
     ),
     format: z
       .enum(
-        ["image", "audio", "video", "phone", "spreadsheet", "text-document"],
+        [
+          "image",
+          "audio",
+          "video",
+          "compressed-document",
+          "spreadsheet",
+          "text-document",
+        ],
         {
           errorMap: () => ({ message: "Tipe tidak valid" }),
         }
@@ -105,12 +113,12 @@ const TambahPenyakitPage = () => {
   });
 
   const [rows, setRows] = useState([
-    { visible: 0, column: "", type: "", format: "", multiple: 0 },
+    { visible: 1, column: "", type: "", format: "", multiple: 0 },
   ]);
 
   const addRow = () => {
     const newRow = {
-      visible: 0,
+      visible: 1,
       column: "",
       type: "",
       format: "",
@@ -433,16 +441,18 @@ const TambahPenyakitPage = () => {
                                 <option value="" disabled hidden>
                                   Type
                                 </option>
-                                <option value="string">String</option>
-                                <option value="text">Text</option>
-                                <option value="email">Email</option>
-                                <option value="phone">Phone</option>
-                                <option value="boolean">Boolean</option>
-                                <option value="int">Integer</option>
-                                <option value="float">Float</option>
-                                <option value="enum">Enum</option>
-                                <option value="time">Time</option>
-                                <option value="file">File</option>
+                                <option value="string">string</option>
+                                <option value="text">text</option>
+                                <option value="integer">integer</option>
+                                <option value="decimal">decimal</option>
+                                <option value="float">float</option>
+                                <option value="datetime">datetime</option>
+                                <option value="date">date</option>
+                                <option value="time">time</option>
+                                <option value="file">file</option>
+                                <option value="boolean">boolean</option>
+                                <option value="email">email</option>
+                                <option value="phone">phone</option>
                               </InputSelect>
                               {/* Tampilkan ikon error jika ada error */}
                               {rowErrors &&
@@ -487,13 +497,14 @@ const TambahPenyakitPage = () => {
                                 <option value="" disabled hidden>
                                   Format
                                 </option>
+
                                 <option value="image">image</option>
                                 <option value="audio">audio</option>
                                 <option value="video">video</option>
-                                <option value="phone">
+                                <option value="spreadsheet">spreadsheet</option>
+                                <option value="compressed-document">
                                   compressed-document
                                 </option>
-                                <option value="spreadsheet">spreadsheet</option>
                                 <option value="text-document">
                                   text-document
                                 </option>
