@@ -1,38 +1,38 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import { useNavigate } from "react-router-dom";
-import DefaultTable from "../../components/table/DefaultTable";
-import request from "../../utils/request";
-import Pagination from "../../components/paginations/Pagination";
-import InputSearch from "../../components/inputField/InputSearch";
-import toast from "react-hot-toast";
+import React, { useCallback, useEffect, useState } from 'react';
+import LayoutAdmin from '../../components/layout/LayoutAdmin';
+import { useNavigate } from 'react-router-dom';
+import DefaultTable from '../../components/table/DefaultTable';
+import request from '../../utils/request';
+import Pagination from '../../components/paginations/Pagination';
+import InputSearch from '../../components/inputField/InputSearch';
+import toast from 'react-hot-toast';
 
 const ApprovePage = () => {
   const [userDatas, setUserDatas] = useState([]);
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const limit = 10;
   const [paginations, setPaginations] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const rowMenu = [
-    { menu: "nama" },
-    { menu: "email" },
-    { menu: "Intitusi" },
-    { menu: "Jenis Kelamin" },
-    { menu: "No tlpn" },
-    { menu: "Tujuan" },
-    { menu: "Aksi" },
+    { menu: 'nama' },
+    { menu: 'email' },
+    { menu: 'Intitusi' },
+    { menu: 'Jenis Kelamin', className: '' },
+    { menu: 'No tlpn' },
+    { menu: 'Tujuan', className: ' w-[1500px]' },
+    { menu: 'Aksi' },
   ];
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     const payload = {
-      role: "peneliti",
+      role: 'peneliti',
       page: page,
       per_page: limit,
       name: name,
-      approval_status: "pending",
+      approval_status: 'pending',
     };
     request
       .get(`/admin/users`, payload)
@@ -61,7 +61,7 @@ const ApprovePage = () => {
     };
 
     const headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
 
     request
@@ -71,16 +71,16 @@ const ApprovePage = () => {
           toast.dismiss();
           toast.success(response.data.message || `Status updated to ${status}`);
           fetchUsers();
-          navigate("/admin/persetujuan-peneliti");
+          navigate('/admin/persetujuan-peneliti');
         } else {
           toast.dismiss();
-          toast.error("Update failed");
+          toast.error('Update failed');
           fetchUsers();
         }
       })
       .catch(function (error) {
         toast.dismiss();
-        toast.error("Update failed");
+        toast.error('Update failed');
         console.error(error);
       });
   };
@@ -100,42 +100,44 @@ const ApprovePage = () => {
             </div>
             <div className="flex gap-2">
               <InputSearch
-                id={"search-name"}
-                name={"search-name"}
+                id={'search-name'}
+                name={'search-name'}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={"Search users by name..."}
+                placeholder={'Search users by name...'}
               />
             </div>
           </div>
           <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
             <h1 className="font-medium text-[18px]">Data Operator</h1>
-            <DefaultTable rowMenu={rowMenu}>
+            <DefaultTable rowMenu={rowMenu} loading={loading}>
               {userDatas.map((data, index) => (
                 <tr
                   key={index}
                   className="text-gray-700 bg-white border-b cursor-pointer hover:bg-gray-50"
                 >
-                  <td className="px-6 py-4 text-xs font-medium">{data.name}</td>
-                  <td className="px-6 py-4 text-xs font-medium">
+                  <td className="px-6 py-4 text-xs font-medium  align-top">
+                    {data.name}
+                  </td>
+                  <td className="px-6 py-4 text-xs font-medium align-top">
                     {data.email}
                   </td>
-                  <td className="px-6 py-4 text-xs font-medium">
+                  <td className="px-6 py-4 text-xs font-medium align-top ">
                     {data.institution}
                   </td>
-                  <td className="px-6 py-4 text-xs font-medium">
+                  <td className="px-6 py-4 text-xs font-medium align-top">
                     {data.gender}
                   </td>
-                  <td className="px-6 py-4 text-xs font-medium">
+                  <td className="px-6 py-4 text-xs font-medium align-top">
                     {data.phone_number}
                   </td>
-                  <td className="px-6 py-4 text-xs font-medium">
+                  <td className="px-6 py-4 text-xs font-medium align-top w-[1500px] whitespace-pre-line">
                     {data.tujuan_permohonan}
                   </td>
                   <td className="px-6 py-4 flex gap-3">
                     <button
                       className="bg-[#51A279] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
-                      onClick={(e) => onUpdate(e, data?.id, "approved")}
+                      onClick={(e) => onUpdate(e, data?.id, 'approved')}
                     >
                       <svg
                         width="17"
@@ -152,7 +154,7 @@ const ApprovePage = () => {
                     </button>
                     <button
                       className="bg-[#FF5959] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
-                      onClick={(e) => onUpdate(e, data?.id, "rejected")}
+                      onClick={(e) => onUpdate(e, data?.id, 'rejected')}
                     >
                       <svg
                         width="13"

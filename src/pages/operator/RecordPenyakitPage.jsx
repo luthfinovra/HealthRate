@@ -1,21 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LayoutOperator from "../../components/layout/LayoutOperator";
-import DynamicTable from "../../components/table/DynamicTable";
-import Pagination from "../../components/paginations/Pagination";
-import request from "../../utils/request";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from 'react';
+import LayoutOperator from '../../components/layout/LayoutOperator';
+import DynamicTable from '../../components/table/DynamicTable';
+import Pagination from '../../components/paginations/Pagination';
+import request from '../../utils/request';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const RecordPenyakitPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [detailDiseasesDatas, setDetailDiseasesDatas] = useState([]);
-  const [role, setRole] = useState("");
-  const [name, setName] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const limit = 10;
   const [paginations, setPaginations] = useState({});
   const [loading, setLoading] = useState(true);
+
+  console.log(loading);
 
   const fetchDetailDiseases = useCallback(async () => {
     setLoading(true);

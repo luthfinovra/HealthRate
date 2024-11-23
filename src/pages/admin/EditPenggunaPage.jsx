@@ -1,29 +1,28 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import InputField from "../../components/inputField/InputField";
+import React, { useCallback, useEffect, useState } from 'react';
+import LayoutAdmin from '../../components/layout/LayoutAdmin';
+import InputField from '../../components/inputField/InputField';
 
-import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import InputSelect from "../../components/inputField/InputSelect";
-import request from "../../utils/request";
-import { useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
-import TextareaField from "../../components/inputField/TextareaField";
-import { z } from "zod";
+import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import InputSelect from '../../components/inputField/InputSelect';
+import request from '../../utils/request';
+import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { z } from 'zod';
 
 const formSchema = z
   .object({
     name: z
       .string()
-      .min(3, { message: "Nama harus memiliki minimal 3 karakter." })
-      .max(100, { message: "Nama tidak boleh lebih dari 100 karakter." })
+      .min(3, { message: 'Nama harus memiliki minimal 3 karakter.' })
+      .max(100, { message: 'Nama tidak boleh lebih dari 100 karakter.' })
       .regex(/^[a-zA-Z\s]*$/, {
-        message: "Nama hanya boleh berisi huruf dan spasi.",
+        message: 'Nama hanya boleh berisi huruf dan spasi.',
       }),
 
     email: z
       .string()
-      .email({ message: "Masukkan alamat email yang valid." })
-      .max(100, { message: "Email tidak boleh lebih dari 100 karakter." }),
+      .email({ message: 'Masukkan alamat email yang valid.' })
+      .max(100, { message: 'Email tidak boleh lebih dari 100 karakter.' }),
 
     role: z.string().optional(),
 
@@ -31,8 +30,8 @@ const formSchema = z
       .string()
       .refine(
         (val, ctx) =>
-          ctx?.parent?.role !== "operator" || (val && val.trim() !== ""),
-        { message: "Disease ID wajib jika peran adalah operator." }
+          ctx?.parent?.role !== 'operator' || (val && val.trim() !== ''),
+        { message: 'Disease ID wajib jika peran adalah operator.' }
       )
       .optional(),
 
@@ -43,19 +42,19 @@ const formSchema = z
 
     password: z
       .string()
-      .min(6, { message: "Kata sandi harus memiliki minimal 6 karakter." })
-      .max(100, { message: "Kata sandi tidak boleh lebih dari 100 karakter." })
+      .min(6, { message: 'Kata sandi harus memiliki minimal 6 karakter.' })
+      .max(100, { message: 'Kata sandi tidak boleh lebih dari 100 karakter.' })
       .regex(/[A-Z]/, {
-        message: "Kata sandi harus mengandung minimal 1 huruf kapital.",
+        message: 'Kata sandi harus mengandung minimal 1 huruf kapital.',
       })
       .regex(/[a-z]/, {
-        message: "Kata sandi harus mengandung minimal 1 huruf kecil.",
+        message: 'Kata sandi harus mengandung minimal 1 huruf kecil.',
       })
       .regex(/[0-9]/, {
-        message: "Kata sandi harus mengandung minimal 1 angka.",
+        message: 'Kata sandi harus mengandung minimal 1 angka.',
       })
       .regex(/[@$!%*?&#]/, {
-        message: "Kata sandi harus mengandung minimal 1 karakter khusus.",
+        message: 'Kata sandi harus mengandung minimal 1 karakter khusus.',
       })
       .optional(),
 
@@ -63,23 +62,23 @@ const formSchema = z
   })
   .refine(
     (data) =>
-      data.role !== "peneliti" || ["male", "female"].includes(data.gender),
+      data.role !== 'peneliti' || ['male', 'female'].includes(data.gender),
     {
       message:
         "Gender wajib dan harus 'male' atau 'female' jika peran adalah peneliti.",
-      path: ["gender"],
+      path: ['gender'],
     }
   )
   .refine((data) => data.password === data.password_confirmation, {
-    message: "Konfirmasi kata sandi harus sama dengan kata sandi.",
-    path: ["password_confirmation"],
+    message: 'Konfirmasi kata sandi harus sama dengan kata sandi.',
+    path: ['password_confirmation'],
   })
   .refine(
-    (data) => data.role !== "peneliti" || /^\d{10,15}$/.test(data.phone_number),
+    (data) => data.role !== 'peneliti' || /^\d{10,15}$/.test(data.phone_number),
     {
       message:
-        "Nomor telepon wajib dan harus berupa angka 10-15 digit jika peran adalah peneliti.",
-      path: ["phone_number"],
+        'Nomor telepon wajib dan harus berupa angka 10-15 digit jika peran adalah peneliti.',
+      path: ['phone_number'],
     }
   );
 
@@ -121,6 +120,8 @@ const EditPenggunaPage = () => {
       });
   }, [id]); // Add role to dependencies
 
+  console.log(loading);
+
   useEffect(() => {
     fetchDiseases();
     fetchDetailUser();
@@ -136,21 +137,21 @@ const EditPenggunaPage = () => {
     e.preventDefault();
     setValidations([]);
     setLoading(true);
-    toast.loading("Saving data...");
+    toast.loading('Saving data...');
 
     const data = {
       name: detailUser?.name,
       email: detailUser?.email,
-      ...(detailUser?.role === "operator" && {
+      ...(detailUser?.role === 'operator' && {
         disease_id: detailUser?.managed_diseases?.disease_id,
       }),
-      ...(detailUser?.role === "peneliti" && {
+      ...(detailUser?.role === 'peneliti' && {
         institution: detailUser?.institution,
         gender: detailUser?.gender,
         phone_number: detailUser?.phone_number,
       }),
-      ...(password !== "" &&
-        confirmPassword !== "" && {
+      ...(password !== '' &&
+        confirmPassword !== '' && {
           password: password,
           password_confirmation: confirmPassword,
         }),
@@ -162,13 +163,13 @@ const EditPenggunaPage = () => {
       // Tangani error validasi dari Zod
       handleValidationErrors(validation.error.errors);
       toast.dismiss();
-      toast.error("Invalid Input");
+      toast.error('Invalid Input');
       setLoading(false);
       return;
     }
 
     const headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
 
     // Mengirimkan request POST dengan header dinamis
@@ -178,9 +179,9 @@ const EditPenggunaPage = () => {
         if (response.status === 200 || response.status === 201) {
           toast.dismiss();
           toast.success(response.data.message);
-          navigate("/admin/users");
+          navigate('/admin/users');
         } else {
-          window.alert("Gagal login");
+          window.alert('Gagal login');
         }
       })
       .catch(function (error) {
@@ -193,7 +194,7 @@ const EditPenggunaPage = () => {
           )
         );
         toast.dismiss();
-        toast.error("Invalid Input");
+        toast.error('Invalid Input');
         console.log(error);
       });
   };
@@ -203,7 +204,7 @@ const EditPenggunaPage = () => {
   const onDelete = async (e, id) => {
     e.preventDefault();
     setLoading(true);
-    toast.loading("Deleting data...");
+    toast.loading('Deleting data...');
 
     request
       .delete(`/admin/users/${id}`)
@@ -211,7 +212,7 @@ const EditPenggunaPage = () => {
         if (response.status === 200 || response.status === 201) {
           toast.dismiss();
           toast.success(response.data.message);
-          navigate("/admin/users");
+          navigate('/admin/users');
         } else {
           toast.dismiss();
           toast.error(response.data.message);
@@ -235,43 +236,43 @@ const EditPenggunaPage = () => {
           <div className=" w-full space-y-6 md:max-w-[500px]  bg-white shadow-main p-6 rounded-xl dark:border-gray-700 flex flex-col justify-between">
             <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
               <InputField
-                id={"name"}
-                name={"name"}
+                id={'name'}
+                name={'name'}
                 onChange={(e) =>
                   setDetailUser((prev) => ({
                     ...prev,
                     name: e.target.value, // Memperbarui properti 'name' pada objek detailUser
                   }))
                 }
-                placeholder={"Input your name"}
-                type={"text"}
+                placeholder={'Input your name'}
+                type={'text'}
                 value={detailUser?.name}
-                label={"Name"}
+                label={'Name'}
                 validations={validations}
               />
               <InputField
-                id={"email"}
-                name={"email"}
+                id={'email'}
+                name={'email'}
                 onChange={(e) =>
                   setDetailUser((prev) => ({
                     ...prev,
                     email: e.target.value, // Memperbarui properti 'name' pada objek detailUser
                   }))
                 }
-                placeholder={"user@gmail.com"}
-                type={"email"}
+                placeholder={'user@gmail.com'}
+                type={'email'}
                 value={detailUser?.email}
-                label={"Your email"}
+                label={'Your email'}
                 validations={validations}
               />
               <InputField
-                id={"password"}
-                name={"password"}
+                id={'password'}
+                name={'password'}
                 onChange={(event) => {
                   setPassword(event.target.value);
                 }}
-                placeholder={"••••••••"}
-                type={typeInput ? "password" : "text"}
+                placeholder={'••••••••'}
+                type={typeInput ? 'password' : 'text'}
                 value={password}
                 icon={
                   typeInput ? (
@@ -290,17 +291,17 @@ const EditPenggunaPage = () => {
                     />
                   )
                 }
-                label={"Password"}
+                label={'Password'}
                 validations={validations}
               />
               <InputField
-                id={"password_confirmation"}
-                name={"password_confirmation"}
+                id={'password_confirmation'}
+                name={'password_confirmation'}
                 onChange={(event) => {
                   setConfirmPassword(event.target.value);
                 }}
-                placeholder={"••••••••"}
-                type={typeInput ? "password" : "text"}
+                placeholder={'••••••••'}
+                type={typeInput ? 'password' : 'text'}
                 value={confirmPassword}
                 icon={
                   typeInput ? (
@@ -319,33 +320,33 @@ const EditPenggunaPage = () => {
                     />
                   )
                 }
-                label={"Confirm password"}
+                label={'Confirm password'}
                 validations={validations}
               />
               <InputField
-                id={"role"}
-                name={"role"}
-                type={"text"}
+                id={'role'}
+                name={'role'}
+                type={'text'}
                 value={detailUser?.role}
-                label={"Role"}
+                label={'Role'}
                 disabled
               />
               <InputField
-                id={"status"}
-                name={"status"}
-                type={"text"}
+                id={'status'}
+                name={'status'}
+                type={'text'}
                 value={detailUser?.approval_status}
-                label={"Status"}
+                label={'Status'}
                 disabled
               />
-              {detailUser?.role === "operator" && (
+              {detailUser?.role === 'operator' && (
                 <InputSelect
                   id="disease_id"
                   name="disease_id"
                   type="text"
                   placeholder="Pilih penyakit"
                   label="Penyakit"
-                  value={detailUser?.managed_diseases?.disease_id || ""}
+                  value={detailUser?.managed_diseases?.disease_id || ''}
                   validations={validations}
                   onChange={(e) =>
                     setDetailUser((prev) => ({
@@ -368,29 +369,29 @@ const EditPenggunaPage = () => {
                     ))}
                 </InputSelect>
               )}
-
-              {detailUser?.role === "peneliti" && (
+              b
+              {detailUser?.role === 'peneliti' && (
                 <>
                   <InputField
-                    id={"phone_number"}
-                    name={"phone_number"}
+                    id={'phone_number'}
+                    name={'phone_number'}
                     onChange={(e) =>
                       setDetailUser((prev) => ({
                         ...prev,
                         phone_number: e.target.value, // Memperbarui properti 'name' pada objek detailUser
                       }))
                     }
-                    placeholder={"masukan nomor telepon"}
-                    type={"text"}
+                    placeholder={'masukan nomor telepon'}
+                    type={'text'}
                     value={detailUser?.phone_number}
-                    label={"Nomor telepon"}
+                    label={'Nomor telepon'}
                     validations={validations}
                   />
                   <InputSelect
-                    id={"gender"}
-                    name={"gender"}
-                    type={"text"}
-                    label={"Jenis Kelamin"}
+                    id={'gender'}
+                    name={'gender'}
+                    type={'text'}
+                    label={'Jenis Kelamin'}
                     value={detailUser?.gender}
                     validations={validations}
                     onChange={(e) =>
@@ -403,22 +404,22 @@ const EditPenggunaPage = () => {
                     <option value="" disabled selected hidden>
                       Pilih jenis kelamin
                     </option>
-                    <option value={"male"}>Pria</option>
-                    <option value={"female"}>Perempuan</option>
+                    <option value={'male'}>Pria</option>
+                    <option value={'female'}>Perempuan</option>
                   </InputSelect>
                   <InputField
-                    id={"institution"}
-                    name={"institution"}
+                    id={'institution'}
+                    name={'institution'}
                     onChange={(e) =>
                       setDetailUser((prev) => ({
                         ...prev,
                         institution: e.target.value, // Memperbarui properti 'name' pada objek detailUser
                       }))
                     }
-                    placeholder={"masukan institution"}
-                    type={"text"}
+                    placeholder={'masukan institution'}
+                    type={'text'}
                     value={detailUser?.institution}
-                    label={"Institution"}
+                    label={'Institution'}
                     validations={validations}
                   />
                 </>

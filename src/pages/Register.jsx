@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import NavbarResearcher from "../components/navbar/navbarResearcher";
-import { MdLogin } from "react-icons/md";
-import InputField from "../components/inputField/InputField";
-import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import TextareaField from "../components/inputField/TextareaField";
-import { z } from "zod";
-import toast from "react-hot-toast";
-import request from "../utils/request";
-import { useNavigate } from "react-router-dom";
-import InputSelect from "../components/inputField/InputSelect";
+import React, { useState } from 'react';
+import NavbarResearcher from '../components/navbar/navbarResearcher';
+import { MdLogin } from 'react-icons/md';
+import InputField from '../components/inputField/InputField';
+import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import TextareaField from '../components/inputField/TextareaField';
+import { z } from 'zod';
+import toast from 'react-hot-toast';
+import request from '../utils/request';
+import { useNavigate } from 'react-router-dom';
+import InputSelect from '../components/inputField/InputSelect';
 
 const formSchema = z
   .object({
     name: z
       .string()
-      .min(3, { message: "Nama harus memiliki minimal 3 karakter." })
-      .max(100, { message: "Nama tidak boleh lebih dari 100 karakter." })
+      .min(3, { message: 'Nama harus memiliki minimal 3 karakter.' })
+      .max(100, { message: 'Nama tidak boleh lebih dari 100 karakter.' })
       .regex(/^[a-zA-Z\s]*$/, {
-        message: "Nama hanya boleh berisi huruf dan spasi.",
+        message: 'Nama hanya boleh berisi huruf dan spasi.',
       }),
 
     email: z
       .string()
-      .email({ message: "Masukkan alamat email yang valid." })
-      .max(100, { message: "Email tidak boleh lebih dari 100 karakter." }),
+      .email({ message: 'Masukkan alamat email yang valid.' })
+      .max(100, { message: 'Email tidak boleh lebih dari 100 karakter.' }),
 
     role: z.string().optional(),
 
@@ -31,8 +31,8 @@ const formSchema = z
       .string()
       .refine(
         (val, ctx) =>
-          ctx?.parent?.role !== "operator" || (val && val.trim() !== ""),
-        { message: "Disease ID wajib jika peran adalah operator." }
+          ctx?.parent?.role !== 'operator' || (val && val.trim() !== ''),
+        { message: 'Disease ID wajib jika peran adalah operator.' }
       )
       .optional(),
 
@@ -45,19 +45,19 @@ const formSchema = z
 
     password: z
       .string()
-      .min(6, { message: "Kata sandi harus memiliki minimal 6 karakter." })
-      .max(100, { message: "Kata sandi tidak boleh lebih dari 100 karakter." })
+      .min(6, { message: 'Kata sandi harus memiliki minimal 6 karakter.' })
+      .max(100, { message: 'Kata sandi tidak boleh lebih dari 100 karakter.' })
       .regex(/[A-Z]/, {
-        message: "Kata sandi harus mengandung minimal 1 huruf kapital.",
+        message: 'Kata sandi harus mengandung minimal 1 huruf kapital.',
       })
       .regex(/[a-z]/, {
-        message: "Kata sandi harus mengandung minimal 1 huruf kecil.",
+        message: 'Kata sandi harus mengandung minimal 1 huruf kecil.',
       })
       .regex(/[0-9]/, {
-        message: "Kata sandi harus mengandung minimal 1 angka.",
+        message: 'Kata sandi harus mengandung minimal 1 angka.',
       })
       .regex(/[@$!%*?&#]/, {
-        message: "Kata sandi harus mengandung minimal 1 karakter khusus.",
+        message: 'Kata sandi harus mengandung minimal 1 karakter khusus.',
       })
       .optional(),
 
@@ -65,23 +65,23 @@ const formSchema = z
   })
   .refine(
     (data) =>
-      data.role !== "peneliti" || ["male", "female"].includes(data.gender),
+      data.role !== 'peneliti' || ['male', 'female'].includes(data.gender),
     {
       message:
         "Gender wajib dan harus 'male' atau 'female' jika peran adalah peneliti.",
-      path: ["gender"],
+      path: ['gender'],
     }
   )
   .refine((data) => data.password === data.password_confirmation, {
-    message: "Konfirmasi kata sandi harus sama dengan kata sandi.",
-    path: ["password_confirmation"],
+    message: 'Konfirmasi kata sandi harus sama dengan kata sandi.',
+    path: ['password_confirmation'],
   })
   .refine(
-    (data) => data.role !== "peneliti" || /^\d{10,15}$/.test(data.phone_number),
+    (data) => data.role !== 'peneliti' || /^\d{10,15}$/.test(data.phone_number),
     {
       message:
-        "Nomor telepon wajib dan harus berupa angka 10-15 digit jika peran adalah peneliti.",
-      path: ["phone_number"],
+        'Nomor telepon wajib dan harus berupa angka 10-15 digit jika peran adalah peneliti.',
+      path: ['phone_number'],
     }
   );
 
@@ -98,7 +98,6 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState();
   const [tujuanPermohonan, setTujuanPermohonan] = useState();
   const [validations, setValidations] = useState();
-  const [loading, setLoading] = useState(false);
 
   const handleValidationErrors = (errors) => {
     setValidations(
@@ -109,8 +108,7 @@ const Register = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     setValidations([]);
-    setLoading(true);
-    toast.loading("Saving data...");
+    toast.loading('Saving data...');
 
     const data = {
       name: name,
@@ -129,13 +127,12 @@ const Register = () => {
       // Tangani error validasi dari Zod
       handleValidationErrors(validation.error.errors);
       toast.dismiss();
-      toast.error("Invalid Input");
-      setLoading(false);
+      toast.error('Invalid Input');
       return;
     }
 
     const headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
 
     // Mengirimkan request POST dengan header dinamis
@@ -145,7 +142,7 @@ const Register = () => {
         if (response.status === 200 || response.status === 201) {
           toast.dismiss();
           toast.success(response.data.message);
-          navigate("/");
+          navigate('/');
         }
       })
       .catch(function (error) {
@@ -158,7 +155,7 @@ const Register = () => {
           )
         );
         toast.dismiss();
-        toast.error("Invalid Input");
+        toast.error('Invalid Input');
       });
   };
   return (
@@ -178,7 +175,7 @@ const Register = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor1.png"}
+                src={'images/decor1.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -188,7 +185,7 @@ const Register = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor2.png"}
+                src={'images/decor2.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -198,7 +195,7 @@ const Register = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor3.png"}
+                src={'images/decor3.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -208,7 +205,7 @@ const Register = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor4.png"}
+                src={'images/decor4.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -218,7 +215,7 @@ const Register = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor5.png"}
+                src={'images/decor5.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -228,7 +225,7 @@ const Register = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor6.png"}
+                src={'images/decor6.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -238,7 +235,7 @@ const Register = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor7.png"}
+                src={'images/decor7.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -248,7 +245,7 @@ const Register = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor8.png"}
+                src={'images/decor8.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -258,7 +255,7 @@ const Register = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor9.png"}
+                src={'images/decor9.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -286,23 +283,23 @@ const Register = () => {
                 onSubmit={onSubmit}
               >
                 <InputField
-                  id={"name"}
-                  name={"name"}
+                  id={'name'}
+                  name={'name'}
                   onChange={(event) => {
                     setName(event.target.value);
                   }}
-                  placeholder={"Masukan Nama..."}
-                  type={"text"}
+                  placeholder={'Masukan Nama...'}
+                  type={'text'}
                   value={name}
                   required
-                  label={"Name"}
+                  label={'Name'}
                   validations={validations}
                 />
                 <InputSelect
-                  id={"gender"}
-                  name={"gender"}
-                  type={"text"}
-                  label={"Jenis Kelamin"}
+                  id={'gender'}
+                  name={'gender'}
+                  type={'text'}
+                  label={'Jenis Kelamin'}
                   value={gender}
                   validations={validations}
                   onChange={(e) => setGender(e.target.value)}
@@ -310,61 +307,61 @@ const Register = () => {
                   <option value="" disabled selected hidden>
                     Pilih jenis kelamin
                   </option>
-                  <option value={"male"}>Pria</option>
-                  <option value={"female"}>Perempuan</option>
+                  <option value={'male'}>Pria</option>
+                  <option value={'female'}>Perempuan</option>
                 </InputSelect>
                 <InputField
-                  id={"email"}
-                  name={"email"}
+                  id={'email'}
+                  name={'email'}
                   onChange={(event) => {
                     setEmail(event.target.value);
                   }}
-                  placeholder={"user@gmail.com"}
-                  type={"email"}
+                  placeholder={'user@gmail.com'}
+                  type={'email'}
                   value={email}
                   required
-                  label={"Your email"}
+                  label={'Your email'}
                   validations={validations}
                 />
 
                 <div className="grid grid-cols-2 gap-3">
                   <InputField
-                    id={"institution"}
-                    name={"institution"}
+                    id={'institution'}
+                    name={'institution'}
                     onChange={(event) => {
                       setInstitution(event.target.value);
                     }}
-                    placeholder={"Enter your Institusi"}
-                    type={"text"}
+                    placeholder={'Enter your Institusi'}
+                    type={'text'}
                     value={institution}
                     required
-                    label={"Institusi"}
+                    label={'Institusi'}
                     validations={validations}
                   />
                   <InputField
-                    id={"phoneNumber"}
-                    name={"phoneNumber"}
+                    id={'phoneNumber'}
+                    name={'phoneNumber'}
                     onChange={(event) => {
                       setPhoneNumber(event.target.value);
                     }}
-                    placeholder={"Enter your phone number"}
-                    type={"text"}
+                    placeholder={'Enter your phone number'}
+                    type={'text'}
                     value={phoneNumber}
                     required
-                    label={"Phone number"}
+                    label={'Phone number'}
                     validations={validations}
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <InputField
-                    id={"password"}
-                    name={"password"}
+                    id={'password'}
+                    name={'password'}
                     onChange={(event) => {
                       setPassword(event.target.value);
                     }}
-                    placeholder={"••••••••"}
-                    type={typeInput ? "password" : "text"}
+                    placeholder={'••••••••'}
+                    type={typeInput ? 'password' : 'text'}
                     value={password}
                     required
                     icon={
@@ -384,17 +381,17 @@ const Register = () => {
                         />
                       )
                     }
-                    label={"Password"}
+                    label={'Password'}
                     validations={validations}
                   />
                   <InputField
-                    id={"confirmPassword"}
-                    name={"confirmPassword"}
+                    id={'confirmPassword'}
+                    name={'confirmPassword'}
                     onChange={(event) => {
                       setConfirmPassword(event.target.value);
                     }}
-                    placeholder={"••••••••"}
-                    type={typeInput ? "password" : "text"}
+                    placeholder={'••••••••'}
+                    type={typeInput ? 'password' : 'text'}
                     value={confirmPassword}
                     required
                     icon={
@@ -414,15 +411,15 @@ const Register = () => {
                         />
                       )
                     }
-                    label={"Confirm password"}
+                    label={'Confirm password'}
                     validations={validations}
                   />
                 </div>
                 <TextareaField
-                  id={"tujuan"}
-                  name={"tujuan"}
-                  placeholder={"Type your tujuan in here..."}
-                  label={"tujuan"}
+                  id={'tujuan'}
+                  name={'tujuan'}
+                  placeholder={'Type your tujuan in here...'}
+                  label={'tujuan'}
                   value={tujuanPermohonan}
                   required
                   onChange={(e) => {

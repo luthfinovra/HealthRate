@@ -1,6 +1,5 @@
-import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import formatColumnName from "../../utils/formatColumnName";
+import React from 'react';
+import formatColumnName from '../../utils/formatColumnName';
 
 export default function DynamicTable({
   rowMenu,
@@ -13,9 +12,6 @@ export default function DynamicTable({
   onEdit,
   onDelete,
 }) {
-  const navigate = useNavigate(); // Gunakan useNavigate untuk navigasi
-  const location = useLocation(); // Mendapatkan informasi lokasi
-  const pathname = location.pathname; // Mendapatkan pathname
   console.log(rowMenu);
   console.log(datas);
   return (

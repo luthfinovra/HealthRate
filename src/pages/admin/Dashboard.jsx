@@ -1,40 +1,36 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import { useNavigate } from "react-router-dom";
-import request from "../../utils/request";
-import DefaultTable from "../../components/table/DefaultTable";
+import React, { useCallback, useEffect, useState } from 'react';
+import LayoutAdmin from '../../components/layout/LayoutAdmin';
+import { useNavigate } from 'react-router-dom';
+import request from '../../utils/request';
+import DefaultTable from '../../components/table/DefaultTable';
+import Pagination from '../../components/paginations/Pagination';
+import InputSearch from '../../components/inputField/InputSearch';
 
 const Dashboard = () => {
   const [userDatas, setUserDatas] = useState([]);
-  const [role, setRole] = useState("");
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const limit = 10;
   const [paginations, setPaginations] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const rowMenu = [
-    { menu: "nama" },
-    { menu: "email" },
-    { menu: "roles" },
-    { menu: "status" },
-    { menu: "detail" },
-  ];
-  const roleDatas = [
-    { menu: "All", value: "" },
-    { menu: "Admin", value: "admin" },
-    { menu: "Operator", value: "operator" },
-    { menu: "Peneliti", value: "peneliti" },
+    { menu: 'nama' },
+    { menu: 'email' },
+    { menu: 'roles' },
+    { menu: 'status' },
+    { menu: 'detail' },
   ];
 
+  console.log(loading);
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     const payload = {
-      role: role,
+      role: '',
       page: page,
       per_page: limit,
       name: name,
-      approval_status: "",
+      approval_status: '',
     };
     request
       .get(`/admin/users`, payload)
@@ -47,7 +43,7 @@ const Dashboard = () => {
         console.error(error);
         setLoading(false);
       });
-  }, [role, name, page, limit]); // Add role to dependencies
+  }, [name, page, limit]); // Add role to dependencies
 
   useEffect(() => {
     fetchUsers();
@@ -189,6 +185,15 @@ const Dashboard = () => {
         </div>
         <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
           <h1 className="font-medium text-[18px]">Riwayat Kegiatan</h1>
+          <div className="flex gap-2">
+            <InputSearch
+              id={'search-name'}
+              name={'search-name'}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={'Search users by name...'}
+            />
+          </div>
           <DefaultTable rowMenu={rowMenu}>
             {userDatas.map((data, index) => (
               <tr
@@ -213,6 +218,12 @@ const Dashboard = () => {
             ))}
           </DefaultTable>
         </div>
+        <Pagination
+          recordsTotal={paginations?.total}
+          limit={limit}
+          page={page}
+          setPage={setPage}
+        />
       </LayoutAdmin>
     </div>
   );

@@ -1,19 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import DynamicTable from "../../components/table/DynamicTable";
-import request from "../../utils/request";
-import Pagination from "../../components/paginations/Pagination";
+import React, { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import LayoutAdmin from '../../components/layout/LayoutAdmin';
+import DynamicTable from '../../components/table/DynamicTable';
+import request from '../../utils/request';
+import Pagination from '../../components/paginations/Pagination';
 
 const DetailPenyakitPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [detailDiseasesDatas, setDetailDiseasesDatas] = useState([]);
-  const [role, setRole] = useState("");
-  const [name, setName] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const limit = 10;
   const [paginations, setPaginations] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -35,6 +32,8 @@ const DetailPenyakitPage = () => {
         setLoading(false);
       });
   }, [id, page, limit]); // Add role to dependencies
+
+  console.log(loading);
 
   useEffect(() => {
     fetchDetailDiseases();

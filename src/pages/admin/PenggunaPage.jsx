@@ -1,33 +1,33 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import DefaultTable from "../../components/table/DefaultTable";
-import BtnDropdown from "../../components/button/BtnDropdown";
-import InputSearch from "../../components/inputField/InputSearch";
-import { useNavigate } from "react-router-dom";
-import request from "../../utils/request";
-import Pagination from "../../components/paginations/Pagination";
+import React, { useCallback, useEffect, useState } from 'react';
+import LayoutAdmin from '../../components/layout/LayoutAdmin';
+import DefaultTable from '../../components/table/DefaultTable';
+import BtnDropdown from '../../components/button/BtnDropdown';
+import InputSearch from '../../components/inputField/InputSearch';
+import { useNavigate } from 'react-router-dom';
+import request from '../../utils/request';
+import Pagination from '../../components/paginations/Pagination';
 
 const PenggunaPage = () => {
   const [userDatas, setUserDatas] = useState([]);
-  const [role, setRole] = useState("");
-  const [name, setName] = useState("");
+  const [role, setRole] = useState('');
+  const [name, setName] = useState('');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const limit = 10;
   const [paginations, setPaginations] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const rowMenu = [
-    { menu: "nama" },
-    { menu: "email" },
-    { menu: "roles" },
-    { menu: "status" },
-    { menu: "detail" },
+    { menu: 'nama' },
+    { menu: 'email' },
+    { menu: 'roles' },
+    { menu: 'status' },
+    { menu: 'detail' },
   ];
   const roleDatas = [
-    { menu: "All", value: "" },
-    { menu: "Admin", value: "admin" },
-    { menu: "Operator", value: "operator" },
-    { menu: "Peneliti", value: "peneliti" },
+    { menu: 'All', value: '' },
+    { menu: 'Admin', value: 'admin' },
+    { menu: 'Operator', value: 'operator' },
+    { menu: 'Peneliti', value: 'peneliti' },
   ];
 
   const fetchUsers = useCallback(async () => {
@@ -37,7 +37,7 @@ const PenggunaPage = () => {
       page: page,
       per_page: limit,
       name: name,
-      approval_status: "",
+      approval_status: '',
     };
     request
       .get(`/admin/users`, payload)
@@ -51,6 +51,8 @@ const PenggunaPage = () => {
         setLoading(false);
       });
   }, [role, name, page, limit]); // Add role to dependencies
+
+  console.log(loading);
 
   useEffect(() => {
     fetchUsers();
@@ -71,14 +73,14 @@ const PenggunaPage = () => {
             </div>
             <div className="flex gap-2">
               <InputSearch
-                id={"search-name"}
-                name={"search-name"}
+                id={'search-name'}
+                name={'search-name'}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={"Search users by name..."}
+                placeholder={'Search users by name...'}
               />
               <BtnDropdown
-                title={"Roles"}
+                title={'Roles'}
                 rowMenu={roleDatas}
                 setState={setRole}
                 value={role}

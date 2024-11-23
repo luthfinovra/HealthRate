@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import NavbarResearcher from "../../components/navbar/navbarResearcher";
-import CardHome from "../../components/card/CardHome";
+import React, { useState } from 'react';
+import NavbarResearcher from '../../components/navbar/navbarResearcher';
+import CardHome from '../../components/card/CardHome';
 
 const HomePage = () => {
-  const [isClicked, setIsClicked] = useState(false);
   const [activeDiv, setActiveDiv] = useState(null); // Track active div
 
   const handleClick = (id) => {

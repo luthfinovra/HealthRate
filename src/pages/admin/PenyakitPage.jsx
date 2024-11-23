@@ -1,34 +1,35 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import InputSearch from "../../components/inputField/InputSearch";
-import BtnDropdown from "../../components/button/BtnDropdown";
-import DefaultTable from "../../components/table/DefaultTable";
-import request from "../../utils/request";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import React, { useCallback, useEffect, useState } from 'react';
+import LayoutAdmin from '../../components/layout/LayoutAdmin';
+import InputSearch from '../../components/inputField/InputSearch';
+import BtnDropdown from '../../components/button/BtnDropdown';
+import DefaultTable from '../../components/table/DefaultTable';
+import request from '../../utils/request';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import Pagination from '../../components/paginations/Pagination';
 
 const PenyakitPage = () => {
   const [diseasesDatas, setDiseasesDatas] = useState([]);
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const limit = 10;
   const [paginations, setPaginations] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const rowMenu = [
-    { menu: "id" },
-    { menu: "nama penyakit" },
-    { menu: "deskripsi penyakit" },
-    { menu: "Lihat" },
-    { menu: "Edit" },
-    { menu: "Hapus" },
+    { menu: 'id' },
+    { menu: 'nama penyakit' },
+    { menu: 'deskripsi penyakit' },
+    { menu: 'Lihat' },
+    { menu: 'Edit' },
+    { menu: 'Hapus' },
   ];
 
   const onDelete = async (e, id) => {
     e.preventDefault();
     setLoading(true);
-    toast.loading("Deleting data...");
+    toast.loading('Deleting data...');
 
     request
       .delete(`/diseases/${id}`)
@@ -37,7 +38,7 @@ const PenyakitPage = () => {
           toast.dismiss();
           toast.success(response.data.message);
           fetchDiseases();
-          navigate("/admin/penyakit");
+          navigate('/admin/penyakit');
         } else {
           toast.dismiss();
           toast.error(response.data.message);
@@ -49,6 +50,8 @@ const PenyakitPage = () => {
         console.log(error);
       });
   };
+
+  console.log(loading);
 
   const fetchDiseases = useCallback(async () => {
     setLoading(true);
@@ -89,13 +92,13 @@ const PenyakitPage = () => {
             </div>
             <div className="flex gap-2">
               <InputSearch
-                id={"search-name"}
-                name={"search-name"}
+                id={'search-name'}
+                name={'search-name'}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={"Search users by name..."}
+                placeholder={'Search users by name...'}
               />
-              <BtnDropdown title={"Roles"} rowMenu={rowMenu} />
+              <BtnDropdown title={'Roles'} rowMenu={rowMenu} />
             </div>
           </div>
           <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
@@ -186,6 +189,12 @@ const PenyakitPage = () => {
               ))}
             </DefaultTable>
           </div>
+          <Pagination
+            recordsTotal={paginations?.total}
+            limit={limit}
+            page={page}
+            setPage={setPage}
+          />
         </div>
       </LayoutAdmin>
     </div>

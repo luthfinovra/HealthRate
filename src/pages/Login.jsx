@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import NavbarResearcher from "../components/navbar/navbarResearcher";
-import { MdLogin } from "react-icons/md";
-import InputField from "../components/inputField/InputField";
-import { useNavigate } from "react-router-dom";
-import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import request from "../utils/request";
-import Cookies from "js-cookie";
-import toast from "react-hot-toast";
+import React, { useState } from 'react';
+import NavbarResearcher from '../components/navbar/navbarResearcher';
+import { MdLogin } from 'react-icons/md';
+import InputField from '../components/inputField/InputField';
+import { useNavigate } from 'react-router-dom';
+import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import request from '../utils/request';
+import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
 
 export const Login = () => {
   const navigate = useNavigate();
 
   const [typeInput, setTypeInput] = useState(true);
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   const handleChangeEmail = (event) => {
     setEmail(event.target.value);
@@ -33,7 +33,7 @@ export const Login = () => {
     const isJson = true; // Ganti sesuai kebutuhan (true untuk JSON, false untuk FormData)
 
     const headers = {
-      "Content-Type": isJson ? "application/json" : "multipart/form-data",
+      'Content-Type': isJson ? 'application/json' : 'multipart/form-data',
     };
 
     // Data yang dikirimkan
@@ -42,29 +42,29 @@ export const Login = () => {
       : new FormData(); // FormData
 
     if (!isJson) {
-      data.append("email", email);
-      data.append("password", password);
+      data.append('email', email);
+      data.append('password', password);
     }
 
     // Mengirimkan request POST dengan header dinamis
     request
-      .post("/auth/login", data, headers)
+      .post('/auth/login', data, headers)
       .then(function (response) {
         console.log(response);
         if (response?.status === 200 || response?.status === 201) {
-          Cookies.set("token", response?.data?.data?.token);
-          localStorage.setItem("role", response?.data?.data?.role);
+          Cookies.set('token', response?.data?.data?.token);
+          localStorage.setItem('role', response?.data?.data?.role);
           toast.dismiss();
           toast.success(response?.data?.message);
-          if (response?.data?.data?.role === "operator") {
+          if (response?.data?.data?.role === 'operator') {
             navigate(
               `/operator/record-penyakit/${response?.data?.data?.disease_id}`
             );
           } else {
-            navigate("/admin/dashboard");
+            navigate('/admin/dashboard');
           }
         } else {
-          window.alert("Gagal login");
+          window.alert('Gagal login');
         }
       })
       .catch(function (error) {
@@ -89,7 +89,7 @@ export const Login = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor1.png"}
+                src={'images/decor1.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -99,7 +99,7 @@ export const Login = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor2.png"}
+                src={'images/decor2.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -109,7 +109,7 @@ export const Login = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor3.png"}
+                src={'images/decor3.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -119,7 +119,7 @@ export const Login = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor4.png"}
+                src={'images/decor4.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -129,7 +129,7 @@ export const Login = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor5.png"}
+                src={'images/decor5.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -139,7 +139,7 @@ export const Login = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor6.png"}
+                src={'images/decor6.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -149,7 +149,7 @@ export const Login = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor7.png"}
+                src={'images/decor7.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -159,7 +159,7 @@ export const Login = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor8.png"}
+                src={'images/decor8.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -169,7 +169,7 @@ export const Login = () => {
                 height={0}
                 loading="lazy"
                 alt="main-product-img"
-                src={"images/decor9.png"}
+                src={'images/decor9.png'}
                 className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
               />
             </div>
@@ -194,21 +194,21 @@ export const Login = () => {
               {/* The form code remains unchanged */}
               <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
                 <InputField
-                  id={"email"}
-                  name={"email"}
+                  id={'email'}
+                  name={'email'}
                   onChange={handleChangeEmail}
-                  placeholder={"user@gmail.com"}
-                  type={"email"}
+                  placeholder={'user@gmail.com'}
+                  type={'email'}
                   value={email}
                   required
-                  label={"Your email"}
+                  label={'Your email'}
                 />
                 <InputField
-                  id={"password"}
-                  name={"password"}
+                  id={'password'}
+                  name={'password'}
                   onChange={handleChangePassword}
-                  placeholder={"••••••••"}
-                  type={typeInput ? "password" : "text"}
+                  placeholder={'••••••••'}
+                  type={typeInput ? 'password' : 'text'}
                   value={password}
                   required
                   icon={
@@ -221,7 +221,7 @@ export const Login = () => {
                       <IoMdEye className="text-xl" onClick={handleClickType} />
                     )
                   }
-                  label={"Password"}
+                  label={'Password'}
                 />
                 <button
                   type="submit"

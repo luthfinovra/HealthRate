@@ -1,9 +1,8 @@
-import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const role = localStorage.getItem("role"); // Ambil role dari localStorage
-  const location = useLocation(); // Untuk melacak lokasi pengguna saat ini
+  const role = localStorage.getItem('role'); // Ambil role dari localStorage
 
   // Jika tidak ada role, arahkan ke halaman login
   if (!role) {
@@ -13,13 +12,13 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   // Jika role tidak termasuk dalam daftar role yang diizinkan
   if (!allowedRoles.includes(role)) {
     // Redirect berdasarkan role
-    if (role === "admin") {
+    if (role === 'admin') {
       return <Navigate to="/admin/dashboard" replace />;
     }
-    if (role === "operator") {
+    if (role === 'operator') {
       return <Navigate to="/operator/penyakit" replace />;
     }
-    if (role === "user") {
+    if (role === 'user') {
       return <Navigate to="/home" replace />;
     }
   }

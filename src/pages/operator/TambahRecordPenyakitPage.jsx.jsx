@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
-import InputField from "../../components/inputField/InputField";
-import LayoutOperator from "../../components/layout/LayoutOperator";
-import { useNavigate, useParams } from "react-router-dom";
-import request from "../../utils/request";
-import formatColumnName from "../../utils/formatColumnName";
-import TextareaField from "../../components/inputField/TextareaField";
-import InputSelect from "../../components/inputField/InputSelect";
-import toast from "react-hot-toast";
+import React, { useCallback, useEffect, useState } from 'react';
+import InputField from '../../components/inputField/InputField';
+import LayoutOperator from '../../components/layout/LayoutOperator';
+import { useNavigate, useParams } from 'react-router-dom';
+import request from '../../utils/request';
+import formatColumnName from '../../utils/formatColumnName';
+import TextareaField from '../../components/inputField/TextareaField';
+import InputSelect from '../../components/inputField/InputSelect';
+import toast from 'react-hot-toast';
 
 const TambahRecordPenyakitPage = () => {
   const { id } = useParams();
@@ -15,6 +15,8 @@ const TambahRecordPenyakitPage = () => {
   const [loading, setLoading] = useState(true);
   const [schema, setSchema] = useState([]);
   const [validations, setValidations] = useState([]);
+
+  console.log(loading);
 
   const fetchDetailDiseases = useCallback(async () => {
     setLoading(true);
@@ -37,24 +39,24 @@ const TambahRecordPenyakitPage = () => {
   useEffect(() => {
     if (schema.length > 0) {
       const defaultValues = schema.reduce((acc, field) => {
-        let defaultValue = "";
-        if (field.type === "boolean") {
+        let defaultValue = '';
+        if (field.type === 'boolean') {
           defaultValue = false; // Default untuk boolean
         } else if (
-          field.type === "integer" ||
-          field.type === "float" ||
-          field.type === "decimal"
+          field.type === 'integer' ||
+          field.type === 'float' ||
+          field.type === 'decimal'
         ) {
           defaultValue = 0; // Default untuk angka
         } else if (
-          field.type === "datetime" ||
-          field.type === "date" ||
-          field.type === "time"
+          field.type === 'datetime' ||
+          field.type === 'date' ||
+          field.type === 'time'
         ) {
-          defaultValue = ""; // Default untuk tanggal/waktu
-        } else if (field.type === "text") {
-          defaultValue = ""; // Default untuk teks
-        } else if (field.type === "file") {
+          defaultValue = ''; // Default untuk tanggal/waktu
+        } else if (field.type === 'text') {
+          defaultValue = ''; // Default untuk teks
+        } else if (field.type === 'file') {
           defaultValue = null; // Default untuk file
         }
         acc[field.name] = defaultValue;
@@ -66,68 +68,68 @@ const TambahRecordPenyakitPage = () => {
 
   const mimeTypeMap = {
     audio: [
-      "aac",
-      "midi",
-      "mp3",
-      "ogg",
-      "wav",
-      "webm",
-      "flac",
-      "aiff",
-      "amr",
-      "opus",
+      'aac',
+      'midi',
+      'mp3',
+      'ogg',
+      'wav',
+      'webm',
+      'flac',
+      'aiff',
+      'amr',
+      'opus',
     ],
     video: [
-      "mp4",
-      "avi",
-      "mkv",
-      "webm",
-      "ogg",
-      "3gp",
-      "flv",
-      "mov",
-      "wmv",
-      "mpg",
-      "mpeg",
-      "m4v",
-      "h264",
-      "hevc",
+      'mp4',
+      'avi',
+      'mkv',
+      'webm',
+      'ogg',
+      '3gp',
+      'flv',
+      'mov',
+      'wmv',
+      'mpg',
+      'mpeg',
+      'm4v',
+      'h264',
+      'hevc',
     ],
     image: [
-      "jpeg",
-      "jpg",
-      "png",
-      "gif",
-      "bmp",
-      "webp",
-      "tiff",
-      "svg",
-      "heif",
-      "heic",
-      "ico",
-      "jp2",
-      "j2k",
-      "avif",
+      'jpeg',
+      'jpg',
+      'png',
+      'gif',
+      'bmp',
+      'webp',
+      'tiff',
+      'svg',
+      'heif',
+      'heic',
+      'ico',
+      'jp2',
+      'j2k',
+      'avif',
     ],
-    "text-document": [
-      "pdf",
-      "doc",
-      "docx",
-      "xml",
-      "json",
-      "html",
-      "txt",
-      "rtf",
-      "odt",
+    'text-document': [
+      'pdf',
+      'doc',
+      'docx',
+      'xml',
+      'json',
+      'html',
+      'txt',
+      'rtf',
+      'odt',
     ],
-    "compressed-document": ["zip", "7z", "tar", "gz", "rar", "bz2", "xz"],
-    spreadsheet: ["xls", "xlsx", "csv", "ods"],
+    'compressed-document': ['zip', '7z', 'tar', 'gz', 'rar', 'bz2', 'xz'],
+    spreadsheet: ['xls', 'xlsx', 'csv', 'ods'],
   };
 
   // Fungsi untuk mendapatkan format accept
   const getAcceptFormat = (format) => {
     const formats = mimeTypeMap[format];
-    return formats ? formats.map((ext) => `.${ext}`).join(",") : undefined;
+    return formats ? formats.map((ext) => `.${ext}`).join(',') : undefined;
   };
 
   const handleChange = (name, value) => {
@@ -151,7 +153,7 @@ const TambahRecordPenyakitPage = () => {
 
       // Validasi untuk angka (integer, float, decimal)
       if (
-        ["integer", "float", "decimal"].includes(field.type) &&
+        ['integer', 'float', 'decimal'].includes(field.type) &&
         value !== undefined &&
         isNaN(value)
       ) {
@@ -163,7 +165,7 @@ const TambahRecordPenyakitPage = () => {
 
       // Validasi untuk angka positif
       if (
-        ["integer", "float", "decimal"].includes(field.type) &&
+        ['integer', 'float', 'decimal'].includes(field.type) &&
         value !== undefined &&
         Number(value) < 0
       ) {
@@ -174,7 +176,7 @@ const TambahRecordPenyakitPage = () => {
       }
 
       // Validasi untuk boolean
-      if (field.type === "boolean" && typeof value !== "boolean") {
+      if (field.type === 'boolean' && typeof value !== 'boolean') {
         errors[field.name] = `${formatColumnName(
           field.name
         )} must be true or false.`;
@@ -183,8 +185,8 @@ const TambahRecordPenyakitPage = () => {
 
       // Validasi untuk email
       if (
-        field.type === "text" &&
-        field.format === "email" &&
+        field.type === 'text' &&
+        field.format === 'email' &&
         value &&
         !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
       ) {
@@ -196,8 +198,8 @@ const TambahRecordPenyakitPage = () => {
 
       // Validasi untuk nomor telepon
       if (
-        field.type === "text" &&
-        field.format === "phone" &&
+        field.type === 'text' &&
+        field.format === 'phone' &&
         value &&
         !/^\+?[0-9]{10,15}$/.test(value)
       ) {
@@ -208,7 +210,7 @@ const TambahRecordPenyakitPage = () => {
       }
 
       // Validasi untuk tanggal
-      if (["date", "datetime"].includes(field.type) && value) {
+      if (['date', 'datetime'].includes(field.type) && value) {
         const date = new Date(value);
         if (isNaN(date.getTime())) {
           errors[field.name] = `${formatColumnName(
@@ -219,19 +221,19 @@ const TambahRecordPenyakitPage = () => {
       }
 
       // Validasi untuk file
-      if (field.type === "file" && value) {
-        const fileExtension = value.name.split(".").pop().toLowerCase();
+      if (field.type === 'file' && value) {
+        const fileExtension = value.name.split('.').pop().toLowerCase();
         const allowedExtensions = mimeTypeMap[field.format] || [];
         if (!allowedExtensions.includes(fileExtension)) {
           errors[field.name] = `${formatColumnName(
             field.name
-          )} must be a valid file of type ${allowedExtensions.join(", ")}.`;
+          )} must be a valid file of type ${allowedExtensions.join(', ')}.`;
         }
       }
 
       // Validasi untuk panjang teks (jika ada aturan min/max length)
       if (
-        field.type === "text" &&
+        field.type === 'text' &&
         value &&
         ((field.minLength && value.length < field.minLength) ||
           (field.maxLength && value.length > field.maxLength))
@@ -245,20 +247,14 @@ const TambahRecordPenyakitPage = () => {
     return errors;
   };
 
-  const flattenValidations = (validations) => {
-    return validations.flatMap(({ name, message }) =>
-      message.map((msg) => ({ name, message: msg }))
-    );
-  };
-
   const onSubmit = (e) => {
     e.preventDefault();
     setValidations([]);
     setLoading(true);
-    toast.loading("Saving data...");
+    toast.loading('Saving data...');
     // Validasi input berdasarkan skema
     const errors = validateInputs(schema, formValues);
-    console.log("1");
+    console.log('1');
 
     if (Object.keys(errors).length > 0) {
       setValidations(
@@ -266,7 +262,7 @@ const TambahRecordPenyakitPage = () => {
       );
 
       toast.dismiss();
-      toast.error("Please fix the validation errors.");
+      toast.error('Please fix the validation errors.');
       setLoading(false);
       return;
     }
@@ -285,7 +281,7 @@ const TambahRecordPenyakitPage = () => {
           navigate(`/operator/record-penyakit/${id}`);
         } else {
           toast.dismiss();
-          toast.error("Invalid Input");
+          toast.error('Invalid Input');
         }
       })
       .catch((error) => {
@@ -296,7 +292,7 @@ const TambahRecordPenyakitPage = () => {
         );
 
         toast.dismiss();
-        toast.error("Invalid Input");
+        toast.error('Invalid Input');
       });
   };
   return (
@@ -317,32 +313,32 @@ const TambahRecordPenyakitPage = () => {
           <div className="max-h-[650px] h-full overflow-y-scroll w-full space-y-6 md:max-w-[500px]  bg-white shadow-main p-6 rounded-xl dark:border-gray-700 flex flex-col justify-between">
             <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
               {schema.map((field, i) => {
-                let inputType = "text"; // Default input type
+                let inputType = 'text'; // Default input type
                 if (
-                  field.type === "integer" ||
-                  field.type === "decimal" ||
-                  field.type === "float"
+                  field.type === 'integer' ||
+                  field.type === 'decimal' ||
+                  field.type === 'float'
                 ) {
-                  inputType = "number";
-                } else if (field.type === "datetime") {
-                  inputType = "datetime-local";
-                } else if (field.type === "file") {
-                  inputType = "file";
-                } else if (field.type === "date") {
-                  inputType = "date";
-                } else if (field.type === "time") {
-                  inputType = "time";
+                  inputType = 'number';
+                } else if (field.type === 'datetime') {
+                  inputType = 'datetime-local';
+                } else if (field.type === 'file') {
+                  inputType = 'file';
+                } else if (field.type === 'date') {
+                  inputType = 'date';
+                } else if (field.type === 'time') {
+                  inputType = 'time';
                 }
 
                 // Render berdasarkan tipe field
-                if (field.type === "boolean") {
+                if (field.type === 'boolean') {
                   return (
                     <div key={field.name} className="mb-4">
                       <InputSelect
                         id={field.name}
                         name={field.name}
                         label={formatColumnName(field.name)}
-                        value={formValues[field.name] || ""}
+                        value={formValues[field.name] || ''}
                         onChange={(e) =>
                           handleChange(field.name, e.target.value)
                         }
@@ -362,13 +358,13 @@ const TambahRecordPenyakitPage = () => {
                         ))}
                     </div>
                   );
-                } else if (field.type === "text") {
+                } else if (field.type === 'text') {
                   return (
                     <div key={field.name} className="mb-4">
                       <TextareaField
                         id={field.name}
                         name={field.name}
-                        value={formValues[field.name] || ""}
+                        value={formValues[field.name] || ''}
                         onChange={(e) =>
                           handleChange(field.name, e.target.value)
                         }
@@ -393,21 +389,21 @@ const TambahRecordPenyakitPage = () => {
                         name={field.name}
                         type={inputType}
                         step={
-                          field.type === "float" || field.type === "decimal"
-                            ? "0.001"
+                          field.type === 'float' || field.type === 'decimal'
+                            ? '0.001'
                             : undefined
                         }
                         value={
-                          field.type === "file"
+                          field.type === 'file'
                             ? undefined
-                            : formValues[field.name] || ""
+                            : formValues[field.name] || ''
                         }
                         onChange={(e) =>
                           handleChange(
                             field.name,
-                            field.type === "phone"
-                              ? e.target.value.replace(/[^0-9]/g, "")
-                              : field.type === "file"
+                            field.type === 'phone'
+                              ? e.target.value.replace(/[^0-9]/g, '')
+                              : field.type === 'file'
                               ? e.target.files[0]
                               : e.target.value
                           )
@@ -416,7 +412,7 @@ const TambahRecordPenyakitPage = () => {
                         placeholder={`Input your ${field.name}`}
                         label={formatColumnName(field.name)} // Format label
                         accept={
-                          field.type === "file"
+                          field.type === 'file'
                             ? getAcceptFormat(field.format)
                             : undefined
                         }

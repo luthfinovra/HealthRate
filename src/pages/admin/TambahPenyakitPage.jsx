@@ -1,28 +1,21 @@
-import React, { useState } from "react";
-import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import InputField from "../../components/inputField/InputField";
+import React, { useState } from 'react';
+import LayoutAdmin from '../../components/layout/LayoutAdmin';
+import InputField from '../../components/inputField/InputField';
 
-import { BsPerson } from "react-icons/bs";
-import { MdOutlineEmail } from "react-icons/md";
-import { RiLockPasswordLine } from "react-icons/ri";
-import { RiAddLine } from "react-icons/ri";
-import { GoColumns } from "react-icons/go";
-import { FiType } from "react-icons/fi";
-
-import InputDropzone from "../../components/inputField/InputDropzone";
-import TextareaField from "../../components/inputField/TextareaField";
-import InputSelect from "../../components/inputField/InputSelect";
-import request from "../../utils/request";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { z } from "zod";
+import { RiAddLine } from 'react-icons/ri';
+import TextareaField from '../../components/inputField/TextareaField';
+import InputSelect from '../../components/inputField/InputSelect';
+import request from '../../utils/request';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 
 const MAX_FILE_SIZE = 2000000; // 2MB
 const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
 ];
 
 const rowSchema = z
@@ -30,42 +23,42 @@ const rowSchema = z
     visible: z.number().min(0).max(1),
     column: z
       .string()
-      .min(1, { message: "Kolom tidak boleh kosong" })
+      .min(1, { message: 'Kolom tidak boleh kosong' })
       .regex(/^[a-z_]+$/, {
-        message: "Hanya boleh menggunakan huruf kecil dan format snake_case",
+        message: 'Hanya boleh menggunakan huruf kecil dan format snake_case',
       }) // Validasi untuk snake_case
-      .transform((val) => val.replace(/\s+/g, "_")),
+      .transform((val) => val.replace(/\s+/g, '_')),
 
     type: z.enum(
       [
-        "string",
-        "text",
-        "email",
-        "phone",
-        "boolean",
-        "integer",
-        "float",
-        "datetime",
-        "time",
-        "file",
-        "date",
+        'string',
+        'text',
+        'email',
+        'phone',
+        'boolean',
+        'integer',
+        'float',
+        'datetime',
+        'time',
+        'file',
+        'date',
       ],
       {
-        errorMap: () => ({ message: "Tipe tidak valid" }),
+        errorMap: () => ({ message: 'Tipe tidak valid' }),
       }
     ),
     format: z
       .enum(
         [
-          "image",
-          "audio",
-          "video",
-          "compressed-document",
-          "spreadsheet",
-          "text-document",
+          'image',
+          'audio',
+          'video',
+          'compressed-document',
+          'spreadsheet',
+          'text-document',
         ],
         {
-          errorMap: () => ({ message: "Tipe tidak valid" }),
+          errorMap: () => ({ message: 'Tipe tidak valid' }),
         }
       )
       .optional(),
@@ -73,20 +66,20 @@ const rowSchema = z
   })
   .refine(
     (data) =>
-      data.type !== "file" || (data.format && data.multiple !== undefined),
+      data.type !== 'file' || (data.format && data.multiple !== undefined),
     {
-      message: "Kolom format dan multiple wajib diisi jika type adalah file",
-      path: ["format"], // Menargetkan error pada field format
+      message: 'Kolom format dan multiple wajib diisi jika type adalah file',
+      path: ['format'], // Menargetkan error pada field format
     }
   )
   .refine((data) => data.multiple === 0 || data.multiple === 1, {
-    message: "Nilai multiple harus 0 atau 1",
+    message: 'Nilai multiple harus 0 atau 1',
   });
 
 // Schema untuk seluruh form
 const formSchema = z.object({
-  name: z.string().min(1, "Nama penyakit tidak boleh kosong"),
-  deskripsi: z.string().min(1, "Deskripsi tidak boleh kosong"),
+  name: z.string().min(1, 'Nama penyakit tidak boleh kosong'),
+  deskripsi: z.string().min(1, 'Deskripsi tidak boleh kosong'),
   cover_page: z
     .any()
     .refine(
@@ -95,7 +88,7 @@ const formSchema = z.object({
     )
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported"
+      'Only .jpg, .jpeg, .png and .webp formats are supported'
     ),
 });
 
@@ -103,9 +96,9 @@ const TambahPenyakitPage = () => {
   const navigate = useNavigate();
   const [validations, setValidations] = useState([]);
   const [rowValidation, setRowValidation] = useState([]);
-  const [namaPenyakit, setNamaPenyakit] = useState("");
+  const [namaPenyakit, setNamaPenyakit] = useState('');
   const [cover, setCover] = useState();
-  const [deskripsiPenyakit, setDeskripsiPenyakit] = useState("");
+  const [deskripsiPenyakit, setDeskripsiPenyakit] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalData, setModalData] = useState({
     isOpen: false,
@@ -113,19 +106,21 @@ const TambahPenyakitPage = () => {
   });
 
   const [rows, setRows] = useState([
-    { visible: 1, column: "", type: "", format: "", multiple: 0 },
+    { visible: 1, column: '', type: '', format: '', multiple: 0 },
   ]);
 
   const addRow = () => {
     const newRow = {
       visible: 1,
-      column: "",
-      type: "",
-      format: "",
+      column: '',
+      type: '',
+      format: '',
       multiple: 0,
     };
     setRows([...rows, newRow]);
   };
+
+  console.log(loading);
 
   const handleValidationErrors = (errors) => {
     setValidations(
@@ -138,7 +133,7 @@ const TambahPenyakitPage = () => {
     setValidations([]);
     setRowValidation([]);
     setLoading(true);
-    toast.loading("Saving data...");
+    toast.loading('Saving data...');
     // Data yang dikirimkan
     const dataValidation = formSchema.safeParse({
       name: namaPenyakit,
@@ -150,7 +145,7 @@ const TambahPenyakitPage = () => {
       // Tangani error validasi dari Zod
       handleValidationErrors(dataValidation.error.errors);
       toast.dismiss();
-      toast.error("Invalid Input");
+      toast.error('Invalid Input');
       setLoading(false);
       return;
     }
@@ -163,7 +158,7 @@ const TambahPenyakitPage = () => {
       const rowToValidate = { ...row };
 
       // Hapus `format` dan `multiple` jika `type` bukan "file"
-      if (row.type !== "file") {
+      if (row.type !== 'file') {
         delete rowToValidate.format;
       }
 
@@ -175,7 +170,7 @@ const TambahPenyakitPage = () => {
         validationResults.push({
           index,
           errors: result.error.errors.map((err) => ({
-            path: err.path.join("."),
+            path: err.path.join('.'),
             message: err.message,
           })),
         });
@@ -186,20 +181,20 @@ const TambahPenyakitPage = () => {
     if (errorRow) {
       setRowValidation(validationResults);
       toast.dismiss();
-      toast.error("Invalid Input");
+      toast.error('Invalid Input');
       setLoading(false);
       return;
     }
     const data = new FormData(); // FormData
-    data.append("name", namaPenyakit);
-    data.append("deskripsi", deskripsiPenyakit);
-    data.append("cover_page", cover);
+    data.append('name', namaPenyakit);
+    data.append('deskripsi', deskripsiPenyakit);
+    data.append('cover_page', cover);
     rows.forEach((row, index) => {
-      if (row.column !== "" && row.type !== "") {
+      if (row.column !== '' && row.type !== '') {
         data.append(`schema[columns][${index}][is_visible]`, row.visible);
         data.append(`schema[columns][${index}][name]`, row.column);
         data.append(`schema[columns][${index}][type]`, row.type);
-        if (row.type === "file") {
+        if (row.type === 'file') {
           data.append(`schema[columns][${index}][format]`, row.format);
           data.append(`schema[columns][${index}][multiple]`, row.multiple);
         }
@@ -208,21 +203,21 @@ const TambahPenyakitPage = () => {
 
     // Mengirimkan request POST dengan header dinamis
     request
-      .post("/diseases", data)
+      .post('/diseases', data)
       .then(function (response) {
         if (response.status === 200 || response.status === 201) {
           toast.dismiss();
           toast.success(response.data.message);
-          navigate("/admin/penyakit");
+          navigate('/admin/penyakit');
         } else {
-          window.alert("Gagal login");
+          window.alert('Gagal login');
         }
       })
       .catch(function (error) {
         toast.dismiss(); // Hentikan semua toast
-        toast.error("Gagal menyimpan data");
+        toast.error('Gagal menyimpan data');
         setLoading(false);
-        console.log("Error:", error);
+        console.log('Error:', error);
       });
   };
 
@@ -267,10 +262,10 @@ const TambahPenyakitPage = () => {
             <div className=" w-full space-y-6  bg-white shadow-main p-6 rounded-xl flex flex-col justify-between  col-span-1">
               <div className="space-y-6">
                 <InputField
-                  id={"cover_page"}
-                  name={"cover_page"}
-                  type={"file"}
-                  label={"Cover Page"}
+                  id={'cover_page'}
+                  name={'cover_page'}
+                  type={'file'}
+                  label={'Cover Page'}
                   imageOnly={true}
                   // previewImage={oldData.mediaUri}
                   validations={validations}
@@ -282,21 +277,21 @@ const TambahPenyakitPage = () => {
                   }}
                 />
                 <InputField
-                  id={"name"}
-                  name={"name"}
+                  id={'name'}
+                  name={'name'}
                   onChange={(e) => setNamaPenyakit(e.target.value)}
-                  placeholder={"Masukan nama penyakit"}
-                  type={"text"}
+                  placeholder={'Masukan nama penyakit'}
+                  type={'text'}
                   value={namaPenyakit}
                   validations={validations}
                   required
-                  label={"Nama Penyakit"}
+                  label={'Nama Penyakit'}
                 />
                 <TextareaField
-                  id={"deskripsi"}
-                  name={"deskripsi"}
-                  placeholder={"Masukan deskrispsi penyakit"}
-                  label={"Deskripsi Penyakit"}
+                  id={'deskripsi'}
+                  name={'deskripsi'}
+                  placeholder={'Masukan deskrispsi penyakit'}
+                  label={'Deskripsi Penyakit'}
                   value={deskripsiPenyakit}
                   validations={validations}
                   required
@@ -384,10 +379,10 @@ const TambahPenyakitPage = () => {
                           <td className="px-3 py-4 min-w-[172px]">
                             <div className="input-container flex items-center">
                               <InputField
-                                id={"column"}
-                                name={"column"}
-                                placeholder={"Masukan column"}
-                                type={"text"}
+                                id={'column'}
+                                name={'column'}
+                                placeholder={'Masukan column'}
+                                type={'text'}
                                 value={row.column}
                                 onChange={(e) =>
                                   setRows((prevRows) =>
@@ -402,14 +397,14 @@ const TambahPenyakitPage = () => {
                               {/* Tampilkan ikon error jika ada error */}
                               {rowErrors &&
                                 rowErrors.errors.some(
-                                  (error) => error.path === "column"
+                                  (error) => error.path === 'column'
                                 ) && (
                                   <button
                                     onClick={() =>
                                       setModalData({
                                         isOpen: true,
                                         errors: rowErrors.errors.filter(
-                                          (error) => error.path === "column"
+                                          (error) => error.path === 'column'
                                         ),
                                       })
                                     }
@@ -424,9 +419,9 @@ const TambahPenyakitPage = () => {
                           <td className="px-3 py-4 min-w-[172px]">
                             <div className="input-container flex items-center">
                               <InputSelect
-                                id={"type"}
-                                name={"type"}
-                                type={"text"}
+                                id={'type'}
+                                name={'type'}
+                                type={'text'}
                                 value={row.type}
                                 onChange={(e) =>
                                   setRows((prevRows) =>
@@ -457,14 +452,14 @@ const TambahPenyakitPage = () => {
                               {/* Tampilkan ikon error jika ada error */}
                               {rowErrors &&
                                 rowErrors.errors.some(
-                                  (error) => error.path === "type"
+                                  (error) => error.path === 'type'
                                 ) && (
                                   <button
                                     onClick={() =>
                                       setModalData({
                                         isOpen: true,
                                         errors: rowErrors.errors.filter(
-                                          (error) => error.path === "type"
+                                          (error) => error.path === 'type'
                                         ),
                                       })
                                     }
@@ -479,10 +474,10 @@ const TambahPenyakitPage = () => {
                           <td className="px-3 py-4 min-w-[172px]">
                             <div className="input-container flex items-center">
                               <InputSelect
-                                id={"format"}
-                                name={"format"}
-                                type={"text"}
-                                disabled={row.type !== "file"}
+                                id={'format'}
+                                name={'format'}
+                                type={'text'}
+                                disabled={row.type !== 'file'}
                                 value={row.format}
                                 onChange={(e) =>
                                   setRows((prevRows) =>
@@ -512,14 +507,14 @@ const TambahPenyakitPage = () => {
                               {/* Tampilkan error untuk input "format" */}
                               {rowErrors &&
                                 rowErrors.errors.some(
-                                  (error) => error.path === "format"
+                                  (error) => error.path === 'format'
                                 ) && (
                                   <button
                                     onClick={() =>
                                       setModalData({
                                         isOpen: true,
                                         errors: rowErrors.errors.filter(
-                                          (error) => error.path === "format"
+                                          (error) => error.path === 'format'
                                         ),
                                       })
                                     }
@@ -534,7 +529,7 @@ const TambahPenyakitPage = () => {
                           <td className="w-4 p-4">
                             <div className="flex items-center">
                               <input
-                                disabled={row.type !== "file"}
+                                disabled={row.type !== 'file'}
                                 type="checkbox"
                                 checked={row.multiple === 1}
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
