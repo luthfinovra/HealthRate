@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const InputSearch = ({
   id,
@@ -9,7 +9,7 @@ const InputSearch = ({
   disabled = false,
 }) => {
   return (
-    <div className="flex items-center max-w-sm ">
+    <div className="flex items-center max-w-lg ">
       <label for="simple-search" className="sr-only">
         Search
       </label>

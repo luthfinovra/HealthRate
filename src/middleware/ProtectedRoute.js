@@ -18,8 +18,8 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     if (role === 'operator') {
       return <Navigate to="/operator/penyakit" replace />;
     }
-    if (role === 'user') {
-      return <Navigate to="/home" replace />;
+    if (role === 'peneliti') {
+      return <Navigate to="/peneliti/penyakit" replace />;
     }
   }
 

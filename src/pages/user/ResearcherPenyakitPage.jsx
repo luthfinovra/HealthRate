@@ -1,9 +1,47 @@
-import React from "react";
-import NavbarResearcher from "../../components/navbar/navbarResearcher";
-import DefaultFouter from "../../components/footer/DefaultFouter";
-import CardPenyakit from "../../components/card/CardPenyakit";
+import React, { useCallback, useEffect, useState } from 'react';
+import NavbarResearcher from '../../components/navbar/navbarResearcher';
+import DefaultFouter from '../../components/footer/DefaultFouter';
+import CardPenyakit from '../../components/card/CardPenyakit';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import request from '../../utils/request';
+import InputSearch from '../../components/inputField/InputSearch';
+import Pagination from '../../components/paginations/Pagination';
 
 const ResearcherPenyakitPage = () => {
+  const [diseasesDatas, setDiseasesDatas] = useState([]);
+  const [name, setName] = useState('');
+  const [page, setPage] = useState(1);
+  const limit = 10;
+  const [paginations, setPaginations] = useState({});
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  console.log(loading);
+
+  const fetchDiseases = useCallback(async () => {
+    setLoading(true);
+    const payload = {
+      page: page,
+      per_page: limit,
+      name: name,
+    };
+    request
+      .get(`/diseases`, payload)
+      .then(function (response) {
+        setDiseasesDatas(response.data.data.diseases);
+        setPaginations(response.data.data.pagination); // Add a fallback value for pagination
+        setLoading(false);
+      })
+      .catch(function (error) {
+        console.error(error);
+        setLoading(false);
+      });
+  }, [name, page, limit]); // Add role to dependencies
+
+  useEffect(() => {
+    fetchDiseases();
+  }, [fetchDiseases]);
   return (
     <div>
       <NavbarResearcher />
@@ -19,13 +57,33 @@ const ResearcherPenyakitPage = () => {
             at at amet facilisis habitasse eu.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          <CardPenyakit />
-          <CardPenyakit />
-          <CardPenyakit />
-          <CardPenyakit />
-          <CardPenyakit />
+        <div className="">
+          <InputSearch
+            id={'search-name'}
+            name={'search-name'}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={'Search penyakit dari nama...'}
+          />
         </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {diseasesDatas &&
+            diseasesDatas.map((data, index) => (
+              <CardPenyakit
+                image={data?.cover_page_url}
+                record={data?.disease_records_count}
+                name={data?.name}
+                dateUpdate={data?.updated_at}
+                id={data?.id}
+              />
+            ))}
+        </div>
+        <Pagination
+          recordsTotal={paginations?.total}
+          limit={limit}
+          page={page}
+          setPage={setPage}
+        />
       </section>
 
       <DefaultFouter />

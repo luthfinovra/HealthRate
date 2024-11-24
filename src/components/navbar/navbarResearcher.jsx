@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import React, { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { IoMdLogOut } from 'react-icons/io';
 
 const NavbarResearcher = () => {
+  const navigate = useNavigate();
   const [hasToken, setHasToken] = useState(false);
 
   // Check if token exists in cookies
   useEffect(() => {
-    const token = Cookies.get("token");
+    const token = Cookies.get('token');
     setHasToken(!!token); // Set true if token exists
   }, []);
 
@@ -53,24 +57,19 @@ const NavbarResearcher = () => {
           </div>
         </div>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <div className="gap-3 items-center justify-between hidden w-full md:flex">
-            {!hasToken && (
-              <>
-                <a
-                  href="/register"
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Register
-                </a>
-                <a
-                  href="/"
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Login
-                </a>
-              </>
-            )}
-          </div>
+          <button
+            onClick={() => {
+              toast.loading('Loading...');
+              toast.dismiss();
+              toast.success('Berhasil Logout');
+              Cookies.remove('token');
+              navigate('/');
+            }}
+            className="shadow-main p-2 text-gray-500 rounded-full bg-red-400 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          >
+            <IoMdLogOut className="text-white" />
+            <span className="sr-only">Logout</span>
+          </button>
           <button
             data-collapse-toggle="navbar-sticky"
             type="button"
