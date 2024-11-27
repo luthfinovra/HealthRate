@@ -19,6 +19,25 @@ export const Login = () => {
   const [validations, setValidations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleWhatsAppClick = () => {
+    const phoneNumber = "082132092648";
+    const message = "Halo, saya mengalami kendala saat melakukan pendaftaran.";
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(url, "_blank");
+  };
+
+  const handleGmailClick = () => {
+    const email = "aryafirmansyah200404@gmail.com";
+    const subject = "Kendala Pendaftaran";
+    const body = "Halo, saya mengalami kendala saat melakukan pendaftaran.";
+    const url = `mailto:${email}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+    window.open(url, "_blank");
+  };
+
   const handleChangeRememberMe = () => {
     setRememberMe(!rememberMe);
   };
@@ -205,7 +224,7 @@ export const Login = () => {
                     }
                     label={"Kata Sandi"}
                   />
-                  <div className="flex md:flex-col lg:flex-row jus justify-between items-center md:gap-5">
+                  <div className="">
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -219,9 +238,6 @@ export const Login = () => {
                         Ingat saya
                       </span>
                     </label>
-                    <a href="" className="text-[#554F9B]">
-                      Lupa Kata sandi?
-                    </a>
                   </div>
                 </div>
                 <div className="space-y-[30px]">
@@ -263,23 +279,24 @@ export const Login = () => {
 
                   <hr />
                   <div className="flex flex-col items-center justify-center">
-                    <p className="text-center">
-                      Terdapat kendala Login? Silahkan hubungi kami
-                    </p>
+                    <p>Terdapat kendala masuk? Silahkan hubungi kami</p>
                     <div className="inline-flex items-center gap-3 mt-[10px]">
                       <div>
                         <img
                           loading="lazy"
                           src="vektor/logos_whatsapp-icon.png"
-                          alt=""
+                          alt="WhatsApp"
+                          className="cursor-pointer"
+                          onClick={() => handleWhatsAppClick()}
                         />
                       </div>
                       <div>
                         <img
                           loading="lazy"
                           src="vektor/logos_google-gmail.png"
-                          alt=""
-                          className="m-auto"
+                          alt="Gmail"
+                          className="cursor-pointer"
+                          onClick={() => handleGmailClick()}
                         />
                       </div>
                     </div>
