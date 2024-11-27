@@ -194,11 +194,8 @@ const EditPenggunaPage = () => {
         );
         toast.dismiss();
         toast.error("Invalid Input");
-        console.log(error);
       });
   };
-
-  console.log(validations);
 
   const onDelete = async (e, id) => {
     e.preventDefault();
@@ -220,7 +217,6 @@ const EditPenggunaPage = () => {
       .catch(function (error) {
         toast.dismiss();
         toast.error(error.data.message);
-        console.log(error);
       });
   };
 

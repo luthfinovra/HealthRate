@@ -38,8 +38,6 @@ const EditRecordPenyakitPage = () => {
     fetchDetailDiseases();
   }, [fetchDetailDiseases]);
 
-  // console.log(detailRecordDiseases);
-
   useEffect(() => {
     if (schema.length > 0) {
       const defaultValues = schema.reduce((acc, field) => {
@@ -84,8 +82,6 @@ const EditRecordPenyakitPage = () => {
       setFormValues(defaultValues);
     }
   }, [schema, detailRecordDiseases]);
-
-  console.log(formValues);
 
   const mimeTypeMap = {
     audio: [
@@ -280,7 +276,6 @@ const EditRecordPenyakitPage = () => {
     toast.loading("Saving data...");
     // Validasi input berdasarkan skema
     const errors = validateInputs(schema, formValues);
-    console.log("1");
 
     if (Object.keys(errors).length > 0) {
       setValidations(
@@ -332,7 +327,6 @@ const EditRecordPenyakitPage = () => {
       });
   };
 
-  console.log(formValues);
   return (
     <LayoutOperator>
       <div className="space-y-4">

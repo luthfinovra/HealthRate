@@ -26,18 +26,15 @@ const NavbarResearcher = () => {
       <div className="flex flex-wrap items-center justify-between p-4">
         <div className="flex gap-12">
           <a
-            href="https://flowbite.com/"
+            href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img
               loading="lazy"
-              src="/images/logo_heartcare.png"
+              src="/images/logo.png"
               className="h-12"
-              alt="Flowbite Logo"
+              alt="HeartCare-Logo"
             />
-            <span className="hidden md:block self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              HeartCare
-            </span>
           </a>
         </div>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">

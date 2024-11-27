@@ -47,7 +47,6 @@ const PenyakitPage = () => {
       .catch(function (error) {
         toast.dismiss();
         toast.error(error.data.message);
-        console.log(error);
       });
   };
 

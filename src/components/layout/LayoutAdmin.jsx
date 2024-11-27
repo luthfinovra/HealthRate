@@ -38,18 +38,15 @@ const LayoutAdmin = ({ children }) => {
                 </svg>
               </button>
               <a
-                href="https://flowbite.com/"
+                href="/"
                 className="flex items-center space-x-3 rtl:space-x-reverse"
               >
                 <img
                   loading="lazy"
-                  src="/images/logo_heartcare.png"
+                  src="/images/logo.png"
                   className="h-8"
-                  alt="Flowbite Logo"
+                  alt="HeartCare-Logo"
                 />
-                <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                  HeartCare
-                </span>
               </a>
             </div>
             <button

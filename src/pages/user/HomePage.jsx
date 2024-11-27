@@ -17,11 +17,11 @@ const HomePage = () => {
       <div className="w-full h-full bg-[#202224] flex flex-col justify-center items-center mt-20 p-6 lg:p-0 lg:pb-12 ">
         <div className="space-y-5 lg:space-y-10 mt-12 lg:mt-32">
           <h1 className="font-semibold text-3xl lg:text-7xl text-white max-w-[700px] text-center">
-            Tool For Heart Rate Research
+            Tool For HealthCare Research
           </h1>
           <p className="font-normal text-sm lg:text-base text-white max-w-[710px] text-center opacity-70">
             An innovative digital platform designed to simplify the research
-            process by facilitating access and management of patient heart rate
+            process by facilitating access and management of patient HealthCare
             data.
           </p>
         </div>
@@ -30,9 +30,9 @@ const HomePage = () => {
         </button>
         <div className="max-w-[920px] w-full bg-[#605E78] rounded-xl p-3 mt-[90px]">
           <div className="w-full bg-white rounded-xl py-6 px-8 text-center space-y-4 ">
-            <h1 className="font-medium text-2xl lg:text-4xl">Heart Rate</h1>
+            <h1 className="font-medium text-2xl lg:text-4xl">HealthCare</h1>
             <p className="text-sm lg:text-base">
-              Heart rate atau detak jantung merupakan indikator vital yang
+              HealthCare atau detak jantung merupakan indikator vital yang
               mencerminkan kesehatan kardiovaskular seseorang. Dalam konteks
               normal, jantung berdetak dengan ritme teratur yang dikendalikan
               oleh sistem konduksi listrik jantung, khususnya nodus sinoatrial
@@ -47,11 +47,11 @@ const HomePage = () => {
       <div className="relative w-full h-full bg-white flex flex-col justify-center items-center lg:py-24 lg:px-44 ">
         <div className="w-full bg-white rounded-xl py-6 px-8 text-center space-y-4 max-w-[505px] mt-10">
           <h1 className="font-semibold text-2xl lg:text-[50px]">
-            Heart Rate Zones
+            HealthCare Zones
           </h1>
           <p className="text-sm lg:text-base max-w-[380px] m-auto">
-            Zona heart rate adalah pembagian rentang detak jantung berdasarkan
-            persentase dari detak jantung maksimal (Maximum Heart Rate/MHR).
+            Zona HealthCare adalah pembagian rentang detak jantung berdasarkan
+            persentase dari detak jantung maksimal (Maximum HealthCare/MHR).
             Setiap zona memiliki intensitas dan manfaat yang berbeda untuk
             tubuh.
           </p>
@@ -282,7 +282,7 @@ const HomePage = () => {
       <div className="w-full h-full bg-[#202224] flex flex-col justify-center items-center mt-20 p-6 lg:p-0 lg:pb-12 ">
         <div className="space-y-5 lg:space-y-10 mt-12 lg:mt-32">
           <h1 className="font-semibold text-3xl lg:text-3xl text-white  text-center">
-            Check your Heart Rate
+            Check your HealthCare
           </h1>
           <p className="font-normal text-sm lg:text-base text-white max-w-[710px] text-center opacity-70">
             If you feel that there is something unclear or need further
@@ -311,18 +311,15 @@ const HomePage = () => {
         <div className="w-full px-10 border-b my-10"></div>
         <div className="flex w-full flex-col lg:flex-row gap-10  justify-around   items-center">
           <a
-            href="https://flowbite.com/"
+            href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img
               loading="lazy"
-              src="/images/logo_heartcare.png"
+              src="/images/logo.png"
               className="h-12"
-              alt="Flowbite Logo"
+              alt="HeartCare-Logo"
             />
-            <span className="self-center text-2xl text-white font-semibold whitespace-nowrap dark:text-white">
-              HeartCare
-            </span>
           </a>
           <p className="text-white">© 2019 HeartCare. All Rights Reserved. </p>
           <div className="flex justify-around gap-5">

@@ -1,15 +1,42 @@
 import React from "react";
 import formatColumnName from "../../utils/formatColumnName";
 
+const renderFileDownloads = (files) => {
+  // Pastikan files adalah array
+  const fileArray = Array.isArray(files) ? files : [files];
+
+  return fileArray.map((fileUrl, index) => (
+    <div key={index} className="flex items-center space-x-4 mb-2">
+      <button
+        onClick={() => window.open(fileUrl, "_blank")}
+        className="px-4 py-2 text-white bg-[#554F9B] rounded hover:bg-[#6A63B0]"
+      >
+        Download File
+      </button>
+    </div>
+  ));
+};
+
 const ModalDetail = ({ isOpen, onClose, title, schema, record }) => {
   if (!isOpen) return null;
 
   // Filter file data untuk ditampilkan di bagian bawah
   const fileData = schema
-    .filter((field) => field.type === "file" && record[field.name])
+    .filter((field) => {
+      // Cek apakah field bertipe file
+      const value = record[field.name];
+
+      // Jika value adalah array, cek apakah ada file di dalamnya
+      if (Array.isArray(value)) {
+        return value.some((item) => item);
+      }
+
+      // Jika bukan array, cek seperti biasa
+      return field.type === "file" && value;
+    })
     .map((field) => ({
       label: field.name,
-      url: record[field.name],
+      value: record[field.name],
     }));
 
   // Filter non-file data untuk ditampilkan secara umum
@@ -39,16 +66,12 @@ const ModalDetail = ({ isOpen, onClose, title, schema, record }) => {
         </div>
         {fileData.length > 0 && (
           <div className="space-y-4">
-            {fileData.map((file, index) => (
-              <div key={index} className="flex items-center space-x-4">
-                <button
-                  onClick={() => window.open(file.url, "_blank")}
-                  className="px-4 py-2 text-white bg-[#554F9B] rounded hover:bg-[#6A63B0]"
-                >
-                  Download {formatColumnName(file.label)}
-                </button>
-              </div>
-            ))}
+            <h3 className="text-lg font-semibold">Files</h3>
+            <div className="space-y-4">
+              {fileData.map((file, index) => (
+                <div key={index}>{renderFileDownloads(file.value)}</div>
+              ))}
+            </div>
           </div>
         )}
       </div>

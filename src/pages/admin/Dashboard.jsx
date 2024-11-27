@@ -97,7 +97,7 @@ const Dashboard = () => {
         <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-8 mb-10">
           <a
             href="/#"
-            className="flex items-center justify-between bg-white border border-gray-200 rounded-lg shadow flex-row p-4 col-span-2"
+            className="flex items-center justify-between bg-white border border-gray-200 rounded-lg shadow flex-row p-4"
           >
             <div className="flex flex-col  leading-normal">
               <p className="mb-2 font-semibold text-base text-[#202224] ">
@@ -132,33 +132,7 @@ const Dashboard = () => {
               </svg>
             </div>
           </a>
-          <a
-            href="/#"
-            className="flex items-center justify-between bg-white border border-gray-200 rounded-lg shadow flex-row p-4 col-span-2"
-          >
-            <div className="flex flex-col  leading-normal">
-              <p className="mb-2 font-semibold text-base text-[#202224] ">
-                Upload Harian
-              </p>
-              <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                {stats?.total_disease_records ?? "0"}
-              </h5>
-            </div>
-            <div className="bg-[#d3d1e9] appearance-none p-2 rounded-lg  max-w-16 max-h-16 h-full w-full flex items-center justify-center ">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0.75 5.4375C0.75 4.1943 1.24386 3.00201 2.12294 2.12294C3.00201 1.24386 4.1943 0.75 5.4375 0.75H18.5625C19.8057 0.75 20.998 1.24386 21.8771 2.12294C22.7561 3.00201 23.25 4.1943 23.25 5.4375V12H16.6875C15.4443 12 14.252 12.4939 13.3729 13.3729C12.4939 14.252 12 15.4443 12 16.6875V23.25H5.4375C4.1943 23.25 3.00201 22.7561 2.12294 21.8771C1.24386 20.998 0.75 19.8057 0.75 18.5625V5.4375ZM13.875 22.9856C14.5381 22.753 15.1405 22.3743 15.6375 21.8775L21.8775 15.6356C22.3734 15.139 22.7515 14.5373 22.9837 13.875H16.6875C15.9416 13.875 15.2262 14.1713 14.6988 14.6988C14.1713 15.2262 13.875 15.9416 13.875 16.6875V22.9856Z"
-                  fill="#554F9B"
-                />
-              </svg>
-            </div>
-          </a>
+
           {stats.diseases &&
             stats.diseases.length > 0 &&
             stats.diseases.map((data, index) => (

@@ -253,7 +253,6 @@ const TambahRecordPenyakitPage = () => {
     toast.loading("Saving data...");
     // Validasi input berdasarkan skema
     const errors = validateInputs(schema, formValues);
-    console.log("1");
 
     if (Object.keys(errors).length > 0) {
       setValidations(

@@ -9,6 +9,7 @@ import ModalDetail from "../../components/modal/ModalDetail";
 import Loading from "../../components/loading/Loading";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaDownload } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const ResearcherDetailPenyakitPage = () => {
   const { id } = useParams();
@@ -55,7 +56,39 @@ const ResearcherDetailPenyakitPage = () => {
     fetchDetailDiseases();
   }, [fetchDetailDiseases]);
 
-  console.log(selectedRecord);
+  const onDownload = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    toast.loading("Loading...");
+
+    try {
+      const response = await request.get(`/diseases/${id}/export`, {
+        responseType: "blob", // Penting untuk mengunduh file
+      });
+
+      // Buat URL objek dari blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Buat elemen link untuk download
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${detailDiseasesDatas?.name}-record.csv`);
+
+      // Tambahkan ke dokumen, klik, dan hapus
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      toast.dismiss();
+      toast.success("File berhasil diunduh");
+    } catch (error) {
+      toast.dismiss();
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <NavbarResearcher />
@@ -85,9 +118,8 @@ const ResearcherDetailPenyakitPage = () => {
               <div className="flex items-center justify-between">
                 <h1 className="font-medium text-[18px]">Data Record</h1>
                 <button
-                  onClick={() =>
-                    window.open(detailDiseasesDatas?.export_url, "_blank")
-                  }
+                  type="button"
+                  onClick={onDownload}
                   className="space-x-3 border focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 hover:bg-gray-300 hover:text-gray-600"
                 >
                   <FaDownload className="text-black" />

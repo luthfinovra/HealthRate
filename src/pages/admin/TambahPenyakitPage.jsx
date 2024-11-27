@@ -162,7 +162,7 @@ const TambahPenyakitPage = () => {
 
       // Validasi menggunakan Zod
       const result = rowSchema.safeParse(rowToValidate);
-      console.log(result);
+
       if (!result.success) {
         errorRow = true;
         validationResults.push({
@@ -215,7 +215,6 @@ const TambahPenyakitPage = () => {
         toast.dismiss(); // Hentikan semua toast
         toast.error("Gagal menyimpan data");
         setLoading(false);
-        console.log("Error:", error);
       });
   };
 

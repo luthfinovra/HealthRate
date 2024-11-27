@@ -6,7 +6,7 @@ const DefaultFouter = () => {
       <div className="w-full h-full flex flex-col justify-center items-center mt-20 p-6 lg:p-0 lg:pb-12 ">
         <div className="space-y-5 lg:space-y-10 mt-12 lg:mt-32">
           <h1 className="font-semibold text-3xl lg:text-3xl   text-center">
-            Check your Heart Rate
+            Check your HealthCare
           </h1>
           <p className="font-normal text-sm lg:text-base  max-w-[710px] text-center opacity-70">
             If you feel that there is something unclear or need further
@@ -35,18 +35,15 @@ const DefaultFouter = () => {
         <div className="w-full px-10 border-b my-10"></div>
         <div className="flex w-full flex-col lg:flex-row gap-10  justify-around   items-center">
           <a
-            href="https://flowbite.com/"
+            href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img
               loading="lazy"
-              src="/images/logo_heartcare.png"
+              src="/images/logo.png"
               className="h-12"
-              alt="Flowbite Logo"
+              alt="HeartCare-Logo"
             />
-            <span className="self-center text-2xl  font-semibold whitespace-nowrap dark:">
-              HeartCare
-            </span>
           </a>
           <p className="">© 2019 HeartCare. All Rights Reserved. </p>
           <div className="flex justify-around gap-5">
