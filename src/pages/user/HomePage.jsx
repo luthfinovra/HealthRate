@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import NavbarResearcher from '../../components/navbar/navbarResearcher';
-import CardHome from '../../components/card/CardHome';
+import React, { useState } from "react";
+import NavbarResearcher from "../../components/navbar/navbarResearcher";
+import CardHome from "../../components/card/CardHome";
 
 const HomePage = () => {
   const [activeDiv, setActiveDiv] = useState(null); // Track active div
@@ -315,6 +315,7 @@ const HomePage = () => {
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img
+              loading="lazy"
               src="/images/logo_heartcare.png"
               className="h-12"
               alt="Flowbite Logo"

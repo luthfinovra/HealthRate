@@ -9,6 +9,12 @@ const BtnDropdown = ({ rowMenu, title, setState, value }) => {
     setIsOpen(!isOpen);
   };
 
+  // Close dropdown after selecting an item
+  const handleItemClick = (itemValue) => {
+    setState(itemValue); // Set the selected item value
+    setIsOpen(false); // Close the dropdown
+  };
+
   return (
     <div className="relative inline-block">
       {/* Dropdown Button */}
@@ -41,17 +47,17 @@ const BtnDropdown = ({ rowMenu, title, setState, value }) => {
         id="dropdown"
         className={`${
           isOpen ? "block" : "hidden"
-        } absolute right-0 z-10 bg-white divide-y shadow-main divide-gray-100 rounded-lg shadow max-w-sm  `}
+        } absolute right-0 z-10 bg-white divide-y shadow-main divide-gray-100 rounded-lg shadow max-w-sm`}
         style={{ top: "100%", left: 0 }}
       >
-        <ul className=" text-sm text-gray-700 dark:text-gray-200">
+        <ul className="text-sm text-gray-700 dark:text-gray-200">
           {rowMenu.map((item, index) => (
             <li key={index}>
               <button
-                className={`block  py-2  w-full   ${
+                className={`block py-2 w-full ${
                   value === item.value ? "bg-[#554F9B] text-white" : ""
-                } `}
-                onClick={() => setState(item.value)}
+                }`}
+                onClick={() => handleItemClick(item.value)} // Use handleItemClick
               >
                 {item.menu}
               </button>

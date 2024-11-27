@@ -1,38 +1,39 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import LayoutAdmin from '../../components/layout/LayoutAdmin';
-import { useNavigate } from 'react-router-dom';
-import DefaultTable from '../../components/table/DefaultTable';
-import request from '../../utils/request';
-import Pagination from '../../components/paginations/Pagination';
-import InputSearch from '../../components/inputField/InputSearch';
-import toast from 'react-hot-toast';
+import React, { useCallback, useEffect, useState } from "react";
+import LayoutAdmin from "../../components/layout/LayoutAdmin";
+import { useNavigate } from "react-router-dom";
+import DefaultTable from "../../components/table/DefaultTable";
+import request from "../../utils/request";
+import Pagination from "../../components/paginations/Pagination";
+import InputSearch from "../../components/inputField/InputSearch";
+import toast from "react-hot-toast";
+import Loading from "../../components/loading/Loading";
 
 const ApprovePage = () => {
   const [userDatas, setUserDatas] = useState([]);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [page, setPage] = useState(1);
   const limit = 10;
   const [paginations, setPaginations] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const rowMenu = [
-    { menu: 'nama' },
-    { menu: 'email' },
-    { menu: 'Intitusi' },
-    { menu: 'Jenis Kelamin', className: '' },
-    { menu: 'No tlpn' },
-    { menu: 'Tujuan', className: ' w-[1500px]' },
-    { menu: 'Aksi' },
+    { menu: "nama" },
+    { menu: "email" },
+    { menu: "Intitusi" },
+    { menu: "Jenis Kelamin", className: "" },
+    { menu: "No tlpn" },
+    { menu: "Tujuan", className: "w-[1500px]" },
+    { menu: "Aksi" },
   ];
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     const payload = {
-      role: 'peneliti',
+      role: "peneliti",
       page: page,
       per_page: limit,
       name: name,
-      approval_status: 'pending',
+      approval_status: "pending",
     };
     request
       .get(`/admin/users`, payload)
@@ -61,7 +62,7 @@ const ApprovePage = () => {
     };
 
     const headers = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
 
     request
@@ -71,16 +72,16 @@ const ApprovePage = () => {
           toast.dismiss();
           toast.success(response.data.message || `Status updated to ${status}`);
           fetchUsers();
-          navigate('/admin/persetujuan-peneliti');
+          navigate("/admin/persetujuan-peneliti");
         } else {
           toast.dismiss();
-          toast.error('Update failed');
+          toast.error("Update failed");
           fetchUsers();
         }
       })
       .catch(function (error) {
         toast.dismiss();
-        toast.error('Update failed');
+        toast.error("Update failed");
         console.error(error);
       });
   };
@@ -100,79 +101,94 @@ const ApprovePage = () => {
             </div>
             <div className="flex gap-2">
               <InputSearch
-                id={'search-name'}
-                name={'search-name'}
+                id={"search-name"}
+                name={"search-name"}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={'Search users by name...'}
+                placeholder={"Search users by name..."}
               />
             </div>
           </div>
           <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
             <h1 className="font-medium text-[18px]">Data Operator</h1>
-            <DefaultTable rowMenu={rowMenu} loading={loading}>
-              {userDatas.map((data, index) => (
-                <tr
-                  key={index}
-                  className="text-gray-700 bg-white border-b cursor-pointer hover:bg-gray-50"
-                >
-                  <td className="px-6 py-4 text-xs font-medium  align-top">
-                    {data.name}
-                  </td>
-                  <td className="px-6 py-4 text-xs font-medium align-top">
-                    {data.email}
-                  </td>
-                  <td className="px-6 py-4 text-xs font-medium align-top ">
-                    {data.institution}
-                  </td>
-                  <td className="px-6 py-4 text-xs font-medium align-top">
-                    {data.gender}
-                  </td>
-                  <td className="px-6 py-4 text-xs font-medium align-top">
-                    {data.phone_number}
-                  </td>
-                  <td className="px-6 py-4 text-xs font-medium align-top w-[1500px] whitespace-pre-line">
-                    {data.tujuan_permohonan}
-                  </td>
-                  <td className="px-6 py-4 flex gap-3">
-                    <button
-                      className="bg-[#51A279] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
-                      onClick={(e) => onUpdate(e, data?.id, 'approved')}
+            {loading ? (
+              <Loading />
+            ) : (
+              <DefaultTable rowMenu={rowMenu}>
+                {userDatas && userDatas.length > 0 ? (
+                  userDatas.map((data, index) => (
+                    <tr
+                      key={index}
+                      className="text-gray-700 bg-white border-b cursor-pointer hover:bg-gray-50"
                     >
-                      <svg
-                        width="17"
-                        height="13"
-                        viewBox="0 0 17 13"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6.0501 13.0001L0.350098 7.3001L1.7751 5.8751L6.0501 10.1501L15.2251 0.975098L16.6501 2.4001L6.0501 13.0001Z"
-                          fill="white"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="bg-[#FF5959] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
-                      onClick={(e) => onUpdate(e, data?.id, 'rejected')}
+                      <td className="px-6 py-4 text-xs font-medium align-top">
+                        {data.name}
+                      </td>
+                      <td className="px-6 py-4 text-xs font-medium align-top">
+                        {data.email}
+                      </td>
+                      <td className="px-6 py-4 text-xs font-medium align-top">
+                        {data.institution}
+                      </td>
+                      <td className="px-6 py-4 text-xs font-medium align-top">
+                        {data.gender}
+                      </td>
+                      <td className="px-6 py-4 text-xs font-medium align-top">
+                        {data.phone_number}
+                      </td>
+                      <td className="px-6 py-4 text-xs font-medium align-top whitespace-pre-line">
+                        {data.tujuan_permohonan}
+                      </td>
+                      <td className="px-6 py-4 flex gap-3">
+                        <button
+                          className="bg-[#51A279] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
+                          onClick={(e) => onUpdate(e, data?.id, "approved")}
+                        >
+                          <svg
+                            width="17"
+                            height="13"
+                            viewBox="0 0 17 13"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M6.0501 13.0001L0.350098 7.3001L1.7751 5.8751L6.0501 10.1501L15.2251 0.975098L16.6501 2.4001L6.0501 13.0001Z"
+                              fill="white"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          className="bg-[#FF5959] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
+                          onClick={(e) => onUpdate(e, data?.id, "rejected")}
+                        >
+                          <svg
+                            width="13"
+                            height="12"
+                            viewBox="0 0 13 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M1.7 12L0.5 10.8L5.3 6L0.5 1.2L1.7 0L6.5 4.8L11.3 0L12.5 1.2L7.7 6L12.5 10.8L11.3 12L6.5 7.2L1.7 12Z"
+                              fill="white"
+                            />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={rowMenu.length + 1} // +1 jika ada kolom tambahan untuk tombol
+                      className="px-6 py-4 text-center text-gray-500 h-32"
                     >
-                      <svg
-                        width="13"
-                        height="12"
-                        viewBox="0 0 13 12"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M1.7 12L0.5 10.8L5.3 6L0.5 1.2L1.7 0L6.5 4.8L11.3 0L12.5 1.2L7.7 6L12.5 10.8L11.3 12L6.5 7.2L1.7 12Z"
-                          fill="white"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </DefaultTable>
+                      Data masih kosong
+                    </td>
+                  </tr>
+                )}
+              </DefaultTable>
+            )}
           </div>
           <Pagination
             recordsTotal={paginations?.total}

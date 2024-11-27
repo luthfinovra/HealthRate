@@ -33,6 +33,7 @@ const Comment = () => {
           <div className="flex items-center">
             <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
               <img
+                loading="lazy"
                 className="mr-2 w-6 h-6 rounded-full"
                 src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
                 alt="Michael Gough"
@@ -132,6 +133,7 @@ const Comment = () => {
           <div className="flex items-center">
             <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
               <img
+                loading="lazy"
                 className="mr-2 w-6 h-6 rounded-full"
                 src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
                 alt="Jese Leos"
@@ -228,6 +230,7 @@ const Comment = () => {
           <div className="flex items-center">
             <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
               <img
+                loading="lazy"
                 className="mr-2 w-6 h-6 rounded-full"
                 src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
                 alt="Bonnie Green"
@@ -326,6 +329,7 @@ const Comment = () => {
           <div className="flex items-center">
             <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
               <img
+                loading="lazy"
                 className="mr-2 w-6 h-6 rounded-full"
                 src="https://flowbite.com/docs/images/people/profile-picture-4.jpg"
                 alt="Helene Engels"

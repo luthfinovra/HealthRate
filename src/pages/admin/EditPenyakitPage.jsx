@@ -1,23 +1,24 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import request from '../../utils/request';
-import toast from 'react-hot-toast';
-import { z } from 'zod';
-import LayoutAdmin from '../../components/layout/LayoutAdmin';
-import InputField from '../../components/inputField/InputField';
-import TextareaField from '../../components/inputField/TextareaField';
+import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import request from "../../utils/request";
+import toast from "react-hot-toast";
+import { z } from "zod";
+import LayoutAdmin from "../../components/layout/LayoutAdmin";
+import InputField from "../../components/inputField/InputField";
+import TextareaField from "../../components/inputField/TextareaField";
+import Loading from "../../components/loading/Loading";
 
 const MAX_FILE_SIZE = 2000000; // 2MB
 const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
 ];
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Nama penyakit tidak boleh kosong').optional(),
-  deskripsi: z.string().min(1, 'Deskripsi tidak boleh kosong').optional(),
+  name: z.string().min(1, "Nama penyakit tidak boleh kosong").optional(),
+  deskripsi: z.string().min(1, "Deskripsi tidak boleh kosong").optional(),
   cover_page: z
     .any()
     .refine(
@@ -26,7 +27,7 @@ const formSchema = z.object({
     )
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      'Only .jpg, .jpeg, .png and .webp formats are supported'
+      "Only .jpg, .jpeg, .png and .webp formats are supported"
     )
     .optional(),
 });
@@ -34,10 +35,10 @@ const formSchema = z.object({
 const EditPenyakitPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [namaPenyakit, setNamaPenyakit] = useState('');
-  const [cover, setCover] = useState('');
+  const [namaPenyakit, setNamaPenyakit] = useState("");
+  const [cover, setCover] = useState("");
   const [coverUrl, setCoverUrl] = useState();
-  const [deskripsiPenyakit, setDeskripsiPenyakit] = useState('');
+  const [deskripsiPenyakit, setDeskripsiPenyakit] = useState("");
   const [validations, setValidations] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -57,8 +58,6 @@ const EditPenyakitPage = () => {
       });
   }, [id]); // Add role to dependencies
 
-  console.log(loading);
-
   useEffect(() => {
     fetchDetailDiseases();
   }, [fetchDetailDiseases]);
@@ -73,12 +72,12 @@ const EditPenyakitPage = () => {
     e.preventDefault();
     setValidations([]);
     setLoading(true);
-    toast.loading('Saving data...');
+    toast.loading("Saving data...");
 
     const dataValidation = {
       name: namaPenyakit,
       deskripsi: deskripsiPenyakit,
-      ...(cover !== '' && {
+      ...(cover !== "" && {
         cover_page: cover,
       }),
     };
@@ -89,16 +88,16 @@ const EditPenyakitPage = () => {
       // Tangani error validasi dari Zod
       handleValidationErrors(validation.error.errors);
       toast.dismiss();
-      toast.error('Invalid Input');
+      toast.error("Invalid Input");
       setLoading(false);
       return;
     }
 
     const data = new FormData(); // FormData
-    data.append('name', namaPenyakit);
-    data.append('deskripsi', deskripsiPenyakit);
-    if (cover !== '') {
-      data.append('cover_page', cover);
+    data.append("name", namaPenyakit);
+    data.append("deskripsi", deskripsiPenyakit);
+    if (cover !== "") {
+      data.append("cover_page", cover);
     }
 
     // Mengirimkan request POST dengan header dinamis
@@ -108,10 +107,12 @@ const EditPenyakitPage = () => {
         if (response.status === 200 || response.status === 201) {
           toast.dismiss();
           toast.success(response.data.message);
-          navigate('/admin/penyakit');
+          navigate("/admin/penyakit");
+          setLoading(false);
         } else {
           toast.dismiss();
-          toast.error('Invalid Input');
+          toast.error("Invalid Input");
+          setLoading(false);
         }
       })
       .catch(function (error) {
@@ -124,34 +125,10 @@ const EditPenyakitPage = () => {
           )
         );
         toast.dismiss();
-        toast.error('Invalid Input');
-        console.log(error);
+        toast.error("Invalid Input");
+        setLoading(false);
       });
   };
-
-  // const onDelete = async (e, id) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   toast.loading("Deleting data...");
-
-  //   request
-  //     .delete(`/admin/users/${id}`)
-  //     .then(function (response) {
-  //       if (response.status === 200 || response.status === 201) {
-  //         toast.dismiss();
-  //         toast.success(response.data.message);
-  //         navigate("/admin/users");
-  //       } else {
-  //         toast.dismiss();
-  //         toast.error(response.data.message);
-  //       }
-  //     })
-  //     .catch(function (error) {
-  //       toast.dismiss();
-  //       toast.error(error.data.message);
-  //       console.log(error);
-  //     });
-  // };
 
   return (
     <LayoutAdmin>
@@ -162,58 +139,66 @@ const EditPenyakitPage = () => {
 
         <div className=" space-y-9 grid md:grid-cols-2">
           <div className=" w-full space-y-6 md:max-w-[500px]  bg-white shadow-main p-6 rounded-xl dark:border-gray-700 flex flex-col justify-between">
-            <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
-              <InputField
-                id={'cover_page'}
-                name={'cover_page'}
-                type={'file'}
-                label={'Cover Page'}
-                imageOnly={true}
-                previewImage={coverUrl}
-                validations={validations}
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    const img = e.target.files[0];
-                    setCover(img);
-                  }
-                }}
-              />
-              <InputField
-                id={'name'}
-                name={'name'}
-                onChange={(e) => setNamaPenyakit(e.target.value)}
-                placeholder={'Masukan nama penyakit'}
-                type={'text'}
-                value={namaPenyakit}
-                validations={validations}
-                required
-                label={'Nama Penyakit'}
-              />
-              <TextareaField
-                id={'deskripsi'}
-                name={'deskripsi'}
-                placeholder={'Masukan deskrispsi penyakit'}
-                label={'Deskripsi Penyakit'}
-                value={deskripsiPenyakit}
-                validations={validations}
-                required
-                onChange={(e) => {
-                  setDeskripsiPenyakit(e.target.value);
-                }}
-              />
+            {loading ? (
+              <Loading />
+            ) : (
+              <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
+                <InputField
+                  id={"cover_page"}
+                  name={"cover_page"}
+                  type={"file"}
+                  label={"Cover Page"}
+                  imageOnly={true}
+                  previewImage={coverUrl}
+                  validations={validations}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const img = e.target.files[0];
+                      setCover(img);
+                    }
+                  }}
+                />
+                <InputField
+                  id={"name"}
+                  name={"name"}
+                  onChange={(e) => setNamaPenyakit(e.target.value)}
+                  placeholder={"Masukan nama penyakit"}
+                  type={"text"}
+                  value={namaPenyakit}
+                  validations={validations}
+                  required
+                  label={"Nama Penyakit"}
+                />
+                <TextareaField
+                  id={"deskripsi"}
+                  name={"deskripsi"}
+                  placeholder={"Masukan deskrispsi penyakit"}
+                  label={"Deskripsi Penyakit"}
+                  value={deskripsiPenyakit}
+                  validations={validations}
+                  required
+                  onChange={(e) => {
+                    setDeskripsiPenyakit(e.target.value);
+                  }}
+                />
 
-              <div className="">
-                <button
-                  className="bg-[#554F9B] rounded-lg w-full py-2 text-white"
-                  type="submit"
-                >
-                  Edit
-                </button>
-              </div>
-            </form>
+                <div className="">
+                  <button
+                    className="bg-[#554F9B] rounded-lg w-full py-2 text-white"
+                    type="submit"
+                  >
+                    Edit
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
           <div className="hidden md:block">
-            <img src="/vektor/vektorTambah.png" alt="vektor-tambah" />
+            <img
+              loading="lazy"
+              src="/vektor/vektorTambah.png"
+              alt="vektor-tambah"
+            />
           </div>
         </div>
       </div>

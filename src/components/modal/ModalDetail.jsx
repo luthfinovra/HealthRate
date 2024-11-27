@@ -1,19 +1,19 @@
-import React from 'react';
-import formatColumnName from '../../utils/formatColumnName';
+import React from "react";
+import formatColumnName from "../../utils/formatColumnName";
 
 const ModalDetail = ({ isOpen, onClose, title, schema, record }) => {
   if (!isOpen) return null;
 
   // Filter file data untuk ditampilkan di bagian bawah
   const fileData = schema
-    .filter((field) => field.type === 'file' && record[field.name])
+    .filter((field) => field.type === "file" && record[field.name])
     .map((field) => ({
       label: field.name,
       url: record[field.name],
     }));
 
   // Filter non-file data untuk ditampilkan secara umum
-  const displayData = schema.filter((field) => field.type !== 'file');
+  const displayData = schema.filter((field) => field.type !== "file");
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -42,8 +42,8 @@ const ModalDetail = ({ isOpen, onClose, title, schema, record }) => {
             {fileData.map((file, index) => (
               <div key={index} className="flex items-center space-x-4">
                 <button
-                  onClick={() => window.open(file.url, '_blank')}
-                  className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+                  onClick={() => window.open(file.url, "_blank")}
+                  className="px-4 py-2 text-white bg-[#554F9B] rounded hover:bg-[#6A63B0]"
                 >
                   Download {formatColumnName(file.label)}
                 </button>
@@ -51,12 +51,6 @@ const ModalDetail = ({ isOpen, onClose, title, schema, record }) => {
             ))}
           </div>
         )}
-        <button
-          onClick={onClose}
-          className="w-full bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Close
-        </button>
       </div>
     </div>
   );

@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
-import NavbarResearcher from '../components/navbar/navbarResearcher';
-import { MdLogin } from 'react-icons/md';
-import InputField from '../components/inputField/InputField';
-import { useNavigate } from 'react-router-dom';
-import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
-import request from '../utils/request';
-import Cookies from 'js-cookie';
-import toast from 'react-hot-toast';
+import React, { useEffect, useState } from "react";
+import NavbarResearcher from "../components/navbar/navbarResearcher";
+import { MdLogin } from "react-icons/md";
+import InputField from "../components/inputField/InputField";
+import { useNavigate } from "react-router-dom";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import request from "../utils/request";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 export const Login = () => {
   const navigate = useNavigate();
 
   const [typeInput, setTypeInput] = useState(true);
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [validations, setValidations] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChangeRememberMe = () => {
+    setRememberMe(!rememberMe);
+  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -34,60 +41,75 @@ export const Login = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true); // Set loading to true
 
-    const isJson = true; // Ganti sesuai kebutuhan (true untuk JSON, false untuk FormData)
-
+    const isJson = true;
     const headers = {
-      'Content-Type': isJson ? 'application/json' : 'multipart/form-data',
+      "Content-Type": isJson ? "application/json" : "multipart/form-data",
     };
-
-    // Data yang dikirimkan
-    const data = isJson
-      ? { email, password } // JSON
-      : new FormData(); // FormData
+    const data = isJson ? { email, password } : new FormData();
 
     if (!isJson) {
-      data.append('email', email);
-      data.append('password', password);
+      data.append("email", email);
+      data.append("password", password);
     }
 
-    // Mengirimkan request POST dengan header dinamis
     request
-      .post('/auth/login', data, headers)
+      .post("/auth/login", data, headers)
       .then(function (response) {
-        console.log(response);
-        if (response?.status === 200 || response?.status === 201) {
-          Cookies.set('token', response?.data?.data?.token);
-          localStorage.setItem('role', response?.data?.data?.role);
+        setIsLoading(false); // Stop loading
 
-          if (response?.data?.data?.role === 'operator') {
-            toast.dismiss();
+        if (response?.status === 200 || response?.status === 201) {
+          // Handle login logic
+          if (rememberMe) {
+            localStorage.setItem("email", email);
+          } else {
+            localStorage.removeItem("email");
+          }
+          Cookies.set("token", response?.data?.data?.token);
+          localStorage.setItem("role", response?.data?.data?.role);
+
+          if (response?.data?.data?.role === "operator") {
             toast.success(response?.data?.message);
             navigate(
               `/operator/record-penyakit/${response?.data?.data?.disease_id}`
             );
-          } else if (response?.data?.data?.role === 'peneliti') {
-            if (response?.data?.data?.approval_status === 'pending') {
-              toast.dismiss();
-              toast.error('Gagal Login');
-              setIsModalOpen(true); // Tampilkan modal
-              Cookies.remove('token'); // Hapus token jika sudah disimpan
+          } else if (response?.data?.data?.role === "peneliti") {
+            if (response?.data?.data?.approval_status === "pending") {
+              toast.error("Gagal Login");
+              setIsModalOpen(true);
+              Cookies.remove("token");
             } else {
-              toast.dismiss();
               toast.success(response?.data?.message);
-              navigate('/peneliti/penyakit');
+              navigate("/peneliti/penyakit");
             }
-          } else if (response?.data?.data?.role === 'admin') {
-            toast.dismiss();
+          } else if (response?.data?.data?.role === "admin") {
             toast.success(response?.data?.message);
-            navigate('/admin/dashboard');
+            navigate("/admin/dashboard");
           }
         }
       })
       .catch(function (error) {
-        console.log(error);
+        setIsLoading(false); // Stop loading
+        setValidations(
+          Object.entries(error?.response?.data?.data || {}).map(
+            ([name, message]) => ({
+              name,
+              message,
+            })
+          )
+        );
+        toast.error("Email atau password yang Anda masukkan salah.");
       });
   };
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("email");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true); // Secara default, centang checkbox jika data ada
+    }
+  }, []);
 
   return (
     <>
@@ -115,137 +137,57 @@ export const Login = () => {
         <NavbarResearcher className="fixed top-0 left-0 right-0 z-50" />
 
         {/* Content */}
-        <div className="pt-24 px-3 grid grid-cols-2 gap-5">
-          <div className="">
-            <div className="grid grid-cols-3 gap-5">
-              {/* Images */}
-              {/* The image grid code remains unchanged */}
-              <div className="relative w-full h-[260px]  flex-shrink-0">
-                <img
-                  width={0}
-                  height={0}
-                  loading="lazy"
-                  alt="main-product-img"
-                  src={'images/decor1.png'}
-                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
-                />
-              </div>
-              <div className="relative w-full h-[260px]  flex-shrink-0">
-                <img
-                  width={0}
-                  height={0}
-                  loading="lazy"
-                  alt="main-product-img"
-                  src={'images/decor2.png'}
-                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
-                />
-              </div>
-              <div className="relative w-full h-[260px]  flex-shrink-0">
-                <img
-                  width={0}
-                  height={0}
-                  loading="lazy"
-                  alt="main-product-img"
-                  src={'images/decor3.png'}
-                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
-                />
-              </div>
-              <div className="relative w-full h-[260px]  flex-shrink-0">
-                <img
-                  width={0}
-                  height={0}
-                  loading="lazy"
-                  alt="main-product-img"
-                  src={'images/decor4.png'}
-                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
-                />
-              </div>
-              <div className="relative w-full h-[260px]  flex-shrink-0">
-                <img
-                  width={0}
-                  height={0}
-                  loading="lazy"
-                  alt="main-product-img"
-                  src={'images/decor5.png'}
-                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
-                />
-              </div>
-              <div className="relative w-full h-[260px]  flex-shrink-0">
-                <img
-                  width={0}
-                  height={0}
-                  loading="lazy"
-                  alt="main-product-img"
-                  src={'images/decor6.png'}
-                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
-                />
-              </div>
-              <div className="relative w-full h-[260px]  flex-shrink-0">
-                <img
-                  width={0}
-                  height={0}
-                  loading="lazy"
-                  alt="main-product-img"
-                  src={'images/decor7.png'}
-                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
-                />
-              </div>
-              <div className="relative w-full h-[260px]  flex-shrink-0">
-                <img
-                  width={0}
-                  height={0}
-                  loading="lazy"
-                  alt="main-product-img"
-                  src={'images/decor8.png'}
-                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
-                />
-              </div>
-              <div className="relative w-full h-[260px]  flex-shrink-0">
-                <img
-                  width={0}
-                  height={0}
-                  loading="lazy"
-                  alt="main-product-img"
-                  src={'images/decor9.png'}
-                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
-                />
-              </div>
+        <div className="pt-24 grid grid-cols-1 md:grid-cols-3  h-full">
+          <div className="md:col-span-2 bg-[#3B3A48] h-full flex justify-center items-center px-4 sm:px-6 lg:px-8">
+            <div className="space-y-[30px] text-white max-w-[807px] w-full m-auto py-10">
+              <h1 className="text-2xl font-semibold  sm:text-3xl md:text-4xl lg:text-5xl">
+                Health Care
+              </h1>
+              <h1 className=" text-3xl sm:text-4xl md:text-5xl font-semibold ">
+                Database Penyakit dengan Data yang Valid
+              </h1>
+              <p className="text-xl sm:text-lg md:text-xl ">
+                Health Care adalah platform kesehatan yang menyediakan akses
+                database dari berbagai penyakit dengan data yang valid. Health
+                Care menawarkan data-data dari berbagai penyakit yang ada dalam
+                database, untuk membantu para peneliti dalam penilaian
+                kesehatan.
+              </p>
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center px-6 py-8 bg-[#DEDEDE] rounded-3xl">
-            <div className="w-full bg-white rounded-3xl shadow max-w-md xl:p-0">
-              <div className="p-6 space-y-4 sm:p-8">
-                <div className="bg-[#D3D3EE] flex justify-center items-center rounded-3xl p-3 mx-auto w-[fit-content]">
-                  <MdLogin className="text-[50px]" />
-                </div>
-                <div className="text-center max-w-xs m-auto">
-                  <h1 className="text-xl font-bold text-gray-900 md:text-2xl">
-                    Login With Access Data
-                  </h1>
-                  <p>
-                    Know Your HeartRate by Entering Your HeartRate Into The
-                    Application
-                  </p>
-                </div>
-                {/* Login Form */}
-                {/* The form code remains unchanged */}
-                <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
+
+          <div className="w-full bg-white xl:p-0 flex justify-center items-center">
+            <div className="p-6  sm:p-8">
+              <div className="">
+                <h1 className="text-[24px] font-semibold">Masuk</h1>
+                <p>
+                  Belum punya akun?{" "}
+                  <a href="/register" className="text-[#554F9B]">
+                    Daftar Sekarang
+                  </a>
+                </p>
+              </div>
+
+              {/* Login Form */}
+              {/* The form code remains unchanged */}
+              <form onSubmit={onSubmit} className="mt-[35px]">
+                <div className="space-y-4 md:space-y-6">
                   <InputField
-                    id={'email'}
-                    name={'email'}
+                    id={"email"}
+                    name={"email"}
                     onChange={handleChangeEmail}
-                    placeholder={'user@gmail.com'}
-                    type={'email'}
+                    placeholder={"user@gmail.com"}
+                    type={"email"}
                     value={email}
                     required
-                    label={'Your email'}
+                    label={"Email"}
                   />
                   <InputField
-                    id={'password'}
-                    name={'password'}
+                    id={"password"}
+                    name={"password"}
                     onChange={handleChangePassword}
-                    placeholder={'••••••••'}
-                    type={typeInput ? 'password' : 'text'}
+                    placeholder={"••••••••"}
+                    type={typeInput ? "password" : "text"}
                     value={password}
                     required
                     icon={
@@ -261,16 +203,89 @@ export const Login = () => {
                         />
                       )
                     }
-                    label={'Password'}
+                    label={"Kata Sandi"}
                   />
+                  <div className="flex md:flex-col lg:flex-row jus justify-between items-center md:gap-5">
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        value=""
+                        className="sr-only peer"
+                        checked={rememberMe}
+                        onChange={handleChangeRememberMe}
+                      />
+                      <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      <span className="ms-3 text-sm text-gray-900">
+                        Ingat saya
+                      </span>
+                    </label>
+                    <a href="" className="text-[#554F9B]">
+                      Lupa Kata sandi?
+                    </a>
+                  </div>
+                </div>
+                <div className="space-y-[30px]">
                   <button
                     type="submit"
-                    className="w-full text-black bg-[#D3D3EE] hover:bg-[#c5c5ec] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    className={`mt-[50px] w-full text-white bg-[#554F9B] hover:bg-[#4D4788] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ${
+                      isLoading ? "cursor-not-allowed opacity-70" : ""
+                    }`}
+                    disabled={isLoading} // Disable button while loading
                   >
-                    Login
+                    {isLoading ? (
+                      <div className="flex items-center justify-center">
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8z"
+                          ></path>
+                        </svg>
+                        <span className="ml-2">Memproses...</span>
+                      </div>
+                    ) : (
+                      "Login"
+                    )}
                   </button>
-                </form>
-              </div>
+
+                  <hr />
+                  <div className="flex flex-col items-center justify-center">
+                    <p className="text-center">
+                      Terdapat kendala Login? Silahkan hubungi kami
+                    </p>
+                    <div className="inline-flex items-center gap-3 mt-[10px]">
+                      <div>
+                        <img
+                          loading="lazy"
+                          src="vektor/logos_whatsapp-icon.png"
+                          alt=""
+                        />
+                      </div>
+                      <div>
+                        <img
+                          loading="lazy"
+                          src="vektor/logos_google-gmail.png"
+                          alt=""
+                          className="m-auto"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
