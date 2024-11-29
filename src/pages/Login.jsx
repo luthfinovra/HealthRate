@@ -16,6 +16,7 @@ export const Login = () => {
   const [email, setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [status, setStatus] = useState("");
   const [validations, setValidations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -94,8 +95,12 @@ export const Login = () => {
               `/operator/record-penyakit/${response?.data?.data?.disease_id}`
             );
           } else if (response?.data?.data?.role === "peneliti") {
-            if (response?.data?.data?.approval_status === "pending") {
+            if (
+              response?.data?.data?.approval_status === "pending" ||
+              response?.data?.data?.approval_status === "rejected"
+            ) {
               toast.error("Gagal Login");
+              setStatus(response?.data?.data?.approval_status);
               setIsModalOpen(true);
               Cookies.remove("token");
             } else {
@@ -132,25 +137,48 @@ export const Login = () => {
 
   return (
     <>
-      {isModalOpen && (
+      {isModalOpen && status && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <h2 className="text-xl font-bold mb-4">
-              Akun Anda Dalam Proses Verifikasi
-            </h2>
-            <p className="text-gray-700 mb-6">
-              Akun Anda sedang dalam proses pengecekan oleh admin. Silakan
-              tunggu beberapa saat. Anda akan diberi tahu jika akun sudah aktif.
-            </p>
-            <button
-              onClick={handleCloseModal}
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
-            >
-              OK
-            </button>
-          </div>
+          {status === "pending" && (
+            <div className="bg-white rounded-lg p-6 w-96">
+              <h2 className="text-xl font-bold mb-4">
+                Akun Anda Dalam Proses Verifikasi
+              </h2>
+              <p className="text-gray-700 mb-6">
+                Akun Anda sedang dalam proses pengecekan oleh admin. Silakan
+                tunggu beberapa saat. Anda akan diberi tahu jika akun sudah
+                aktif.
+              </p>
+              <button
+                onClick={handleCloseModal}
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+              >
+                OK
+              </button>
+            </div>
+          )}
+          {status === "rejected" && (
+            <div className="bg-white rounded-lg p-6 w-96">
+              <h2 className="text-xl font-bold mb-4 text-red-500">
+                Verifikasi Akun Ditolak
+              </h2>
+              <p className="text-gray-700 mb-6">
+                Akun Anda tidak dapat diverifikasi. Silakan periksa kembali data
+                yang Anda berikan dan pastikan sudah sesuai dengan persyaratan.
+                Anda dapat mencoba mengajukan verifikasi ulang melalui menu
+                pengaturan akun.
+              </p>
+              <button
+                onClick={handleCloseModal}
+                className="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          )}
         </div>
       )}
+
       <section className="bg-[#444444] h-screen">
         {/* Navbar */}
         <NavbarResearcher className="fixed top-0 left-0 right-0 z-50" />

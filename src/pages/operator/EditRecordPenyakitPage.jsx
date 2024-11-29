@@ -29,7 +29,6 @@ const EditRecordPenyakitPage = () => {
         setLoading(false);
       })
       .catch(function (error) {
-        console.error(error);
         setLoading(false);
       });
   }, [id, id_record]); // Add role to dependencies
@@ -42,7 +41,6 @@ const EditRecordPenyakitPage = () => {
     if (schema.length > 0) {
       const defaultValues = schema.reduce((acc, field) => {
         let defaultValue = "";
-
         // Skip setting default value for 'file' type fields
         if (field.type === "file") {
           acc[field.name] = null; // You can choose to leave it as null or do nothing
@@ -82,7 +80,7 @@ const EditRecordPenyakitPage = () => {
       setFormValues(defaultValues);
     }
   }, [schema, detailRecordDiseases]);
-
+  console.log(formValues);
   const mimeTypeMap = {
     audio: [
       "aac",
@@ -149,11 +147,37 @@ const EditRecordPenyakitPage = () => {
     return formats ? formats.map((ext) => `.${ext}`).join(",") : undefined;
   };
 
-  const handleChange = (name, value) => {
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+  const handleChange = (name, value, multiple = false) => {
+    setFormValues((prevValues) => {
+      // Jika input adalah file dan mendukung multiple files
+      if (value instanceof FileList) {
+        const files = multiple ? Array.from(value) : value[0]; // Jika multiple, simpan sebagai array, jika tidak, ambil file pertama
+        return {
+          ...prevValues,
+          [name]: files, // Menyimpan file (single file atau array) sesuai kondisi
+        };
+      }
+
+      // Jika bukan file, langsung simpan nilai
+      return {
+        ...prevValues,
+        [name]: value,
+      };
+    });
+  };
+
+  const handleDeleteLocalImage = (name, index) => {
+    setFormValues((prevValues) => {
+      if (prevValues[name] instanceof Array) {
+        // Filter file berdasarkan index yang ingin dihapus
+        const updatedFiles = prevValues[name].filter((_, i) => i !== index);
+        return {
+          ...prevValues,
+          [name]: updatedFiles, // Update array file dengan yang tersisa
+        };
+      }
+      return prevValues; // Jika bukan file multiple, tidak ada perubahan
+    });
   };
 
   const validateInputs = (schema, formValues) => {
@@ -162,13 +186,8 @@ const EditRecordPenyakitPage = () => {
     schema.forEach((field) => {
       const value = formValues[field.name];
 
-      // Skip validation for file fields - not required to be filled
-      if (field.type === "file" && !value) {
-        return; // No validation needed if the field type is file and it's empty
-      }
-
-      // Validasi field kosong (skip for file type)
-      if (!value && field.required && field.type !== "file") {
+      // Validasi field kosong
+      if (!value && field.required) {
         errors[field.name] = `${formatColumnName(field.name)} is required.`;
         return;
       }
@@ -242,9 +261,24 @@ const EditRecordPenyakitPage = () => {
         }
       }
 
-      // Validasi untuk file
-      if (field.type === "file" && value) {
-        const fileExtension = value.name.split(".").pop().toLowerCase();
+      // Validasi untuk file (Jika tipe file berupa array)
+      if (field.type === "file" && Array.isArray(value)) {
+        value.forEach((file, index) => {
+          const fileExtension = file?.name?.split(".").pop().toLowerCase();
+          const allowedExtensions = mimeTypeMap[field.format] || [];
+          if (!allowedExtensions.includes(fileExtension)) {
+            errors[`${field.name}[${index}]`] = `${formatColumnName(
+              field.name
+            )} file at index ${
+              index + 1
+            } must be a valid file of type ${allowedExtensions.join(", ")}.`;
+          }
+        });
+      }
+
+      // Validasi untuk file (Jika tipe file tunggal)
+      if (field.type === "file" && !Array.isArray(value) && value) {
+        const fileExtension = value?.name?.split(".").pop().toLowerCase();
         const allowedExtensions = mimeTypeMap[field.format] || [];
         if (!allowedExtensions.includes(fileExtension)) {
           errors[field.name] = `${formatColumnName(
@@ -331,9 +365,7 @@ const EditRecordPenyakitPage = () => {
     <LayoutOperator>
       <div className="space-y-4">
         <div className="space-y-1 mb-5">
-          <h1 className="font-semibold text-5xl">
-            Tambah Data Record Penyakit
-          </h1>
+          <h1 className="font-semibold text-5xl">Edit Data Record Penyakit</h1>
         </div>
         <p className=" max-w-3xl font-normal text-[14px] text-[#2D3748] leading-[150%]">
           Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -436,19 +468,16 @@ const EditRecordPenyakitPage = () => {
                               ? "0.001"
                               : undefined
                           }
-                          value={
-                            field.type === "file"
-                              ? undefined
-                              : formValues[field.name] || ""
-                          }
+                          value={formValues[field.name] || ""}
                           onChange={(e) =>
                             handleChange(
                               field.name,
                               field.type === "phone"
                                 ? e.target.value.replace(/[^0-9]/g, "")
                                 : field.type === "file"
-                                ? e.target.files[0]
-                                : e.target.value
+                                ? e.target.files // Mendukung multiple files
+                                : e.target.value,
+                              field.type === "file" && field.multiple // Mengirimkan nilai multiple ke handleChange
                             )
                           }
                           validations={validations}
@@ -459,6 +488,29 @@ const EditRecordPenyakitPage = () => {
                               ? getAcceptFormat(field.format)
                               : undefined
                           }
+                          multiple={
+                            field.type === "file" && field.multiple
+                              ? true
+                              : undefined
+                          } // Menentukan apakah input file mendukung multiple
+                          previewImage={
+                            field.type === "file" && !field.multiple
+                              ? detailRecordDiseases[field.name]
+                              : undefined
+                          }
+                          multipleDatas={
+                            field.type === "file" && field.multiple
+                              ? formValues[field.name]
+                              : undefined
+                          }
+                          valueMultiple={
+                            field.type === "file" && field.multiple
+                              ? detailRecordDiseases[field.name]
+                              : undefined
+                          }
+                          handleDeleteLocalImage={(index) =>
+                            handleDeleteLocalImage(field.name, index)
+                          }
                         />
                       </div>
                     );
@@ -468,7 +520,7 @@ const EditRecordPenyakitPage = () => {
                   className="bg-[#554F9B] rounded-lg w-full py-2 text-white"
                   type="submit"
                 >
-                  Tambah
+                  Edit
                 </button>
               </form>
             )}

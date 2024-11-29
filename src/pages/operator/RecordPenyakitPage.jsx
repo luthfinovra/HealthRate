@@ -5,6 +5,7 @@ import Pagination from "../../components/paginations/Pagination";
 import request from "../../utils/request";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../components/loading/Loading";
+import toast from "react-hot-toast";
 
 const RecordPenyakitPage = () => {
   const { id } = useParams();
@@ -38,6 +39,32 @@ const RecordPenyakitPage = () => {
   useEffect(() => {
     fetchDetailDiseases();
   }, [fetchDetailDiseases]);
+
+  const onDelete = async (id_record) => {
+    setLoading(true);
+    toast.loading("Deleting data...");
+
+    request
+      .delete(`/diseases/${id}/records/${id_record}`)
+      .then(function (response) {
+        if (response.status === 200 || response.status === 201) {
+          toast.dismiss();
+          toast.success(response.data.message);
+          navigate(`/operator/record-penyakit/${id}`);
+          fetchDetailDiseases();
+          setLoading(false);
+        } else {
+          toast.dismiss();
+          toast.error(response.data.message);
+        }
+      })
+      .catch(function (error) {
+        toast.dismiss();
+        toast.error(error.response?.data?.message || "Error occurred");
+        setLoading(false);
+      });
+  };
+
   return (
     <div>
       <LayoutOperator>
@@ -66,6 +93,7 @@ const RecordPenyakitPage = () => {
                 onEdit={(data) =>
                   navigate(`/operator/edit-record/${id}/${data?.id}`)
                 }
+                onDelete={(data) => onDelete(data?.id)}
               />
             </div>
             <Pagination

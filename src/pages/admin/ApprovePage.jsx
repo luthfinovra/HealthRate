@@ -52,7 +52,7 @@ const ApprovePage = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const onUpdate = (e, id, status) => {
+  const onUpdate = (e, id, status, phone) => {
     e.preventDefault();
     setLoading(true);
     toast.loading(`Updating status to ${status}...`);
@@ -71,18 +71,27 @@ const ApprovePage = () => {
         if (response.status === 200 || response.status === 201) {
           toast.dismiss();
           toast.success(response.data.message || `Status updated to ${status}`);
+          const phoneNumber = { phone }; // Ganti dengan nomor tujuan
+          const message = "Kamu sudah di approve sama admin."; // Pesan Anda
+          const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+            message
+          )}`;
+
+          window.open(url, "_blank"); // Membuka WhatsApp di tab baru
           fetchUsers();
           navigate("/admin/persetujuan-peneliti");
+          setLoading(false);
         } else {
           toast.dismiss();
           toast.error("Update failed");
           fetchUsers();
+          setLoading(false);
         }
       })
       .catch(function (error) {
         toast.dismiss();
         toast.error("Update failed");
-        console.error(error);
+        setLoading(false);
       });
   };
 
@@ -159,7 +168,14 @@ const ApprovePage = () => {
                         </button>
                         <button
                           className="bg-[#FF5959] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
-                          onClick={(e) => onUpdate(e, data?.id, "rejected")}
+                          onClick={(e) =>
+                            onUpdate(
+                              e,
+                              data?.id,
+                              "rejected",
+                              data?.phone_number
+                            )
+                          }
                         >
                           <svg
                             width="13"

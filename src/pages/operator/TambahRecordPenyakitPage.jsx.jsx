@@ -131,11 +131,53 @@ const TambahRecordPenyakitPage = () => {
     return formats ? formats.map((ext) => `.${ext}`).join(",") : undefined;
   };
 
-  const handleChange = (name, value) => {
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+  // const handleChange = (name, value) => {
+  //   setFormValues((prevValues) => ({
+  //     ...prevValues,
+  //     [name]: value,
+  //   }));
+  // };
+
+  // const handleChangeMultiple = (event) => {
+  //   const files = Array.from(event.target.files);
+
+  //   setMultipleDatas((prevFiles) => [...prevFiles, ...files]);
+
+  //   // Clear input value to allow re-selecting the same files
+  //   event.target.value = null;
+  // };
+
+  const handleChange = (name, value, multiple = false) => {
+    setFormValues((prevValues) => {
+      // Jika input adalah file dan mendukung multiple files
+      if (value instanceof FileList) {
+        const files = multiple ? Array.from(value) : value[0]; // Jika multiple, simpan sebagai array, jika tidak, ambil file pertama
+        return {
+          ...prevValues,
+          [name]: files, // Menyimpan file (single file atau array) sesuai kondisi
+        };
+      }
+
+      // Jika bukan file, langsung simpan nilai
+      return {
+        ...prevValues,
+        [name]: value,
+      };
+    });
+  };
+
+  const handleDeleteLocalImage = (name, index) => {
+    setFormValues((prevValues) => {
+      if (prevValues[name] instanceof Array) {
+        // Filter file berdasarkan index yang ingin dihapus
+        const updatedFiles = prevValues[name].filter((_, i) => i !== index);
+        return {
+          ...prevValues,
+          [name]: updatedFiles, // Update array file dengan yang tersisa
+        };
+      }
+      return prevValues; // Jika bukan file multiple, tidak ada perubahan
+    });
   };
 
   const validateInputs = (schema, formValues) => {
@@ -219,9 +261,24 @@ const TambahRecordPenyakitPage = () => {
         }
       }
 
-      // Validasi untuk file
-      if (field.type === "file" && value) {
-        const fileExtension = value.name.split(".").pop().toLowerCase();
+      // Validasi untuk file (Jika tipe file berupa array)
+      if (field.type === "file" && Array.isArray(value)) {
+        value.forEach((file, index) => {
+          const fileExtension = file?.name?.split(".").pop().toLowerCase();
+          const allowedExtensions = mimeTypeMap[field.format] || [];
+          if (!allowedExtensions.includes(fileExtension)) {
+            errors[`${field.name}[${index}]`] = `${formatColumnName(
+              field.name
+            )} file at index ${
+              index + 1
+            } must be a valid file of type ${allowedExtensions.join(", ")}.`;
+          }
+        });
+      }
+
+      // Validasi untuk file (Jika tipe file tunggal)
+      if (field.type === "file" && !Array.isArray(value) && value) {
+        const fileExtension = value?.name?.split(".").pop().toLowerCase();
         const allowedExtensions = mimeTypeMap[field.format] || [];
         if (!allowedExtensions.includes(fileExtension)) {
           errors[field.name] = `${formatColumnName(
@@ -251,6 +308,7 @@ const TambahRecordPenyakitPage = () => {
     setValidations([]);
     setLoading(true);
     toast.loading("Saving data...");
+
     // Validasi input berdasarkan skema
     const errors = validateInputs(schema, formValues);
 
@@ -258,7 +316,6 @@ const TambahRecordPenyakitPage = () => {
       setValidations(
         Object.entries(errors).map(([name, message]) => ({ name, message }))
       );
-
       toast.dismiss();
       toast.error("Please fix the validation errors.");
       setLoading(false);
@@ -267,7 +324,16 @@ const TambahRecordPenyakitPage = () => {
 
     const data = new FormData();
     schema.forEach((field) => {
-      data.append(`${field.name}`, formValues[`${field.name}`]);
+      const value = formValues[field.name];
+
+      // Cek jika input adalah file multiple
+      if (field.type === "file" && Array.isArray(value)) {
+        value.forEach((file) => {
+          data.append(`${field.name}[]`, file); // Tambahkan setiap file ke FormData
+        });
+      } else {
+        data.append(`${field.name}`, value || "");
+      }
     });
 
     request
@@ -288,11 +354,15 @@ const TambahRecordPenyakitPage = () => {
             ([name, messages]) => messages.map((message) => ({ name, message }))
           )
         );
-
         toast.dismiss();
         toast.error("Invalid Input");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
+
+  console.log(formValues);
   return (
     <LayoutOperator>
       <div className="space-y-4">
@@ -413,8 +483,9 @@ const TambahRecordPenyakitPage = () => {
                               field.type === "phone"
                                 ? e.target.value.replace(/[^0-9]/g, "")
                                 : field.type === "file"
-                                ? e.target.files[0]
-                                : e.target.value
+                                ? e.target.files // Mendukung multiple files
+                                : e.target.value,
+                              field.type === "file" && field.multiple // Mengirimkan nilai multiple ke handleChange
                             )
                           }
                           validations={validations}
@@ -424,6 +495,19 @@ const TambahRecordPenyakitPage = () => {
                             field.type === "file"
                               ? getAcceptFormat(field.format)
                               : undefined
+                          }
+                          multiple={
+                            field.type === "file" && field.multiple
+                              ? true
+                              : undefined
+                          } // Menentukan apakah input file mendukung multiple
+                          multipleDatas={
+                            field.type === "file" && field.multiple
+                              ? formValues[field.name]
+                              : undefined
+                          }
+                          handleDeleteLocalImage={(index) =>
+                            handleDeleteLocalImage(field.name, index)
                           }
                         />
                       </div>

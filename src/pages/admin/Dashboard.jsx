@@ -101,7 +101,7 @@ const Dashboard = () => {
           >
             <div className="flex flex-col  leading-normal">
               <p className="mb-2 font-semibold text-base text-[#202224] ">
-                Total Upload Detak
+                Total Upload Record
               </p>
               <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                 {stats?.total_disease_records ?? "0"}
