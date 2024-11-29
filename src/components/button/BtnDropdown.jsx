@@ -21,7 +21,7 @@ const BtnDropdown = ({ rowMenu, title, setState, value }) => {
       <button
         id="dropdownDefaultButton"
         onClick={toggleDropdown}
-        className="text-black bg-white shadow-main font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        className="text-black bg-white shadow-main font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
         type="button"
       >
         {title}
@@ -50,7 +50,7 @@ const BtnDropdown = ({ rowMenu, title, setState, value }) => {
         } absolute right-0 z-10 bg-white divide-y shadow-main divide-gray-100 rounded-lg shadow max-w-sm`}
         style={{ top: "100%", left: 0 }}
       >
-        <ul className="text-sm text-gray-700 dark:text-gray-200">
+        <ul className="text-sm text-gray-700">
           {rowMenu.map((item, index) => (
             <li key={index}>
               <button

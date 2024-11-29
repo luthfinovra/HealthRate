@@ -264,6 +264,7 @@ const TambahPenyakitPage = () => {
                   type={"file"}
                   label={"Cover Page"}
                   imageOnly={true}
+                  value={cover}
                   // previewImage={oldData.mediaUri}
                   validations={validations}
                   onChange={(e) => {
@@ -272,6 +273,7 @@ const TambahPenyakitPage = () => {
                       setCover(img);
                     }
                   }}
+                  accept={"image/*"}
                 />
                 <InputField
                   id={"name"}
@@ -334,7 +336,7 @@ const TambahPenyakitPage = () => {
                 )}
               </button>
             </div>
-            <div className="w-full space-y-6 bg-white shadow-main p-6 rounded-xl dark:border-gray-700 col-span-2 overflow-x-auto">
+            <div className="w-full space-y-6 bg-white shadow-main p-6 rounded-xl col-span-2 overflow-x-auto">
               <div className="flex justify-between items-center border-b pb-2">
                 <h1 className="text-xl font-semibold">Schema</h1>
                 <button
@@ -347,8 +349,8 @@ const TambahPenyakitPage = () => {
                 </button>
               </div>
 
-              <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
+              <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
                   <thead className="text-xs text-gray-700 uppercase">
                     <tr>
                       <th scope="col" className="w-4">
@@ -377,10 +379,7 @@ const TambahPenyakitPage = () => {
                       );
 
                       return (
-                        <tr
-                          key={index}
-                          className="bg-white hover:bg-gray-50 dark:hover:bg-gray-600"
-                        >
+                        <tr key={index} className="bg-white hover:bg-gray-50">
                           <td className="w-4 p-4">
                             <div className="flex items-center">
                               <input
@@ -429,7 +428,7 @@ const TambahPenyakitPage = () => {
                                     onClick={() =>
                                       setModalData({
                                         isOpen: true,
-                                        errors: rowErrors.errors.filter(
+                                        errors: rowErrors?.errors?.filter(
                                           (error) => error.path === "column"
                                         ),
                                       })
@@ -484,7 +483,7 @@ const TambahPenyakitPage = () => {
                                     onClick={() =>
                                       setModalData({
                                         isOpen: true,
-                                        errors: rowErrors.errors.filter(
+                                        errors: rowErrors?.errors?.filter(
                                           (error) => error.path === "type"
                                         ),
                                       })
@@ -539,7 +538,7 @@ const TambahPenyakitPage = () => {
                                     onClick={() =>
                                       setModalData({
                                         isOpen: true,
-                                        errors: rowErrors.errors.filter(
+                                        errors: rowErrors?.errors?.filter(
                                           (error) => error.path === "format"
                                         ),
                                       })
@@ -577,7 +576,7 @@ const TambahPenyakitPage = () => {
                           <td className="flex items-center px-6 py-4">
                             <button
                               onClick={() =>
-                                setRows(rows.filter((_, i) => i !== index))
+                                setRows(rows?.filter((_, i) => i !== index))
                               }
                               className="bg-red-500 px-3 py-1 text-white rounded-lg"
                             >

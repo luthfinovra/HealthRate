@@ -26,7 +26,6 @@ const InputField = ({
   handleDeleteImage, // Fungsi untuk hapus di API
   handleDeleteLocalImage, // Fungsi untuk hapus di local
 }) => {
-  console.log(value);
   return (
     <div className="w-full">
       {label && (
@@ -77,7 +76,14 @@ const InputField = ({
           <div className="border border-black rounded-sm bg-gray-200 h-[26px] inline-flex px-2 mr-[4px] whitespace-nowrap">
             <p className="m-auto">Choose Files</p>
           </div>
-          <p className="inline-flex text-gray-700 ml-2">
+          <p
+            className="inline-flex text-gray-700 ml-2 whitespace-nowrap overflow-auto [&::-webkit-scrollbar]:w-2 
+  [&::-webkit-scrollbar]:h-2 
+  [&::-webkit-scrollbar-track]:rounded-full
+  [&::-webkit-scrollbar-track]:bg-gray-100
+  [&::-webkit-scrollbar-thumb]:rounded-full
+  [&::-webkit-scrollbar-thumb]:bg-gray-300"
+          >
             {multipleDatas && valueMultiple && multiple
               ? `File ${multipleDatas.length + valueMultiple.length}`
               : valueMultiple && multiple

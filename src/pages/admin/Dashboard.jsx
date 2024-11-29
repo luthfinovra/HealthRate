@@ -103,7 +103,7 @@ const Dashboard = () => {
               <p className="mb-2 font-semibold text-base text-[#202224] ">
                 Total Upload Record
               </p>
-              <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              <h5 className="text-2xl font-bold tracking-tight text-gray-900">
                 {stats?.total_disease_records ?? "0"}
               </h5>
             </div>
@@ -118,14 +118,14 @@ const Dashboard = () => {
               >
                 <path
                   opacity="0.587821"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M6.66675 5.33333C6.66675 8.27885 9.05456 10.6667 12.0001 10.6667C14.9456 10.6667 17.3334 8.27885 17.3334 5.33333C17.3334 2.38781 14.9456 0 12.0001 0C9.05456 0 6.66675 2.38781 6.66675 5.33333ZM20.0001 10.6667C20.0001 12.8758 21.7909 14.6667 24.0001 14.6667C26.2092 14.6667 28.0001 12.8758 28.0001 10.6667C28.0001 8.45753 26.2092 6.66667 24.0001 6.66667C21.7909 6.66667 20.0001 8.45753 20.0001 10.6667Z"
                   fill="#554F9B"
                 />
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M11.9778 13.3333C5.68255 13.3333 0.517678 16.5686 0.000868912 22.9322C-0.0272823 23.2788 0.635616 23.9999 0.970003 23.9999H22.9956C23.9972 23.9999 24.0128 23.1939 23.9972 22.9333C23.6065 16.3908 18.3616 13.3333 11.9778 13.3333ZM31.2746 23.9999L26.1333 23.9999C26.1333 20.9987 25.1417 18.229 23.4683 16.0007C28.0103 16.0504 31.7189 18.3468 31.998 23.1999C32.0092 23.3954 31.998 23.9999 31.2746 23.9999Z"
                   fill="#554F9B"
                 />
@@ -145,7 +145,7 @@ const Dashboard = () => {
                   <p className="mb-2 font-semibold text-base text-[#202224] ">
                     Total {data.name}
                   </p>
-                  <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  <h5 className="text-2xl font-bold tracking-tight text-gray-900">
                     {data.disease_records_count ?? "0"}
                   </h5>
                 </div>
@@ -158,8 +158,8 @@ const Dashboard = () => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M12.0002 1.68083C17.7998 -1.53663 21.3465 0.311218 22.833 3.47925C23.6275 5.17248 24.2672 8.1762 23.8876 11.3105H18.5132L17.8115 9.72615C17.5212 8.97772 16.5496 8.89924 16.1715 9.62162L15.5989 10.7147L14.426 5.65907C14.2374 4.64113 12.8935 4.58068 12.6399 5.59395L11.3838 10.6021L10.9678 8.93397C10.7829 8.18121 9.88676 7.93507 9.39863 8.53288L7.12438 11.3105H0.112418C-0.26724 8.1762 0.372509 5.17248 1.16726 3.47925C2.65354 0.311218 6.2002 -1.53663 12.0002 1.68083ZM23.5027 13.3006C22.2599 17.8964 15.8537 23.2603 12.0002 24C8.14656 23.2599 1.74045 17.8967 0.497623 13.301H7.5327C7.8347 13.301 8.10249 13.1427 8.26983 12.8992L9.63962 11.2263L10.4935 14.6689C10.7358 15.6508 12.0214 15.6407 12.2649 14.6722L13.492 9.78292L14.3773 13.5999C14.5847 14.4996 15.7111 14.6178 16.0873 13.8032L16.9006 12.25L17.1148 12.7332C17.2716 13.0889 17.5986 13.2966 17.9397 13.2969L23.5027 13.3006Z"
                       fill="#554F9B"
                     />
@@ -168,7 +168,7 @@ const Dashboard = () => {
               </a>
             ))}
         </div>
-        <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
+        <div className="bg-white shadow-main p-6 rounded-xl space-y-9">
           <h1 className="font-medium text-[18px]">Riwayat Kegiatan</h1>
           <div className="flex gap-2">
             <BtnDropdown

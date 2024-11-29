@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import NavbarResearcher from "../components/navbar/navbarResearcher";
-import { MdLogin } from "react-icons/md";
 import InputField from "../components/inputField/InputField";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import TextareaField from "../components/inputField/TextareaField";
@@ -39,7 +38,13 @@ const formSchema = z
     institution: z.string().optional(),
     gender: z.string().optional(),
 
-    phone_number: z.string().optional(),
+    phone_number: z
+      .string()
+      .regex(/^628[1-9][0-9]{6,11}$/, {
+        message:
+          "Nomor telepon harus dengan format 62 dan terdiri dari 10-15 digit.",
+      })
+      .optional(),
 
     tujuan_permohonan: z.string().optional(),
 
@@ -283,8 +288,8 @@ const Register = () => {
                     validations={validations}
                   />
                   <InputField
-                    id={"phoneNumber"}
-                    name={"phoneNumber"}
+                    id={"phone_number"}
+                    name={"phone_number"}
                     onChange={(event) => {
                       setPhoneNumber(event.target.value);
                     }}

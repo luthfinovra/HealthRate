@@ -19,14 +19,32 @@ import RecordPenyakitPage from "./pages/operator/RecordPenyakitPage.jsx";
 import TambahRecordPenyakitPage from "./pages/operator/TambahRecordPenyakitPage.jsx";
 import EditRecordPenyakitPage from "./pages/operator/EditRecordPenyakitPage.jsx";
 import ResearcherDetailPenyakitPage from "./pages/user/ResearcherDetailPenyakitPage.jsx";
+import AuthRedirect from "./middleware/AuthRedirect.js";
+import NotFound from "./components/404/NotFound.jsx";
 
 export default function App() {
   return (
     <Router>
       <Routes>
+        {/* Halaman 404 */}
+        <Route path="*" element={<NotFound />} />
         {/* Halaman Login dan Register */}
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            <AuthRedirect>
+              <Login />
+            </AuthRedirect>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <AuthRedirect>
+              <Register />
+            </AuthRedirect>
+          }
+        />
 
         {/* Admin Routes */}
         <Route

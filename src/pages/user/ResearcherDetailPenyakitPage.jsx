@@ -114,7 +114,7 @@ const ResearcherDetailPenyakitPage = () => {
               {detailDiseasesDatas?.deskripsi}
             </p>
 
-            <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
+            <div className="bg-white shadow-main p-6 rounded-xl space-y-9">
               <div className="flex items-center justify-between">
                 <h1 className="font-medium text-[18px]">Data Record</h1>
                 <button

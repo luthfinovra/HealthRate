@@ -9,8 +9,8 @@ export default function DefaultTable({ rowMenu, children }) {
   [&::-webkit-scrollbar-thumb]:bg-gray-300
 "
     >
-      <table className="table-auto w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-900 uppercase sticky top-0 dark:text-gray-400 bg-white">
+      <table className="table-auto w-full text-sm text-left rtl:text-right text-gray-500">
+        <thead className="text-xs text-gray-900 uppercase sticky top-0 bg-white">
           <tr className="border-b">
             {rowMenu.map((item, index) => (
               <th

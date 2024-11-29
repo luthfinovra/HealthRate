@@ -97,7 +97,7 @@ const PenyakitPage = () => {
               />
             </div>
           </div>
-          <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
+          <div className="bg-white shadow-main p-6 rounded-xl space-y-9">
             <h1 className="font-medium text-[18px]">Data Record</h1>
             {loading ? (
               <Loading />
@@ -144,7 +144,7 @@ const PenyakitPage = () => {
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                           >
-                            <g clip-path="url(#clip0_376_202)">
+                            <g clipPath="url(#clip0_376_202)">
                               <path
                                 d="M2.75 13.095V15.375C2.75 15.585 2.915 15.75 3.125 15.75H5.405C5.5025 15.75 5.6 15.7125 5.6675 15.6375L13.8575 7.45504L11.045 4.64254L2.8625 12.825C2.7875 12.9 2.75 12.99 2.75 13.095ZM16.0325 5.28004C16.325 4.98754 16.325 4.51504 16.0325 4.22254L14.2775 2.46754C13.985 2.17504 13.5125 2.17504 13.22 2.46754L11.8475 3.84004L14.66 6.65254L16.0325 5.28004Z"
                                 fill="white"
