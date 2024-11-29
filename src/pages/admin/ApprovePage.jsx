@@ -1,39 +1,39 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import { useNavigate } from "react-router-dom";
-import DefaultTable from "../../components/table/DefaultTable";
-import request from "../../utils/request";
-import Pagination from "../../components/paginations/Pagination";
-import InputSearch from "../../components/inputField/InputSearch";
-import toast from "react-hot-toast";
-import Loading from "../../components/loading/Loading";
+import React, { useCallback, useEffect, useState } from 'react';
+import LayoutAdmin from '../../components/layout/LayoutAdmin';
+import { useNavigate } from 'react-router-dom';
+import DefaultTable from '../../components/table/DefaultTable';
+import request from '../../utils/request';
+import Pagination from '../../components/paginations/Pagination';
+import InputSearch from '../../components/inputField/InputSearch';
+import toast from 'react-hot-toast';
+import Loading from '../../components/loading/Loading';
 
 const ApprovePage = () => {
   const [userDatas, setUserDatas] = useState([]);
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [page, setPage] = useState(1);
   const limit = 10;
   const [paginations, setPaginations] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const rowMenu = [
-    { menu: "nama" },
-    { menu: "email" },
-    { menu: "Intitusi" },
-    { menu: "Jenis Kelamin", className: "" },
-    { menu: "No tlpn" },
-    { menu: "Tujuan", className: "w-[1500px]" },
-    { menu: "Aksi" },
+    { menu: 'nama' },
+    { menu: 'email' },
+    { menu: 'Intitusi' },
+    { menu: 'Jenis Kelamin', className: '' },
+    { menu: 'No tlpn' },
+    { menu: 'Tujuan', className: 'w-[1500px]' },
+    { menu: 'Aksi' },
   ];
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     const payload = {
-      role: "peneliti",
+      role: 'peneliti',
       page: page,
       per_page: limit,
       name: name,
-      approval_status: "pending",
+      approval_status: 'pending',
     };
     request
       .get(`/admin/users`, payload)
@@ -62,7 +62,7 @@ const ApprovePage = () => {
     };
 
     const headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
 
     request
@@ -71,26 +71,30 @@ const ApprovePage = () => {
         if (response.status === 200 || response.status === 201) {
           toast.dismiss();
           toast.success(response.data.message || `Status updated to ${status}`);
+          console.log(phone);
           const phoneNumber = { phone }; // Ganti dengan nomor tujuan
-          const message = "Kamu sudah di approve sama admin."; // Pesan Anda
-          const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+          const message =
+            status === 'approved'
+              ? 'Kamu sudah di approve sama admin.'
+              : 'Mohon maaf pendaftaran kamu kami tolak.'; // Pesan Anda
+          const url = `https://wa.me/${'6282285348919'}?text=${encodeURIComponent(
             message
           )}`;
 
-          window.open(url, "_blank"); // Membuka WhatsApp di tab baru
+          window.open(url, '_blank'); // Membuka WhatsApp di tab baru
           fetchUsers();
-          navigate("/admin/persetujuan-peneliti");
+          navigate('/admin/persetujuan-peneliti');
           setLoading(false);
         } else {
           toast.dismiss();
-          toast.error("Update failed");
+          toast.error('Update failed');
           fetchUsers();
           setLoading(false);
         }
       })
       .catch(function (error) {
         toast.dismiss();
-        toast.error("Update failed");
+        toast.error('Update failed');
         setLoading(false);
       });
   };
@@ -110,11 +114,11 @@ const ApprovePage = () => {
             </div>
             <div className="flex gap-2">
               <InputSearch
-                id={"search-name"}
-                name={"search-name"}
+                id={'search-name'}
+                name={'search-name'}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={"Search users by name..."}
+                placeholder={'Search users by name...'}
               />
             </div>
           </div>
@@ -151,7 +155,14 @@ const ApprovePage = () => {
                       <td className="px-6 py-4 flex gap-3">
                         <button
                           className="bg-[#51A279] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center"
-                          onClick={(e) => onUpdate(e, data?.id, "approved")}
+                          onClick={(e) =>
+                            onUpdate(
+                              e,
+                              data?.id,
+                              'approved',
+                              data?.phone_number
+                            )
+                          }
                         >
                           <svg
                             width="17"
@@ -172,7 +183,7 @@ const ApprovePage = () => {
                             onUpdate(
                               e,
                               data?.id,
-                              "rejected",
+                              'rejected',
                               data?.phone_number
                             )
                           }

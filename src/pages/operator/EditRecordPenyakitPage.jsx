@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import request from "../../utils/request";
-import InputField from "../../components/inputField/InputField";
-import LayoutOperator from "../../components/layout/LayoutOperator";
-import toast from "react-hot-toast";
-import formatColumnName from "../../utils/formatColumnName";
-import InputSelect from "../../components/inputField/InputSelect";
-import TextareaField from "../../components/inputField/TextareaField";
-import Loading from "../../components/loading/Loading";
+import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import request from '../../utils/request';
+import InputField from '../../components/inputField/InputField';
+import LayoutOperator from '../../components/layout/LayoutOperator';
+import toast from 'react-hot-toast';
+import formatColumnName from '../../utils/formatColumnName';
+import InputSelect from '../../components/inputField/InputSelect';
+import TextareaField from '../../components/inputField/TextareaField';
+import Loading from '../../components/loading/Loading';
 
 const EditRecordPenyakitPage = () => {
   const { id, id_record } = useParams();
@@ -40,9 +40,9 @@ const EditRecordPenyakitPage = () => {
   useEffect(() => {
     if (schema.length > 0) {
       const defaultValues = schema.reduce((acc, field) => {
-        let defaultValue = "";
+        let defaultValue = '';
         // Skip setting default value for 'file' type fields
-        if (field.type === "file") {
+        if (field.type === 'file') {
           acc[field.name] = null; // You can choose to leave it as null or do nothing
           return acc;
         }
@@ -55,22 +55,22 @@ const EditRecordPenyakitPage = () => {
           defaultValue = detailRecordDiseases[field.name];
         } else {
           // Set default based on field type
-          if (field.type === "boolean") {
+          if (field.type === 'boolean') {
             defaultValue = false; // Default for boolean
           } else if (
-            field.type === "integer" ||
-            field.type === "float" ||
-            field.type === "decimal"
+            field.type === 'integer' ||
+            field.type === 'float' ||
+            field.type === 'decimal'
           ) {
             defaultValue = 0; // Default for number types
           } else if (
-            field.type === "datetime" ||
-            field.type === "date" ||
-            field.type === "time"
+            field.type === 'datetime' ||
+            field.type === 'date' ||
+            field.type === 'time'
           ) {
-            defaultValue = ""; // Default for date/time types
-          } else if (field.type === "text") {
-            defaultValue = ""; // Default for text
+            defaultValue = ''; // Default for date/time types
+          } else if (field.type === 'text') {
+            defaultValue = ''; // Default for text
           }
         }
 
@@ -83,68 +83,68 @@ const EditRecordPenyakitPage = () => {
   console.log(formValues);
   const mimeTypeMap = {
     audio: [
-      "aac",
-      "midi",
-      "mp3",
-      "ogg",
-      "wav",
-      "webm",
-      "flac",
-      "aiff",
-      "amr",
-      "opus",
+      'aac',
+      'midi',
+      'mp3',
+      'ogg',
+      'wav',
+      'webm',
+      'flac',
+      'aiff',
+      'amr',
+      'opus',
     ],
     video: [
-      "mp4",
-      "avi",
-      "mkv",
-      "webm",
-      "ogg",
-      "3gp",
-      "flv",
-      "mov",
-      "wmv",
-      "mpg",
-      "mpeg",
-      "m4v",
-      "h264",
-      "hevc",
+      'mp4',
+      'avi',
+      'mkv',
+      'webm',
+      'ogg',
+      '3gp',
+      'flv',
+      'mov',
+      'wmv',
+      'mpg',
+      'mpeg',
+      'm4v',
+      'h264',
+      'hevc',
     ],
     image: [
-      "jpeg",
-      "jpg",
-      "png",
-      "gif",
-      "bmp",
-      "webp",
-      "tiff",
-      "svg",
-      "heif",
-      "heic",
-      "ico",
-      "jp2",
-      "j2k",
-      "avif",
+      'jpeg',
+      'jpg',
+      'png',
+      'gif',
+      'bmp',
+      'webp',
+      'tiff',
+      'svg',
+      'heif',
+      'heic',
+      'ico',
+      'jp2',
+      'j2k',
+      'avif',
     ],
-    "text-document": [
-      "pdf",
-      "doc",
-      "docx",
-      "xml",
-      "json",
-      "html",
-      "txt",
-      "rtf",
-      "odt",
+    'text-document': [
+      'pdf',
+      'doc',
+      'docx',
+      'xml',
+      'json',
+      'html',
+      'txt',
+      'rtf',
+      'odt',
     ],
-    "compressed-document": ["zip", "7z", "tar", "gz", "rar", "bz2", "xz"],
-    spreadsheet: ["xls", "xlsx", "csv", "ods"],
+    'compressed-document': ['zip', '7z', 'tar', 'gz', 'rar', 'bz2', 'xz'],
+    spreadsheet: ['xls', 'xlsx', 'csv', 'ods'],
   };
 
   // Fungsi untuk mendapatkan format accept
   const getAcceptFormat = (format) => {
     const formats = mimeTypeMap[format];
-    return formats ? formats.map((ext) => `.${ext}`).join(",") : undefined;
+    return formats ? formats.map((ext) => `.${ext}`).join(',') : undefined;
   };
 
   const handleChange = (name, value, multiple = false) => {
@@ -194,7 +194,7 @@ const EditRecordPenyakitPage = () => {
 
       // Validasi untuk angka (integer, float, decimal)
       if (
-        ["integer", "float", "decimal"].includes(field.type) &&
+        ['integer', 'float', 'decimal'].includes(field.type) &&
         value !== undefined &&
         isNaN(value)
       ) {
@@ -206,7 +206,7 @@ const EditRecordPenyakitPage = () => {
 
       // Validasi untuk angka positif
       if (
-        ["integer", "float", "decimal"].includes(field.type) &&
+        ['integer', 'float', 'decimal'].includes(field.type) &&
         value !== undefined &&
         Number(value) < 0
       ) {
@@ -217,7 +217,7 @@ const EditRecordPenyakitPage = () => {
       }
 
       // Validasi untuk boolean
-      if (field.type === "boolean" && typeof value !== "boolean") {
+      if (field.type === 'boolean' && typeof value !== 'boolean') {
         errors[field.name] = `${formatColumnName(
           field.name
         )} must be true or false.`;
@@ -226,8 +226,8 @@ const EditRecordPenyakitPage = () => {
 
       // Validasi untuk email
       if (
-        field.type === "text" &&
-        field.format === "email" &&
+        field.type === 'text' &&
+        field.format === 'email' &&
         value &&
         !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
       ) {
@@ -239,8 +239,8 @@ const EditRecordPenyakitPage = () => {
 
       // Validasi untuk nomor telepon
       if (
-        field.type === "text" &&
-        field.format === "phone" &&
+        field.type === 'text' &&
+        field.format === 'phone' &&
         value &&
         !/^\+?[0-9]{10,15}$/.test(value)
       ) {
@@ -251,7 +251,7 @@ const EditRecordPenyakitPage = () => {
       }
 
       // Validasi untuk tanggal
-      if (["date", "datetime"].includes(field.type) && value) {
+      if (['date', 'datetime'].includes(field.type) && value) {
         const date = new Date(value);
         if (isNaN(date.getTime())) {
           errors[field.name] = `${formatColumnName(
@@ -262,34 +262,34 @@ const EditRecordPenyakitPage = () => {
       }
 
       // Validasi untuk file (Jika tipe file berupa array)
-      if (field.type === "file" && Array.isArray(value)) {
+      if (field.type === 'file' && Array.isArray(value)) {
         value.forEach((file, index) => {
-          const fileExtension = file?.name?.split(".").pop().toLowerCase();
+          const fileExtension = file?.name?.split('.').pop().toLowerCase();
           const allowedExtensions = mimeTypeMap[field.format] || [];
           if (!allowedExtensions.includes(fileExtension)) {
             errors[`${field.name}[${index}]`] = `${formatColumnName(
               field.name
             )} file at index ${
               index + 1
-            } must be a valid file of type ${allowedExtensions.join(", ")}.`;
+            } must be a valid file of type ${allowedExtensions.join(', ')}.`;
           }
         });
       }
 
       // Validasi untuk file (Jika tipe file tunggal)
-      if (field.type === "file" && !Array.isArray(value) && value) {
-        const fileExtension = value?.name?.split(".").pop().toLowerCase();
+      if (field.type === 'file' && !Array.isArray(value) && value) {
+        const fileExtension = value?.name?.split('.').pop().toLowerCase();
         const allowedExtensions = mimeTypeMap[field.format] || [];
         if (!allowedExtensions.includes(fileExtension)) {
           errors[field.name] = `${formatColumnName(
             field.name
-          )} must be a valid file of type ${allowedExtensions.join(", ")}.`;
+          )} must be a valid file of type ${allowedExtensions.join(', ')}.`;
         }
       }
 
       // Validasi untuk panjang teks (jika ada aturan min/max length)
       if (
-        field.type === "text" &&
+        field.type === 'text' &&
         value &&
         ((field.minLength && value.length < field.minLength) ||
           (field.maxLength && value.length > field.maxLength))
@@ -307,7 +307,7 @@ const EditRecordPenyakitPage = () => {
     e.preventDefault();
     setValidations([]);
     setLoading(true);
-    toast.loading("Saving data...");
+    toast.loading('Saving data...');
     // Validasi input berdasarkan skema
     const errors = validateInputs(schema, formValues);
 
@@ -317,7 +317,7 @@ const EditRecordPenyakitPage = () => {
       );
 
       toast.dismiss();
-      toast.error("Please fix the validation errors.");
+      toast.error('Please fix the validation errors.');
       setLoading(false);
       return;
     }
@@ -327,12 +327,18 @@ const EditRecordPenyakitPage = () => {
       const fieldValue = formValues[`${field.name}`];
 
       if (
-        field.type === "file" &&
+        field.type === 'file' &&
         fieldValue !== null &&
         fieldValue !== undefined
       ) {
-        data.append(`${field.name}`, fieldValue);
-      } else if (field.type !== "file") {
+        if (field.type === 'file' && Array.isArray(fieldValue)) {
+          fieldValue.forEach((file) => {
+            data.append(`${field.name}[]`, file); // Tambahkan setiap file ke FormData
+          });
+        } else {
+          data.append(`${field.name}`, fieldValue || '');
+        }
+      } else if (field.type !== 'file') {
         data.append(`${field.name}`, fieldValue);
       }
     });
@@ -346,7 +352,7 @@ const EditRecordPenyakitPage = () => {
           navigate(`/operator/record-penyakit/${id}`);
         } else {
           toast.dismiss();
-          toast.error("Invalid Input");
+          toast.error('Invalid Input');
         }
       })
       .catch((error) => {
@@ -357,7 +363,7 @@ const EditRecordPenyakitPage = () => {
         );
 
         toast.dismiss();
-        toast.error("Invalid Input");
+        toast.error('Invalid Input');
       });
   };
 
@@ -388,32 +394,32 @@ const EditRecordPenyakitPage = () => {
             ) : (
               <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
                 {schema.map((field, i) => {
-                  let inputType = "text"; // Default input type
+                  let inputType = 'text'; // Default input type
                   if (
-                    field.type === "integer" ||
-                    field.type === "decimal" ||
-                    field.type === "float"
+                    field.type === 'integer' ||
+                    field.type === 'decimal' ||
+                    field.type === 'float'
                   ) {
-                    inputType = "number";
-                  } else if (field.type === "datetime") {
-                    inputType = "datetime-local";
-                  } else if (field.type === "file") {
-                    inputType = "file";
-                  } else if (field.type === "date") {
-                    inputType = "date";
-                  } else if (field.type === "time") {
-                    inputType = "time";
+                    inputType = 'number';
+                  } else if (field.type === 'datetime') {
+                    inputType = 'datetime-local';
+                  } else if (field.type === 'file') {
+                    inputType = 'file';
+                  } else if (field.type === 'date') {
+                    inputType = 'date';
+                  } else if (field.type === 'time') {
+                    inputType = 'time';
                   }
 
                   // Render berdasarkan tipe field
-                  if (field.type === "boolean") {
+                  if (field.type === 'boolean') {
                     return (
                       <div key={field.name} className="mb-4">
                         <InputSelect
                           id={field.name}
                           name={field.name}
                           label={formatColumnName(field.name)}
-                          value={formValues[field.name] || ""}
+                          value={formValues[field.name] || ''}
                           onChange={(e) =>
                             handleChange(field.name, e.target.value)
                           }
@@ -433,13 +439,13 @@ const EditRecordPenyakitPage = () => {
                           ))}
                       </div>
                     );
-                  } else if (field.type === "text") {
+                  } else if (field.type === 'text') {
                     return (
                       <div key={field.name} className="mb-4">
                         <TextareaField
                           id={field.name}
                           name={field.name}
-                          value={formValues[field.name] || ""}
+                          value={formValues[field.name] || ''}
                           onChange={(e) =>
                             handleChange(field.name, e.target.value)
                           }
@@ -464,47 +470,47 @@ const EditRecordPenyakitPage = () => {
                           name={field.name}
                           type={inputType}
                           step={
-                            field.type === "float" || field.type === "decimal"
-                              ? "0.001"
+                            field.type === 'float' || field.type === 'decimal'
+                              ? '0.001'
                               : undefined
                           }
-                          value={formValues[field.name] || ""}
+                          value={formValues[field.name] || ''}
                           onChange={(e) =>
                             handleChange(
                               field.name,
-                              field.type === "phone"
-                                ? e.target.value.replace(/[^0-9]/g, "")
-                                : field.type === "file"
+                              field.type === 'phone'
+                                ? e.target.value.replace(/[^0-9]/g, '')
+                                : field.type === 'file'
                                 ? e.target.files // Mendukung multiple files
                                 : e.target.value,
-                              field.type === "file" && field.multiple // Mengirimkan nilai multiple ke handleChange
+                              field.type === 'file' && field.multiple // Mengirimkan nilai multiple ke handleChange
                             )
                           }
                           validations={validations}
                           placeholder={`Input your ${field.name}`}
                           label={formatColumnName(field.name)} // Format label
                           accept={
-                            field.type === "file"
+                            field.type === 'file'
                               ? getAcceptFormat(field.format)
                               : undefined
                           }
                           multiple={
-                            field.type === "file" && field.multiple
+                            field.type === 'file' && field.multiple
                               ? true
                               : undefined
                           } // Menentukan apakah input file mendukung multiple
                           previewImage={
-                            field.type === "file" && !field.multiple
+                            field.type === 'file' && !field.multiple
                               ? detailRecordDiseases[field.name]
                               : undefined
                           }
                           multipleDatas={
-                            field.type === "file" && field.multiple
+                            field.type === 'file' && field.multiple
                               ? formValues[field.name]
                               : undefined
                           }
                           valueMultiple={
-                            field.type === "file" && field.multiple
+                            field.type === 'file' && field.multiple
                               ? detailRecordDiseases[field.name]
                               : undefined
                           }
