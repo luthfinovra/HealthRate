@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LayoutAdmin from "../../components/layout/LayoutAdmin";
-import InputSearch from "../../components/inputField/InputSearch";
-import DefaultTable from "../../components/table/DefaultTable";
-import request from "../../utils/request";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import Pagination from "../../components/paginations/Pagination";
-import Loading from "../../components/loading/Loading";
+import React, { useCallback, useEffect, useState } from 'react';
+import LayoutAdmin from '../../components/layout/LayoutAdmin';
+import InputSearch from '../../components/inputField/InputSearch';
+import DefaultTable from '../../components/table/DefaultTable';
+import request from '../../utils/request';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import Pagination from '../../components/paginations/Pagination';
+import Loading from '../../components/loading/Loading';
 
 const PenyakitPage = () => {
   const [diseasesDatas, setDiseasesDatas] = useState([]);
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [page, setPage] = useState(1);
   const limit = 10;
   const [paginations, setPaginations] = useState({});
@@ -18,18 +18,18 @@ const PenyakitPage = () => {
   const navigate = useNavigate();
 
   const rowMenu = [
-    { menu: "id" },
-    { menu: "nama penyakit" },
-    { menu: "deskripsi penyakit" },
-    { menu: "Lihat" },
-    { menu: "Edit" },
-    { menu: "Hapus" },
+    { menu: 'id' },
+    { menu: 'nama penyakit' },
+    { menu: 'deskripsi penyakit' },
+    { menu: 'Lihat' },
+    { menu: 'Edit' },
+    { menu: 'Hapus' },
   ];
 
   const onDelete = async (e, id) => {
     e.preventDefault();
     setLoading(true);
-    toast.loading("Deleting data...");
+    toast.loading('Deleting data...');
 
     request
       .delete(`/diseases/${id}`)
@@ -38,7 +38,7 @@ const PenyakitPage = () => {
           toast.dismiss();
           toast.success(response.data.message);
           fetchDiseases();
-          navigate("/admin/penyakit");
+          navigate('/admin/penyakit');
         } else {
           toast.dismiss();
           toast.error(response.data.message);
@@ -84,16 +84,18 @@ const PenyakitPage = () => {
                 Penyakit
               </h1>
               <p className=" max-w-3xl font-normal text-[14px] text-[#2D3748] leading-[150%]">
-                Lorem lorem lorem
+                Anda dapat melihat informasi Penyakit yang dapat diakses,
+                melihat detail dari penyakit, mengedit data penyakit dan
+                menghapus data penyakit
               </p>
             </div>
             <div className="flex gap-2">
               <InputSearch
-                id={"search-name"}
-                name={"search-name"}
+                id={'search-name'}
+                name={'search-name'}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={"Search users by name..."}
+                placeholder={'Search users by name...'}
               />
             </div>
           </div>

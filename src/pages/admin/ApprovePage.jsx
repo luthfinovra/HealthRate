@@ -109,7 +109,8 @@ const ApprovePage = () => {
                 Persetujuan
               </h1>
               <p className=" max-w-3xl font-normal text-[14px] text-[#2D3748] leading-[150%]">
-                Lorem lorem lorem
+                Anda dapat melihat informasi peneliti yang meminta persetujuan
+                dan melakukan penolakan/penerimaan kepada peneliti.
               </p>
             </div>
             <div className="flex gap-2">
