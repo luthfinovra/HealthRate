@@ -8,9 +8,9 @@ export default function DynamicTable({
   btnEdit = false,
   btnDelete = false,
   btnAction = false,
-  onDetail,
-  onEdit,
-  onDelete,
+  onDetail = () => {}, // Default function
+  onEdit = () => {}, // Default function
+  onDelete = () => {}, // Default function
 }) {
   return (
     <div
@@ -21,8 +21,8 @@ export default function DynamicTable({
   [&::-webkit-scrollbar-thumb]:rounded-full
   [&::-webkit-scrollbar-thumb]:bg-gray-300"
     >
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-900 uppercase dark:text-gray-400">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+        <thead className="text-xs text-gray-900 uppercase">
           <tr className="border-b">
             {rowMenu
               ?.filter((column) => column.is_visible)
@@ -45,9 +45,28 @@ export default function DynamicTable({
                   ?.filter((column) => column.is_visible)
                   .map((col, colIndex) => (
                     <td key={colIndex} className="px-6 py-3 align-top">
-                      {formatColumnName(data?.data[col.name])}
+                      {col.type === "file"
+                        ? Array.isArray(data?.data[col.name])
+                          ? data?.data[col.name].map((fileUrl, index) => (
+                              <div key={index}>
+                                {typeof fileUrl === "string" &&
+                                fileUrl.includes("/")
+                                  ? fileUrl.substring(
+                                      fileUrl.lastIndexOf("/") + 1
+                                    )
+                                  : "Invalid file URL"}
+                              </div>
+                            ))
+                          : typeof data?.data[col.name] === "string" &&
+                            data?.data[col.name].includes("/")
+                          ? data?.data[col.name].substring(
+                              data?.data[col.name].lastIndexOf("/") + 1
+                            )
+                          : "Invalid file URL"
+                        : data?.data[col.name]}
                     </td>
                   ))}
+
                 {btnAction && (
                   <td className="px-6 py-4 flex gap-3">
                     <button className="bg-[#51A279] px-5 py-1 rounded-lg min-w-[59px] flex items-center justify-center">
@@ -82,7 +101,7 @@ export default function DynamicTable({
                         xmlns="http://www.w3.org/2000/svg"
                         className="m-auto"
                       >
-                        <g clip-path="url(#clip0_376_202)">
+                        <g clipPath="url(#clip0_376_202)">
                           <path
                             d="M2.75 13.095V15.375C2.75 15.585 2.915 15.75 3.125 15.75H5.405C5.5025 15.75 5.6 15.7125 5.6675 15.6375L13.8575 7.45504L11.045 4.64254L2.8625 12.825C2.7875 12.9 2.75 12.99 2.75 13.095ZM16.0325 5.28004C16.325 4.98754 16.325 4.51504 16.0325 4.22254L14.2775 2.46754C13.985 2.17504 13.5125 2.17504 13.22 2.46754L11.8475 3.84004L14.66 6.65254L16.0325 5.28004Z"
                             fill="white"
@@ -151,9 +170,3 @@ export default function DynamicTable({
     </div>
   );
 }
-
-DynamicTable.defaultProps = {
-  onDetail: () => {},
-  onEdit: () => {},
-  onDelete: () => {},
-};

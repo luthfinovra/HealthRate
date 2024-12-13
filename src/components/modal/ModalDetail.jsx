@@ -35,6 +35,7 @@ const ModalDetail = ({ isOpen, onClose, title, schema, record }) => {
       return field.type === "file" && value;
     })
     .map((field) => ({
+      format: field.format,
       label: field.name,
       value: record[field.name],
     }));
@@ -64,16 +65,15 @@ const ModalDetail = ({ isOpen, onClose, title, schema, record }) => {
             </div>
           ))}
         </div>
-        {fileData.length > 0 && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Files</h3>
-            <div className="space-y-4">
-              {fileData.map((file, index) => (
-                <div key={index}>{renderFileDownloads(file.value)}</div>
-              ))}
+        {fileData.length > 0 &&
+          fileData.map((file, index) => (
+            <div className="space-y-4" key={index}>
+              <h3 className="text-lg font-semibold">Files {file.format} </h3>
+              <div className="space-y-4">
+                <div>{renderFileDownloads(file.value)}</div>
+              </div>
             </div>
-          </div>
-        )}
+          ))}
       </div>
     </div>
   );

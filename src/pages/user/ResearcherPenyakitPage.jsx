@@ -65,8 +65,9 @@ const ResearcherPenyakitPage = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {diseasesDatas &&
-              diseasesDatas.map((data) => (
+              diseasesDatas.map((data, index) => (
                 <CardPenyakit
+                  key={index}
                   image={data?.cover_page_url}
                   record={data?.disease_records_count}
                   name={data?.name}

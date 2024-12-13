@@ -82,7 +82,7 @@ const RecordPenyakitPage = () => {
                 </p>
               </div>
             </div>
-            <div className="bg-white shadow-main p-6 rounded-xl dark:border-gray-700 space-y-9">
+            <div className="bg-white shadow-main p-6 rounded-xl space-y-9">
               <h1 className="font-medium text-[18px]">Data Record</h1>
 
               <DynamicTable

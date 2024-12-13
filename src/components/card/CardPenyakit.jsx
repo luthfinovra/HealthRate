@@ -34,10 +34,10 @@ const CardPenyakit = ({ image, name, record, dateUpdate, id }) => {
             alt={name || "Penyakit"}
           />
           <div className="p-5">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
               {name || "Nama Penyakit"}
             </h5>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+            <p className="mb-3 font-normal text-gray-700">
               {record || 0} Record •{" "}
               {dateUpdate
                 ? "Updated " + timeAgo(dateUpdate)

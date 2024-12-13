@@ -178,7 +178,7 @@ const TambahPenggunaPage = () => {
           memilih role apa yang akan ditambahkan.
         </p>
         <div className=" space-y-9 grid md:grid-cols-2">
-          <div className=" w-full space-y-6 md:max-w-[500px]  bg-white shadow-main p-6 rounded-xl dark:border-gray-700 flex flex-col justify-between">
+          <div className=" w-full space-y-6 md:max-w-[500px]  bg-white shadow-main p-6 rounded-xl flex flex-col justify-between">
             <form className="space-y-4 md:space-y-6" onSubmit={onSubmit}>
               <InputField
                 id={'name'}

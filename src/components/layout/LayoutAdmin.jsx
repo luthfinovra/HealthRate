@@ -10,7 +10,7 @@ const LayoutAdmin = ({ children }) => {
   const navigate = useNavigate();
   return (
     <div>
-      <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
@@ -20,7 +20,7 @@ const LayoutAdmin = ({ children }) => {
                 data-drawer-toggle="logo-sidebar"
                 aria-controls="logo-sidebar"
                 type="button"
-                className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
               >
                 <span className="sr-only">Open sidebar</span>
                 <svg
@@ -31,8 +31,8 @@ const LayoutAdmin = ({ children }) => {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    clip-rule="evenodd"
-                    fill-rule="evenodd"
+                    clipRule="evenodd"
+                    fillRule="evenodd"
                     d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
                   ></path>
                 </svg>
@@ -60,7 +60,7 @@ const LayoutAdmin = ({ children }) => {
               className="group flex items-center space-x-1 text-red-400 hover:text-red-600"
             >
               {/* Lingkaran */}
-              <div className="shadow-main p-2 text-gray-500 rounded-full bg-red-400 group-hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:focus:ring-gray-600">
+              <div className="shadow-main p-2 text-gray-500 rounded-full bg-red-400 group-hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-gray-200">
                 <IoMdLogOut className="text-white group-hover:text-white" />
               </div>
               {/* Teks */}
@@ -74,11 +74,11 @@ const LayoutAdmin = ({ children }) => {
         id="logo-sidebar"
         className={`fixed top-0 left-0 z-40 w-52 h-screen pt-20 transition-transform ${
           isActive ? "translate-x-0" : "-translate-x-full"
-        } sm:translate-x-0 bg-white border-r border-gray-200  dark:bg-gray-800 dark:border-gray-700`}
+        } sm:translate-x-0 bg-white border-r border-gray-200 `}
         aria-label="Sidebar"
       >
         <div
-          className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800 pr-3 [&::-webkit-scrollbar]:w-2 
+          className="h-full px-3 pb-4 overflow-y-auto bg-white pr-3 [&::-webkit-scrollbar]:w-2 
   [&::-webkit-scrollbar]:h-2 
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-gray-100
@@ -110,7 +110,7 @@ const LayoutAdmin = ({ children }) => {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <g clip-path="url(#clip0_824_2869)">
+                    <g clipPath="url(#clip0_824_2869)">
                       <path
                         d="M8.16289 3.46736C8.11927 3.42563 8.06124 3.40234 8.00088 3.40234C7.94052 3.40234 7.88248 3.42563 7.83887 3.46736L2.44531 8.61979C2.42241 8.64171 2.40418 8.66804 2.39175 8.69719C2.37931 8.72635 2.37291 8.75773 2.37295 8.78942L2.37207 13.6252C2.37207 13.8738 2.47084 14.1123 2.64666 14.2881C2.82247 14.4639 3.06093 14.5627 3.30957 14.5627H6.125C6.24932 14.5627 6.36855 14.5133 6.45645 14.4254C6.54436 14.3375 6.59375 14.2182 6.59375 14.0939V10.1095C6.59375 10.0474 6.61844 9.98777 6.6624 9.94381C6.70635 9.89986 6.76596 9.87517 6.82812 9.87517H9.17187C9.23403 9.87517 9.29365 9.89986 9.3376 9.94381C9.38155 9.98777 9.40625 10.0474 9.40625 10.1095V14.0939C9.40625 14.2182 9.45563 14.3375 9.54354 14.4254C9.63145 14.5133 9.75068 14.5627 9.875 14.5627H12.6893C12.9379 14.5627 13.1764 14.4639 13.3522 14.2881C13.528 14.1123 13.6268 13.8738 13.6268 13.6252V8.78942C13.6268 8.75773 13.6204 8.72635 13.608 8.69719C13.5955 8.66804 13.5773 8.64171 13.5544 8.61979L8.16289 3.46736Z"
                         fill={`${
@@ -172,8 +172,8 @@ const LayoutAdmin = ({ children }) => {
                   >
                     <path
                       opacity="0.587821"
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M3.125 2.5C3.125 3.88071 4.24429 5 5.625 5C7.00571 5 8.125 3.88071 8.125 2.5C8.125 1.11929 7.00571 0 5.625 0C4.24429 0 3.125 1.11929 3.125 2.5ZM9.375 5.00004C9.375 6.03557 10.2145 6.87504 11.25 6.87504C12.2855 6.87504 13.125 6.03557 13.125 5.00004C13.125 3.9645 12.2855 3.12504 11.25 3.12504C10.2145 3.12504 9.375 3.9645 9.375 5.00004Z"
                       fill={`${
                         location.pathname === "/admin/users"
@@ -182,8 +182,8 @@ const LayoutAdmin = ({ children }) => {
                       }`}
                     />
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M5.61459 6.25C2.6637 6.25 0.242662 7.76657 0.000407303 10.7495C-0.0127886 10.912 0.297945 11.25 0.454689 11.25H10.7792C11.2487 11.25 11.256 10.8722 11.2487 10.75C11.0656 7.68325 8.60701 6.25 5.61459 6.25ZM14.66 11.25H12.2499V11.2499C12.2499 9.84308 11.7851 8.54484 11.0007 7.50034C13.1298 7.5236 14.8683 8.60003 14.9991 10.875C15.0044 10.9666 14.9991 11.25 14.66 11.25Z"
                       fill={`${
                         location.pathname === "/admin/users"
@@ -369,8 +369,8 @@ const LayoutAdmin = ({ children }) => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M9.00003 0.350172C10.2083 -0.320132 10.9472 0.0648371 11.2569 0.724844C11.4224 1.0776 11.5557 1.70337 11.4766 2.35635H10.3569L10.2107 2.02628C10.1503 1.87036 9.94783 1.85401 9.86905 2.0045L9.74977 2.23223L9.50542 1.17897C9.46613 0.966902 9.18615 0.954309 9.13331 1.16541L8.87163 2.20878L8.78496 1.86124C8.74644 1.70442 8.55974 1.65314 8.45805 1.77768L7.98425 2.35635H6.52342C6.44433 1.70337 6.57761 1.0776 6.74318 0.724844C7.05282 0.0648371 7.79171 -0.320132 9.00003 0.350172ZM11.3964 2.77096C11.1375 3.72841 9.80286 4.84589 9.00003 5C8.1972 4.84582 6.86259 3.72848 6.60367 2.77103H8.06931C8.13223 2.77103 8.18802 2.73805 8.22288 2.68733L8.50825 2.33882L8.68615 3.05602C8.73662 3.26058 9.00446 3.25849 9.05518 3.05672L9.31083 2.03811L9.49528 2.8333C9.53848 3.02074 9.77314 3.04537 9.85153 2.87568L10.021 2.55207L10.0656 2.65275C10.0983 2.72685 10.1664 2.77013 10.2374 2.7702L11.3964 2.77096Z"
                       fill={`${
                         location.pathname === "/admin/tambah-penyakit"
