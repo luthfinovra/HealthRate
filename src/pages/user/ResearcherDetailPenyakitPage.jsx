@@ -49,8 +49,11 @@ const ResearcherDetailPenyakitPage = () => {
       .catch(function (error) {
         console.error(error);
         setLoading(false);
+        if (error.response?.status === 404 || error.response?.status === 400) {
+          navigate("*"); // Navigate to the Not Found page
+        }
       });
-  }, [id, page, limit]); // Add role to dependencies
+  }, [id, page, limit, navigate]); // Add role to dependencies
 
   useEffect(() => {
     fetchDetailDiseases();

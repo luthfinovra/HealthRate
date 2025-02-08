@@ -89,14 +89,22 @@ export const Login = () => {
           localStorage.setItem("role", response?.data?.data?.role);
 
           if (response?.data?.data?.role === "operator") {
-            localStorage.setItem(
-              "disease_id",
-              response?.data?.data?.disease_id
-            );
+            const disease_id = response?.data?.data?.disease_id;
+
+            // Check if disease_id is valid
+            if (!disease_id) {
+              toast.error(
+                "You are not assigned to any disease. Please contact the admin for assistance."
+              );
+              Cookies.remove("token", { path: "/" });
+              localStorage.clear();
+              
+              return; // Stop further execution, but don't log out
+            }
+  
+            localStorage.setItem("disease_id", disease_id);
             toast.success(response?.data?.message);
-            navigate(
-              `/operator/record-penyakit/${response?.data?.data?.disease_id}`
-            );
+            navigate(`/operator/record-penyakit/${disease_id}`);
           } else if (response?.data?.data?.role === "peneliti") {
             if (
               response?.data?.data?.approval_status === "pending" ||

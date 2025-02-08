@@ -28,7 +28,8 @@ const formSchema = z
     role: z.string().optional(),
 
     disease_id: z
-      .string()
+      .union([z.string(), z.number()])
+      .transform(val => val?.toString())
       .refine(
         (val, ctx) =>
           ctx?.parent?.role !== "operator" || (val && val.trim() !== ""),
@@ -105,8 +106,11 @@ const EditPenggunaPage = () => {
       .catch(function (error) {
         console.error(error);
         setLoading(false);
+        if (error.response?.status === 404 || error.response?.status === 400) {
+          navigate("*"); // Navigate to the Not Found page
+        }
       });
-  }, []); // Add role to dependencies
+  }, [navigate]); // Add role to dependencies
   const fetchDetailUser = useCallback(async () => {
     setLoading(true);
     request
@@ -118,8 +122,11 @@ const EditPenggunaPage = () => {
       .catch(function (error) {
         console.error(error);
         setLoading(false);
+        if (error.response?.status === 404 || error.response?.status === 400) {
+          navigate("*"); // Navigate to the Not Found page
+        }
       });
-  }, [id]); // Add role to dependencies
+  }, [id, navigate]); // Add role to dependencies
 
   useEffect(() => {
     fetchDiseases();
@@ -195,6 +202,7 @@ const EditPenggunaPage = () => {
         );
         toast.dismiss();
         toast.error("Invalid Input");
+        setLoading(false);
       });
   };
 
@@ -213,11 +221,14 @@ const EditPenggunaPage = () => {
         } else {
           toast.dismiss();
           toast.error(response.data.message);
+          setLoading(false);
+          navigate("/admin/users");
         }
       })
       .catch(function (error) {
         toast.dismiss();
-        toast.error(error.data.message);
+        toast.error(error?.response?.data?.message || "Failed to delete user");
+        setLoading(false);
       });
   };
 
@@ -366,7 +377,7 @@ const EditPenggunaPage = () => {
                     type="text"
                     placeholder="Pilih penyakit"
                     label="Penyakit"
-                    value={detailUser?.managed_diseases?.disease_id || ""}
+                    value={detailUser?.managed_diseases?.disease_id?.toString() || ""}
                     validations={validations}
                     onChange={(e) =>
                       setDetailUser((prev) => ({

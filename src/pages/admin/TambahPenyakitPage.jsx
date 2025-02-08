@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import LayoutAdmin from '../../components/layout/LayoutAdmin';
 import InputField from '../../components/inputField/InputField';
-
 import { RiAddLine } from 'react-icons/ri';
 import TextareaField from '../../components/inputField/TextareaField';
 import InputSelect from '../../components/inputField/InputSelect';
@@ -26,9 +25,8 @@ const rowSchema = z
       .min(1, { message: 'Kolom tidak boleh kosong' })
       .regex(/^[a-z_]+$/, {
         message: 'Hanya boleh menggunakan huruf kecil dan format snake_case',
-      }) // Validasi untuk snake_case
+      })
       .transform((val) => val.replace(/\s+/g, '_')),
-
     type: z.enum(
       [
         'string',
@@ -69,17 +67,17 @@ const rowSchema = z
       data.type !== 'file' || (data.format && data.multiple !== undefined),
     {
       message: 'Kolom format dan multiple wajib diisi jika type adalah file',
-      path: ['format'], // Menargetkan error pada field format
+      path: ['format'],
     }
   )
   .refine((data) => data.multiple === 0 || data.multiple === 1, {
     message: 'Nilai multiple harus 0 atau 1',
   });
 
-// Schema untuk seluruh form
 const formSchema = z.object({
   name: z.string().min(1, 'Nama penyakit tidak boleh kosong'),
   deskripsi: z.string().min(1, 'Deskripsi tidak boleh kosong'),
+  visibilitas: z.enum(['publik', 'privat']),
   cover_page: z
     .any()
     .refine(
@@ -97,8 +95,10 @@ const TambahPenyakitPage = () => {
   const [validations, setValidations] = useState([]);
   const [rowValidation, setRowValidation] = useState([]);
   const [namaPenyakit, setNamaPenyakit] = useState('');
-  const [cover, setCover] = useState();
+  // Changed: From setCover(img) to setCover(null)
+  const [cover, setCover] = useState(null);
   const [deskripsiPenyakit, setDeskripsiPenyakit] = useState('');
+  const [visibilitas, setVisibilitas] = useState('publik');
   const [loading, setLoading] = useState(false);
   const [modalData, setModalData] = useState({
     isOpen: false,
@@ -126,21 +126,57 @@ const TambahPenyakitPage = () => {
     );
   };
 
+  // Added: New function for handling file changes
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // Added: Validation for file type
+      if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+        setValidations([{ 
+          name: 'cover_page', 
+          message: 'Only .jpg, .jpeg, .png and .webp formats are supported' 
+        }]);
+        e.target.value = null;
+        return;
+      }
+
+      // Added: Validation for file size
+      if (file.size > MAX_FILE_SIZE) {
+        setValidations([{ 
+          name: 'cover_page', 
+          message: 'The maximum file size that can be uploaded is 2MB' 
+        }]);
+        e.target.value = null;
+        return;
+      }
+
+      setCover(file);
+      // Added: Clear validation errors for cover_page
+      setValidations(validations.filter(v => v.name !== 'cover_page'));
+    }
+  };
+
+  // Added: New function for deleting cover image
+  const handleDeleteCover = () => {
+    setCover(null);
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
     setValidations([]);
     setRowValidation([]);
     setLoading(true);
     toast.loading('Saving data...');
-    // Data yang dikirimkan
+
     const dataValidation = formSchema.safeParse({
       name: namaPenyakit,
       deskripsi: deskripsiPenyakit,
+      visibilitas: visibilitas,
       cover_page: cover,
     });
 
     if (!dataValidation.success) {
-      // Tangani error validasi dari Zod
       handleValidationErrors(dataValidation.error.errors);
       toast.dismiss();
       toast.error('Invalid Input');
@@ -152,15 +188,12 @@ const TambahPenyakitPage = () => {
     let errorRow = false;
 
     rows.forEach((row, index) => {
-      // Buat salinan row untuk menghapus properti yang tidak relevan
       const rowToValidate = { ...row };
 
-      // Hapus `format` dan `multiple` jika `type` bukan "file"
       if (row.type !== 'file') {
         delete rowToValidate.format;
       }
 
-      // Validasi menggunakan Zod
       const result = rowSchema.safeParse(rowToValidate);
 
       if (!result.success) {
@@ -175,7 +208,6 @@ const TambahPenyakitPage = () => {
       }
     });
 
-    // Perbarui state rowValidation dengan hasil validasi
     if (errorRow) {
       setRowValidation(validationResults);
       toast.dismiss();
@@ -183,10 +215,16 @@ const TambahPenyakitPage = () => {
       setLoading(false);
       return;
     }
-    const data = new FormData(); // FormData
+
+    const data = new FormData();
     data.append('name', namaPenyakit);
     data.append('deskripsi', deskripsiPenyakit);
-    data.append('cover_page', cover);
+    data.append('visibilitas', visibilitas);
+    // Changed: Only append if cover exists
+    if (cover) {
+      data.append('cover_page', cover);
+    }
+
     rows.forEach((row, index) => {
       if (row.column !== '' && row.type !== '') {
         data.append(`schema[columns][${index}][is_visible]`, row.visible);
@@ -199,7 +237,6 @@ const TambahPenyakitPage = () => {
       }
     });
 
-    // Mengirimkan request POST dengan header dinamis
     request
       .post('/diseases', data)
       .then(function (response) {
@@ -208,12 +245,21 @@ const TambahPenyakitPage = () => {
           toast.success(response.data.message);
           navigate('/admin/penyakit');
         } else {
-          window.alert('Gagal login');
+            toast.dismiss();
+            toast.error('Failed to save data');
         }
       })
       .catch(function (error) {
-        toast.dismiss(); // Hentikan semua toast
-        toast.error('Gagal menyimpan data');
+        toast.dismiss();
+        if (error.response && error.response.status === 400) {
+          if (error.response.data.message === "Field Error - Nama kolom tidak boleh duplikat") {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error('Failed to save data');
+          }
+        } else {
+          toast.error('Failed to save data');
+        }
         setLoading(false);
       });
   };
@@ -250,46 +296,54 @@ const TambahPenyakitPage = () => {
           <div className="space-y-1 mb-5">
             <h1 className="font-semibold text-5xl">Tambah Data Penyakit</h1>
           </div>
-          <p className=" max-w-3xl font-normal text-[14px] text-[#2D3748] leading-[150%]">
+          <p className="max-w-3xl font-normal text-[14px] text-[#2D3748] leading-[150%]">
             Anda dapat menambahkan data dari penyakit secara langsung dan schema
             dari tiap kolomnya.
           </p>
-          <div className="  grid grid-cols-1 md:grid-cols-3 md:gap-5">
-            <div className=" w-full space-y-6  bg-white shadow-main p-6 rounded-xl flex flex-col justify-between  col-span-1">
+          <div className="grid grid-cols-1 md:grid-cols-3 md:gap-5">
+            <div className="w-full space-y-6 bg-white shadow-main p-6 rounded-xl flex flex-col justify-between col-span-1">
               <div className="space-y-6">
+                {/* Changed: Updated InputField props for cover_page */}
                 <InputField
-                  id={'cover_page'}
-                  name={'cover_page'}
-                  type={'file'}
-                  label={'Cover Page'}
+                  id="cover_page"
+                  name="cover_page"
+                  type="file"
+                  label="Cover Page"
                   imageOnly={true}
-                  value={cover}
-                  // previewImage={oldData.mediaUri}
+                  onChange={handleFileChange}
+                  accept="image/*"
                   validations={validations}
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      const img = e.target.files[0];
-                      setCover(img);
-                    }
-                  }}
-                  accept={'image/*'}
+                  value={cover}
+                  handleDeleteLocalImage={handleDeleteCover}
                 />
                 <InputField
-                  id={'name'}
-                  name={'name'}
+                  id="name"
+                  name="name"
                   onChange={(e) => setNamaPenyakit(e.target.value)}
-                  placeholder={'Masukan nama penyakit'}
-                  type={'text'}
+                  placeholder="Masukan nama penyakit"
+                  type="text"
                   value={namaPenyakit}
                   validations={validations}
                   required
-                  label={'Nama Penyakit'}
+                  label="Nama Penyakit"
                 />
+                <InputSelect
+                  id="visibilitas"
+                  name="visibilitas"
+                  type="text"
+                  label="Visibilitas"
+                  value={visibilitas}
+                  validations={validations}
+                  onChange={(e) => setVisibilitas(e.target.value)}
+                >
+                  <option value="publik">Publik</option>
+                  <option value="privat">Privat</option>
+                </InputSelect>
                 <TextareaField
-                  id={'deskripsi'}
-                  name={'deskripsi'}
-                  placeholder={'Masukan deskrispsi penyakit'}
-                  label={'Deskripsi Penyakit'}
+                  id="deskripsi"
+                  name="deskripsi"
+                  placeholder="Masukan deskrispsi penyakit"
+                  label="Deskripsi Penyakit"
                   value={deskripsiPenyakit}
                   validations={validations}
                   required
@@ -304,7 +358,7 @@ const TambahPenyakitPage = () => {
                 className={`mt-[50px] w-full text-white bg-[#554F9B] hover:bg-[#4D4788] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ${
                   loading ? 'cursor-not-allowed opacity-70' : ''
                 }`}
-                disabled={loading} // Disable button while loading
+                disabled={loading}
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
@@ -463,7 +517,6 @@ const TambahPenyakitPage = () => {
                                 <option value="string">string</option>
                                 <option value="text">text</option>
                                 <option value="integer">integer</option>
-                                <option value="decimal">decimal</option>
                                 <option value="float">float</option>
                                 <option value="datetime">datetime</option>
                                 <option value="date">date</option>

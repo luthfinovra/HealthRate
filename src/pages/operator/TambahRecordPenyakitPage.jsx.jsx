@@ -28,8 +28,11 @@ const TambahRecordPenyakitPage = () => {
       .catch(function (error) {
         console.error(error);
         setLoading(false);
+        if (error.response?.status === 404 || error.response?.status === 400) {
+          navigate("*"); // Navigate to the Not Found page
+        }
       });
-  }, [id]); // Add role to dependencies
+  }, [id, navigate]); // Add role to dependencies
 
   useEffect(() => {
     fetchDetailDiseases();
@@ -43,8 +46,7 @@ const TambahRecordPenyakitPage = () => {
           defaultValue = false; // Default untuk boolean
         } else if (
           field.type === "integer" ||
-          field.type === "float" ||
-          field.type === "decimal"
+          field.type === "float"
         ) {
           defaultValue = 0; // Default untuk angka
         } else if (
@@ -114,12 +116,7 @@ const TambahRecordPenyakitPage = () => {
       "pdf",
       "doc",
       "docx",
-      "xml",
-      "json",
-      "html",
       "txt",
-      "rtf",
-      "odt",
     ],
     "compressed-document": ["zip", "7z", "tar", "gz", "rar", "bz2", "xz"],
     spreadsheet: ["xls", "xlsx", "csv", "ods"],
@@ -149,19 +146,26 @@ const TambahRecordPenyakitPage = () => {
 
   const handleChange = (name, value, multiple = false) => {
     setFormValues((prevValues) => {
-      // Jika input adalah file dan mendukung multiple files
       if (value instanceof FileList) {
-        const files = multiple ? Array.from(value) : value[0]; // Jika multiple, simpan sebagai array, jika tidak, ambil file pertama
-        return {
-          ...prevValues,
-          [name]: files, // Menyimpan file (single file atau array) sesuai kondisi
-        };
+        if (multiple) {
+          // For multiple files, store as array
+          return {
+            ...prevValues,
+            [name]: Array.from(value)
+          };
+        } else {
+          // For single file, store just the first file
+          return {
+            ...prevValues,
+            [name]: value[0]
+          };
+        }
       }
-
-      // Jika bukan file, langsung simpan nilai
+      
+      // For non-file inputs
       return {
         ...prevValues,
-        [name]: value,
+        [name]: value
       };
     });
   };
@@ -182,6 +186,7 @@ const TambahRecordPenyakitPage = () => {
 
   const validateInputs = (schema, formValues) => {
     const errors = {};
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     schema.forEach((field) => {
       const value = formValues[field.name];
@@ -192,9 +197,9 @@ const TambahRecordPenyakitPage = () => {
         return;
       }
 
-      // Validasi untuk angka (integer, float, decimal)
+      // Validasi untuk angka (integer, float)
       if (
-        ["integer", "float", "decimal"].includes(field.type) &&
+        ["integer", "float"].includes(field.type) &&
         value !== undefined &&
         isNaN(value)
       ) {
@@ -204,25 +209,18 @@ const TambahRecordPenyakitPage = () => {
         return;
       }
 
-      // Validasi untuk angka positif
-      if (
-        ["integer", "float", "decimal"].includes(field.type) &&
-        value !== undefined &&
-        Number(value) < 0
-      ) {
-        errors[field.name] = `${formatColumnName(
-          field.name
-        )} must be positive.`;
-        return;
-      }
-
       // Validasi untuk boolean
-      if (field.type === "boolean" && typeof value !== "boolean") {
-        errors[field.name] = `${formatColumnName(
-          field.name
-        )} must be true or false.`;
-        return;
-      }
+      // if (field.type === "boolean" && typeof value !== "boolean") {
+      //   // Optional: explicitly convert to boolean if needed
+      //   const boolValue = value === 1 ? 1 : 
+      //                     value === 0 ? 0 : 
+      //                     value;
+        
+      //   if (typeof boolValue !== "boolean") {
+      //     errors[field.name] = `${formatColumnName(field.name)} must be true or false.`;
+      //     return;
+      //   }
+      // }
 
       // Validasi untuk email
       if (
@@ -263,17 +261,31 @@ const TambahRecordPenyakitPage = () => {
 
       // Validasi untuk file (Jika tipe file berupa array)
       if (field.type === "file" && Array.isArray(value)) {
+
+        const fileErrors = [];
+        
         value.forEach((file, index) => {
+          // Check file extension
           const fileExtension = file?.name?.split(".").pop().toLowerCase();
           const allowedExtensions = mimeTypeMap[field.format] || [];
           if (!allowedExtensions.includes(fileExtension)) {
-            errors[`${field.name}[${index}]`] = `${formatColumnName(
-              field.name
-            )} file at index ${
-              index + 1
-            } must be a valid file of type ${allowedExtensions.join(", ")}.`;
+            fileErrors.push(
+              `File ${index + 1} must be a valid file of type ${allowedExtensions.join(", ")}`
+            );
+          }
+          
+          // Check file size
+          if (file.size > MAX_FILE_SIZE) {
+            fileErrors.push(
+              `File ${index + 1} must be less than 10MB`
+            );
           }
         });
+
+        // If there are any errors, add them to the field
+        if (fileErrors.length > 0) {
+          errors[field.name] = fileErrors.join(". ");
+        }
       }
 
       // Validasi untuk file (Jika tipe file tunggal)
@@ -284,6 +296,13 @@ const TambahRecordPenyakitPage = () => {
           errors[field.name] = `${formatColumnName(
             field.name
           )} must be a valid file of type ${allowedExtensions.join(", ")}.`;
+        }
+
+        // Check file size
+        if (value.size > MAX_FILE_SIZE) {
+          errors[field.name] = `${formatColumnName(
+            field.name
+          )} must be less than 10MB.`;
         }
       }
 
@@ -370,12 +389,6 @@ const TambahRecordPenyakitPage = () => {
             Tambah Data Record Penyakit
           </h1>
         </div>
-        <p className=" max-w-3xl font-normal text-[14px] text-[#2D3748] leading-[150%]">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book.
-        </p>
         <div className=" space-y-9 grid md:grid-cols-2">
           <div
             className="max-h-[650px] h-full overflow-y-scroll w-full space-y-6 md:max-w-[500px]  bg-white shadow-main p-6 rounded-xl flex flex-col justify-between pr-3 [&::-webkit-scrollbar]:w-2 
@@ -394,7 +407,6 @@ const TambahRecordPenyakitPage = () => {
                   let inputType = "text"; // Default input type
                   if (
                     field.type === "integer" ||
-                    field.type === "decimal" ||
                     field.type === "float"
                   ) {
                     inputType = "number";
@@ -424,8 +436,8 @@ const TambahRecordPenyakitPage = () => {
                           <option value="" disabled selected hidden>
                             {`Pilih ${formatColumnName(field.name)}`}
                           </option>
-                          <option value={true}>True</option>
-                          <option value={false}>False</option>
+                          <option value={1}>True</option>
+                          <option value={0}>False</option>
                         </InputSelect>
                         {validations
                           .filter((v) => v.name === field.name)
@@ -466,48 +478,25 @@ const TambahRecordPenyakitPage = () => {
                           id={field.name}
                           name={field.name}
                           type={inputType}
-                          step={
-                            field.type === "float" || field.type === "decimal"
-                              ? "0.001"
-                              : undefined
-                          }
-                          value={
-                            field.type === "file"
-                              ? undefined
-                              : formValues[field.name] || ""
-                          }
+                          step={field.type === "float" ? "0.001" : undefined}
+                          value={field.type === "file" ? formValues[field.name] : formValues[field.name] || ""}
                           onChange={(e) =>
                             handleChange(
                               field.name,
                               field.type === "phone"
                                 ? e.target.value.replace(/[^0-9]/g, "")
                                 : field.type === "file"
-                                ? e.target.files // Mendukung multiple files
-                                : e.target.value,
-                              field.type === "file" && field.multiple === "1" // Mengirimkan nilai multiple ke handleChange
-                            )
+                                  ? e.target.files
+                                  : e.target.value,
+                              field.type === "file" && (field.multiple === "1" || field.multiple === true))
                           }
                           validations={validations}
                           placeholder={`Input your ${field.name}`}
-                          label={formatColumnName(field.name)} // Format label
-                          accept={
-                            field.type === "file"
-                              ? getAcceptFormat(field.format)
-                              : undefined
-                          }
-                          multiple={
-                            field.type === "file" && field.multiple === "1"
-                              ? true
-                              : undefined
-                          } // Menentukan apakah input file mendukung multiple
-                          multipleDatas={
-                            field.type === "file" && field.multiple === "1"
-                              ? formValues[field.name]
-                              : undefined
-                          }
-                          handleDeleteLocalImage={(index) =>
-                            handleDeleteLocalImage(field.name, index)
-                          }
+                          label={formatColumnName(field.name)}
+                          accept={field.type === "file" ? getAcceptFormat(field.format) : undefined}
+                          multiple={field.type === "file" && (field.multiple === "1" || field.multiple === true) ? true : undefined}
+                          multipleDatas={field.type === "file" && (field.multiple === "1" || field.multiple === true) ? formValues[field.name] : undefined}
+                          handleDeleteLocalImage={(index) => handleDeleteLocalImage(field.name, index)}
                         />
                       </div>
                     );

@@ -14,6 +14,7 @@ const ResearcherPenyakitPage = () => {
   const limit = 10;
   const [paginations, setPaginations] = useState({});
   const [loading, setLoading] = useState(true);
+  
 
   const fetchDiseases = useCallback(async () => {
     setLoading(true);

@@ -165,6 +165,7 @@ const TambahPenggunaPage = () => {
         );
         toast.dismiss();
         toast.error('Invalid Input');
+        setLoading(false);
       });
   };
   return (
